@@ -5,6 +5,23 @@
   height: 30vh;
 }
 
+.flexHeader {
+  display: flex;
+  justify-content: space-between;
+}
+
+.menuContainer {
+  margin: 0 auto;
+  text-align: center;
+  max-width: fit-content;
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: space-between;
+}
+
+
 @media(max-width: 810px){
   .gameLogoContainer{
     height: 20vh;

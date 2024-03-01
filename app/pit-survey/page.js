@@ -1,9 +1,9 @@
 'use client'
-import Image from "next/image";
-import { Button, Autocomplete, FormControl, FormLabel, Input, RadioGroup, Radio, List, ListItem, Checkbox, FormHelperText } from '@mui/joy'
+// import Image from "next/image";
+import { Button, Autocomplete, FormControl, FormLabel, Input, RadioGroup, Radio, List, ListItem, Checkbox, FormHelperText, Snackbar } from '@mui/joy'
 import MenuButton from "@/components/menu-button";
 import { SFLAllTeams } from "./sfl-all-teams";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 export default function PitSurveyPage() {
   const [teamNumber, setTeamNumber] = useState('')
@@ -16,15 +16,122 @@ export default function PitSurveyPage() {
   const [helpClimb, setHelpClimb] = useState('')
   const [scoreClimb, setScoreClimb] = useState('')
   const [investigate, setInvestigate] = useState('')
+  const [name, setName] = useState('')
+
+  const [loading, setLoading] = useState(false)
+  const formRef = useRef(null);
+
+  //checkboxes
+  const [leftChecked, setLeft] = useState(false)
+  const [centerChecked, setCenter] = useState(false)
+  const [rightChecked, setRight] = useState(false)
+
+  //snackbar state
+  const [open, setOpen] = useState(false)
+  const [errorString, setErrorString] =useState('')
+  const [submitSuccess, setSuccess] = useState(false)
+
+  function handleCheckbox(value, checked){
+    console.log(`${value}, ${checked}`)
+
+    if(checked == undefined){
+      console.log('returning undefined')
+      setPrefPos([...prefPos, value])
+    }
+    if(checked == true){
+      setPrefPos([...prefPos, value])
+      console.log('added')
+      console.log(prefPos)
+    } else if(checked == false) {
+      setPrefPos(
+        prefPos.filter(a =>
+          a !== value
+        ))
+      console.log('removed')
+      console.log(prefPos)
+    }
+  }
+
+  function handleInputChange(event, value) {
+    console.log(value);
+    setTeamNumber(value);
+  }
 
   function handleSubmit(e){
+    setLoading(true)
     e.preventDefault()
+
+    var allPrefPos = prefPos.join(",");
+    console.log(allPrefPos)
  
     // const formData = new FormData(e.target)
     // console.log(formData)
 
     // console.log(e.target[0].value)
-    console.log(teamNumber, drivetrain, prefPos, vision, scoreHeight, pickup, climb, helpClimb, scoreClimb, investigate)
+    console.log(teamNumber, drivetrain, vision, scoreHeight, pickup, climb, helpClimb, scoreClimb, investigate, name)
+
+    const data = {
+      teamNumber: teamNumber,
+      drivetrain: drivetrain,
+      prefPos: allPrefPos,
+      vision: vision,
+      scoreHeight: scoreHeight,
+      pickup: pickup,
+      climb: climb,
+      helpClimb: helpClimb,
+      scoreClimb: scoreClimb,
+      investigate: investigate,
+      name: name
+     }
+
+    fetch('/api/pitsurvey', {
+      method: 'POST', 
+      body: JSON.stringify(data),
+      headers:{ 'Content-Type': 'application/json' }
+    })
+    .then((response => {
+      if(!response.ok){
+          setSuccess(false)
+
+          switch (response.status) {
+              case 400:
+                  setErrorString('Validation error! Check required fields.')
+                  break;
+              case 500:
+                  setErrorString('API error!')
+                  break;
+              default:
+                  setErrorString('Error! Please try again.')
+                  break;
+          }
+
+          // return Promise.reject(response)
+      } else { //reset
+          setSuccess(true)
+          formRef.current.reset();
+          setTeamNumber('0')
+
+          setLeft(false)
+          setCenter(false)
+          setRight(false)
+
+          setDrivetrain('')
+          setPrefPos([])
+          setVision('')
+          setScoreHeight('')
+          setPickup('')
+          setClimb('')
+          setHelpClimb('')
+          setScoreClimb('')
+          setInvestigate('')
+          setName('')
+      }
+      setOpen(true)
+      setLoading(false)
+  }))
+  .catch(error => {
+      console.log(error.json())
+  })
   }
 
   return (
@@ -33,14 +140,17 @@ export default function PitSurveyPage() {
 
         <h1>Pit Survey</h1>
         <p style={{color: 'red'}}>Please fill out all form fields</p>
-        <form>
+        <p style={{color: 'red'}}><strong>Current Known Bugs:</strong>: Team Number does not visually reset. The <strong>value is reset on form submit</strong>. Please choose a new number or the field will be empty.</p>
+        <form ref={formRef}>
         <h2>General</h2>
         <FormControl>
           <FormLabel>Team Number</FormLabel>
           <Autocomplete
             required
             options={SFLAllTeams}
-            onChange={(e) => setTeamNumber(e.target.value)}
+            inputValue={teamNumber === '' ? '0' : teamNumber}
+            onInputChange={handleInputChange}
+            // clearOnBlur
             sx={{ width: 300 }}
           />
         </FormControl>
@@ -66,13 +176,13 @@ export default function PitSurveyPage() {
           <div role="group" aria-labelledby="preferred-pos-group">
             <List size="sm">
               <ListItem>
-                <Checkbox label="Left" value='left' onChange={(e) => setPrefPos([...prefPos, e.target.value])}/>
+                <Checkbox label="Left" value='left' checked={leftChecked} onChange={(e) => {setLeft(e.target.checked), handleCheckbox(e.target.value, e.target.checked)}}/>
               </ListItem>
               <ListItem>
-                <Checkbox label="Center" value='center' onChange={(e) => setPrefPos([...prefPos, e.target.value])}/>
+                <Checkbox label="Center" value='center' checked={centerChecked} onChange={(e) => {setCenter(e.target.checked), handleCheckbox(e.target.value, e.target.checked)}}/>
               </ListItem>
               <ListItem>
-                <Checkbox label="Right" value='right' onChange={(e) => setPrefPos([...prefPos, e.target.value])}/>
+                <Checkbox label="Right" value='right'  checked={rightChecked} onChange={(e) => {setRight(e.target.checked), handleCheckbox(e.target.value, e.target.checked)}}/>
               </ListItem>
             </List>
           </div>
@@ -151,9 +261,33 @@ export default function PitSurveyPage() {
             <Radio value="no" label="No" />
           </RadioGroup>
         </FormControl>
+
+        <FormControl>
+          <FormLabel>Full Name</FormLabel>
+          <Input
+          required
+          onChange={(e) => setName(e.target.value)}
+          sx={{ width: 300 }}
+          />
+        </FormControl>
+        
+        <Button loading={loading} onClick={handleSubmit}>Submit Survey</Button>
         </form>
 
-        <Button onClick={handleSubmit}>Submit Survey</Button>
+        <Snackbar
+        variant="solid"
+        color={submitSuccess ? 'success' : 'danger'}
+        autoHideDuration={submitSuccess ? 3500 : 5000}
+        open={open}
+        onClose={() => setOpen(false)}
+        // onUnmount={handleReset}
+        >
+        {submitSuccess ?
+        `Submitted!`
+        : `${errorString}`}
+        </Snackbar>
     </>
+
+
   )
 }
