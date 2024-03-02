@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 export default function ViewDBPage() {
     const [loading, isLoading] = useState(true)
     const [fetchedResults, setResults] = useState([]);
+    const [isEmpty, setEmpty] = useState(false)
 
     const getData = async () => {
       await fetch("/api/pit-result", {
@@ -18,8 +19,11 @@ export default function ViewDBPage() {
       .then((res) => res.json()) // Parse the response data as JSON
       .then((data) => {setResults(data.results), console.log(data.results), console.log( typeof data.results)})
       .catch( err => console.log(err) ); // Update the state with the fetched data
+
+      if(fetchedResults.length == 0){
+        setEmpty(true)
+      }
       isLoading(false)
-      console.log(fetchedResults[0].can_climb)
     }
 
     useEffect(() => {
@@ -34,7 +38,9 @@ export default function ViewDBPage() {
         <h2>Pit Survey</h2>
 
         {loading
-        ? (<p>Loading...</p>)
+        ? <p>Loading...</p>
+        : isEmpty
+        ? <p>No results yet!</p>
         : (
           <div className="pit-results-container">
           {fetchedResults.map((item, index) => {
