@@ -10,3 +10,20 @@ form {
   color: #fff;
   background-color: #01a0bb;
 }
+
+.pit-results-container{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.item-container {
+  border: 2px solid #01a0bb;
+  border-radius: 10px;
+  padding: 1.5rem;
+}
+
+.pit-results-number {
+  text-align: center;
+  margin-top: 0;
+}

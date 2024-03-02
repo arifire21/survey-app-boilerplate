@@ -64,10 +64,6 @@ export default function PitSurveyPage() {
     var allPrefPos = prefPos.join(",");
     console.log(allPrefPos)
  
-    // const formData = new FormData(e.target)
-    // console.log(formData)
-
-    // console.log(e.target[0].value)
     console.log(teamNumber, drivetrain, vision, scoreHeight, pickup, climb, helpClimb, scoreClimb, investigate, name)
 
     const data = {
@@ -84,7 +80,7 @@ export default function PitSurveyPage() {
       name: name
      }
 
-    fetch('/api/pitsurvey', {
+    fetch('/api/pit-result', {
       method: 'POST', 
       body: JSON.stringify(data),
       headers:{ 'Content-Type': 'application/json' }
@@ -95,7 +91,7 @@ export default function PitSurveyPage() {
 
           switch (response.status) {
               case 400:
-                  setErrorString('Validation error! Check required fields.')
+                  setErrorString('Validation error! All fields required.')
                   break;
               case 500:
                   setErrorString('API error!')
