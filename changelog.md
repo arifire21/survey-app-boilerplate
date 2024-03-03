@@ -4,6 +4,11 @@
 -Next-ifying it, with statefuls
 
 # SFL
-## v 1.1.0
+## v1.0.0
 - integrated with Vercel postgres
 - cleaned up GET rendering
+
+# Post-SFL
+## v1.1.0
+- added custom styling to drivetrain buttons again
+- corrected icons

@@ -1,9 +1,16 @@
 'use client'
-// import Image from "next/image";
-import { Button, Autocomplete, FormControl, FormLabel, Input, RadioGroup, Radio, List, ListItem, Checkbox, FormHelperText, Snackbar } from '@mui/joy'
+import Image from "next/image";
+import { Button, Autocomplete, FormControl, FormLabel, Input, RadioGroup, Radio, List, ListItem, Checkbox, FormHelperText, Snackbar, Textarea } from '@mui/joy'
 import MenuButton from "@/components/menu-button";
 import { SFLAllTeams } from "./sfl-all-teams";
 import { useState, useRef } from "react";
+import styles from './pit.module.css'
+
+  //images
+  import WCD from '../../public/images/westcoastdrive.png'
+  import Mec from '../../public/images/mecanumdrive.png'
+  import Tank from '../../public/images/tankdrive.jpg'
+  import Swerve from '../../public/images/swervedrive.jpg'
 
 export default function PitSurveyPage() {
   const [teamNumber, setTeamNumber] = useState('')
@@ -16,15 +23,25 @@ export default function PitSurveyPage() {
   const [helpClimb, setHelpClimb] = useState('')
   const [scoreClimb, setScoreClimb] = useState('')
   const [investigate, setInvestigate] = useState('')
+  const [feedback, setFeedback] = useState('')
   const [name, setName] = useState('')
 
+  //form state
   const [loading, setLoading] = useState(false)
   const formRef = useRef(null);
+  // const [validated, setValidated] = useState(false)
 
   //checkboxes
   const [leftChecked, setLeft] = useState(false)
   const [centerChecked, setCenter] = useState(false)
   const [rightChecked, setRight] = useState(false)
+
+  //drivetrain radio
+  const [westSelected, setWest] = useState(false)
+  const [mecanumSelected, setMec] = useState(false)
+  const [tankSelected, setTank] = useState(false)
+  const [swerveSelected, setSwerve] = useState(false)
+  const [isOtherSelected, setOther] = useState(false)
 
   //snackbar state
   const [open, setOpen] = useState(false)
@@ -46,7 +63,7 @@ export default function PitSurveyPage() {
       setPrefPos(
         prefPos.filter(a =>
           a !== value
-        ))
+      ))
       console.log('removed')
       console.log(prefPos)
     }
@@ -57,10 +74,73 @@ export default function PitSurveyPage() {
     setTeamNumber(value);
   }
 
+  function drivetrainHelper(radioValue){
+    console.log(radioValue)
+    switch (radioValue) {
+      case 'west coast drive':
+        setDrivetrain(radioValue)
+        setWest(true)
+        setMec(false)
+        setTank(false)
+        setSwerve(false)
+        setOther(false)
+        break;
+      case 'mecanum':
+        setDrivetrain(radioValue)
+        setMec(true)
+        setWest(false)
+        setTank(false)
+        setSwerve(false)
+        setOther(false)
+        break;
+      case 'tank':
+        setDrivetrain(radioValue)
+        setTank(true)
+        setWest(false)
+        setMec(false)
+        setSwerve(false)
+        setOther(false)
+        break;
+      case 'swerve':
+        setDrivetrain(radioValue)
+        setSwerve(true)
+        setWest(false)
+        setMec(false)
+        setTank(false)
+        setOther(false)
+      break;
+      case 'other':
+        setOther(true)
+        setWest(false)
+        setMec(false)
+        setTank(false)
+        setSwerve(false)
+      break;
+    }
+  }
+
+  function handleValidate(){
+    if (!teamNumber || !drivetrain || ! prefPos || !vision
+      || !scoreHeight || !pickup || !climb ||!helpClimb
+      || !scoreClimb || !investigate || !name){
+    setErrorString('All fields required!')
+    setSuccess(false)
+    setOpen(true)
+    return false;
+    }
+
+    handleSubmit()
+  }
+
   function handleSubmit(e){
     setLoading(true)
     e.preventDefault()
 
+    if(investigate === 'no'){
+      setFeedback(null)
+    }
+
+    //join into one string
     var allPrefPos = prefPos.join(",");
     console.log(allPrefPos)
  
@@ -90,15 +170,15 @@ export default function PitSurveyPage() {
           setSuccess(false)
 
           switch (response.status) {
-              case 400:
-                  setErrorString('Validation error! All fields required.')
-                  break;
-              case 500:
-                  setErrorString('API error!')
-                  break;
-              default:
-                  setErrorString('Error! Please try again.')
-                  break;
+            case 400:
+                setErrorString('Server validation error! All fields required.')
+                break;
+            case 500:
+                setErrorString('API error!')
+                break;
+            default:
+                setErrorString('Error! Please try again.')
+                break;
           }
 
           // return Promise.reject(response)
@@ -135,39 +215,68 @@ export default function PitSurveyPage() {
         <MenuButton/>
 
         <h1>Pit Survey</h1>
-        <p style={{color: 'red'}}>Please fill out all form fields</p>
-        <p style={{color: 'red'}}><strong>Current Known Bugs:</strong>: Team Number does not visually reset. The <strong>value is reset on form submit</strong>. Please choose a new number or the field will be empty.</p>
+        {/* <p style={{color: 'red'}}>Please fill out all form fields</p>
+        <p style={{color: 'red'}}><strong>Current Known Bugs:</strong>: Team Number does not visually reset. The <strong>value is reset on form submit</strong>. Please choose a new number or the field will be empty.</p> */}
         <form ref={formRef}>
         <h2>General</h2>
-        <FormControl>
-          <FormLabel>Team Number</FormLabel>
+        <FormControl sx={{ marginBottom: '1rem'}}>
+          <FormLabel>Team Number <sup className='req'>*</sup></FormLabel>
           <Autocomplete
             required
             options={SFLAllTeams}
             inputValue={teamNumber === '' ? '0' : teamNumber}
-            onInputChange={handleInputChange}
+            onInputChange={() => {handleInputChange}}
             // clearOnBlur
             sx={{ width: 300 }}
           />
         </FormControl>
 
-        <FormControl>
-          <FormLabel>Drivetrain Type</FormLabel>
-          <RadioGroup name="radio-buttons-drivetrain"
-                value={drivetrain}
+        <FormControl sx={{ marginBottom: '1rem'}}>
+          <FormLabel>Drivetrain Type <sup className='req'>*</sup></FormLabel>
+          <RadioGroup name="radio-buttons-drivetrain" value={drivetrain}>
+            <div className={styles.radioContainer}>
+            <Radio value="west coast drive" checked={westSelected} sx={{display: 'none'}}/>
+            <div className={`${styles.customRadio} ${westSelected ? styles.dtSelected : ''}`} onClick={() => drivetrainHelper('west coast drive')}>
+              <Image className={styles.customRadioImage} src={WCD} alt='west-coast-example'/>
+              West Coast Drive
+            </div>
+            
+            <Radio value="mecanum" checked={mecanumSelected} sx={{display: 'none'}}/>
+            <div className={`${styles.customRadio} ${mecanumSelected ? styles.dtSelected : ''}`} onClick={() => drivetrainHelper('mecanum')}>
+              <Image className={styles.customRadioImage} src={Mec} alt='mecanum-example'/>
+              Mecanum Drive
+            </div>
+            
+            <Radio value="tank" checked={tankSelected} sx={{display: 'none'}}/>
+            <div className={`${styles.customRadio} ${tankSelected ? styles.dtSelected : ''}`} onClick={() => drivetrainHelper('tank')}>
+              <Image className={styles.customRadioImage} src={Tank} alt='tank-example'/>
+              Tank Drive (treads)
+            </div>
+            
+            <Radio value="swerve" checked={swerveSelected} sx={{display: 'none'}}/>
+            <div className={`${styles.customRadio} ${swerveSelected ? styles.dtSelected : ''}`} onClick={() => drivetrainHelper('swerve')}>
+              <Image className={styles.customRadioImage} src={Swerve} alt='swerve-example'/>
+              Swerve Drive
+            </div>
+            
+            <div>
+              <Radio value="other" checked={isOtherSelected} sx={{display: 'none', margin: '0 auto'}}/>
+              <div className={`${styles.customRadio} ${isOtherSelected ? styles.dtSelected : ''}`} onClick={() => drivetrainHelper('other')}>
+                Other
+              </div>
+              {isOtherSelected && isOtherSelected &&
+                <Input
                 onChange={(e) => setDrivetrain(e.target.value)}
-                >
-            <Radio value="west-coast" label="West Coast Drive" />
-            <Radio value="mecanum" label="Mecanum" />
-            <Radio value="tank" label="Tank (treads)" />
-            <Radio value="swerve" label="Swerve" />
-            <Radio value="other" label="Other" />
+                sx={{ width: 300 }}
+                />
+              }
+            </div>
+            </div>
           </RadioGroup>
-          {/* <FormHelperText>This is helper text.</FormHelperText> */}
         </FormControl>
 
-        {/* <FormControl> */}
-          <FormLabel>Preferred Starting Position</FormLabel>
+        <FormControl  sx={{ marginBottom: '1rem'}}>
+          <FormLabel>Preferred Starting Position <sup className='req'>*</sup></FormLabel>
           <FormHelperText>Drive team can have multiple preferences</FormHelperText>
           <div role="group" aria-labelledby="preferred-pos-group">
             <List size="sm">
@@ -182,10 +291,10 @@ export default function PitSurveyPage() {
               </ListItem>
             </List>
           </div>
-        {/* </FormControl> */}
+        </FormControl>
 
-        <FormControl>
-          <FormLabel>Does the robot have vision tracking?</FormLabel>
+        <FormControl  sx={{ marginBottom: '1rem'}}>
+          <FormLabel>Does the robot have vision tracking? <sup className='req'>*</sup></FormLabel>
           <RadioGroup name="radio-buttons-vision"
               value={vision}
               onChange={(e) => setVision(e.target.value)}>
@@ -194,8 +303,8 @@ export default function PitSurveyPage() {
           </RadioGroup>
         </FormControl>
 
-        <FormControl>
-          <FormLabel>Which heights can the robot score from?</FormLabel>
+        <FormControl  sx={{ marginBottom: '1rem'}}>
+          <FormLabel>Which heights can the robot score from? <sup className='req'>*</sup></FormLabel>
           <RadioGroup name="radio-buttons-score-height"
           value={scoreHeight}
           onChange={(e) => setScoreHeight(e.target.value)}>
@@ -205,8 +314,8 @@ export default function PitSurveyPage() {
           </RadioGroup>
         </FormControl>
 
-        <FormControl>
-          <FormLabel>Where can the robot pick up game pieces from?</FormLabel>
+        <FormControl  sx={{ marginBottom: '1rem'}}>
+          <FormLabel>Where can the robot pick up game pieces from? <sup className='req'>*</sup></FormLabel>
           <RadioGroup name="radio-buttons-pickup"
           value={pickup}
           onChange={(e) => setPickup(e.target.value)}>
@@ -217,8 +326,8 @@ export default function PitSurveyPage() {
         </FormControl>
 
         <h2>Endgame</h2>
-        <FormControl>
-          <FormLabel>Can the robot climb?</FormLabel>
+        <FormControl  sx={{ marginBottom: '1rem'}}>
+          <FormLabel>Can the robot climb? <sup className='req'>*</sup></FormLabel>
           <RadioGroup name="radio-buttons-climb"
           value={climb}
           onChange={(e) => setClimb(e.target.value)}>
@@ -227,8 +336,8 @@ export default function PitSurveyPage() {
           </RadioGroup>
         </FormControl>
 
-        <FormControl>
-          <FormLabel>Can the robot help another robot to climb?</FormLabel>
+        <FormControl  sx={{ marginBottom: '1rem'}}>
+          <FormLabel>Can the robot help another robot to climb? <sup className='req'>*</sup></FormLabel>
           <RadioGroup name="radio-buttons-climb-help"
           value={helpClimb}
           onChange={(e) => setHelpClimb(e.target.value)}>
@@ -237,8 +346,8 @@ export default function PitSurveyPage() {
           </RadioGroup>
         </FormControl>
 
-        <FormControl>
-          <FormLabel>Can the robot score while climbing?</FormLabel>
+        <FormControl  sx={{ marginBottom: '1rem'}}>
+          <FormLabel>Can the robot score while climbing? <sup className='req'>*</sup></FormLabel>
           <RadioGroup name="radio-buttons-climb-score"
           value={scoreClimb}
           onChange={(e) => setScoreClimb(e.target.value)}>
@@ -248,18 +357,25 @@ export default function PitSurveyPage() {
         </FormControl>
 
         <h2>Information</h2>
-        <FormControl>
-          <FormLabel>Do you think this robot is worth investigating?</FormLabel>
+        <FormControl  sx={{ marginBottom: '1rem'}}>
+          <FormLabel>Do you think this robot is worth investigating? <sup className='req'>*</sup></FormLabel>
           <RadioGroup name="radio-buttons-invesitgate"
           value={investigate}
           onChange={(e) => setInvestigate(e.target.value)}>
             <Radio value="yes" label="Yes" />
             <Radio value="no" label="No" />
           </RadioGroup>
+
+          {investigate && investigate === 'yes' && 
+          <div>
+            <FormLabel>Why? Explain your reason.</FormLabel>
+            <Textarea minRows={3} onChange={(e) => setFeedback(e.target.value)} sx={{ width: 500 }}/>
+          </div>
+          }
         </FormControl>
 
-        <FormControl>
-          <FormLabel>Full Name</FormLabel>
+        <FormControl  sx={{ marginBottom: '1rem'}}>
+          <FormLabel>Full Name <sup className='req'>*</sup></FormLabel>
           <Input
           required
           onChange={(e) => setName(e.target.value)}
@@ -267,7 +383,7 @@ export default function PitSurveyPage() {
           />
         </FormControl>
         
-        <Button loading={loading} onClick={handleSubmit}>Submit Survey</Button>
+        <Button loading={loading} onClick={handleValidate}>Submit Survey</Button>
         </form>
 
         <Snackbar

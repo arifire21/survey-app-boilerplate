@@ -2,14 +2,18 @@ form {
   padding: 2rem;
 }
 
-.MuiFormControl-vertical {
-  margin-bottom: 1rem;
+.req{
+  color: red;
 }
 
-.MuiButton-colorPrimary {
+/* .MuiFormControl-vertical {
+  margin-bottom: 1rem;
+} */
+
+/* .MuiButton-colorPrimary {
   color: #fff;
   background-color: #01a0bb;
-}
+} */
 
 .pit-results-container{
   display: flex;

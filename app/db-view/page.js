@@ -1,7 +1,6 @@
 "use client"
 import MenuButton from "@/components/menu-button";
-// import results from "@/components/pit-render";
-import { Grid } from "@mui/joy";
+import { CircularProgress } from "@mui/joy";
 import { useState, useEffect } from "react";
 
 export default function ViewDBPage() {
@@ -38,7 +37,9 @@ export default function ViewDBPage() {
         <h2>Pit Survey</h2>
 
         {loading
-        ? <p>Loading...</p>
+        ? <div style={{display:'flex', textAlign:'center'}}>
+            <p>Loading...   </p><CircularProgress variant="soft" size="sm"/>
+          </div>
         : isEmpty
         ? <p>No results yet!</p>
         : (

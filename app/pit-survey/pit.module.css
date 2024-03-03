@@ -1,0 +1,52 @@
+.radioContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.customRadio {
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+    width: fit-content;
+    text-align: center;
+    background-color: #edfcff;
+    color: #0192ab;
+    padding: 1rem;
+    border: 3px solid transparent;
+    border-radius: 5px;
+    box-shadow:2px 2px lightgrey;    
+    cursor: pointer;
+    margin: 10px;
+}
+
+.dtSelected {
+    border-color: #0192ab;
+    box-shadow: none;
+  }
+
+.customRadioImage {
+    border-radius: 15px;
+    max-width: 400px;
+    max-height: 200px;
+    object-fit: contain;
+}
+
+/* ipad sizing, intended device to use */
+@media (max-width:810px) {
+    .radioContainer {
+        row-gap: 20px;
+    }
+
+    .customRadio {
+        max-height: fit-content;
+        max-width: 220px;
+        font-size: 13pt;
+    }
+
+    .customRadioImage {
+        max-width: 100%;
+        /* max-height: unset; */
+    }
+}
