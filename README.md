@@ -19,3 +19,13 @@ TBD
 
 ## Changelog
 For changelog, click [here](https://github.com/arifire21/744-survey/blob/trunk/changelog.md).
+
+## Recordkeeping
+### Branches
+1. Trunk
+  - production branch
+  - unless minor changes, to be commited to via Pull Requests to verify Vercel temp deployment is successful
+2. Dev Branches
+  - make branches per each new major change proposed (match survey, new api points, etc)
+### Issues
+  - log issues for bugs or suggestions/enhancements, tag appropriately
