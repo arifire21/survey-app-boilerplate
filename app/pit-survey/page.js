@@ -6,11 +6,11 @@ import { SFLAllTeams } from "./sfl-all-teams";
 import { useState, useRef } from "react";
 import styles from './pit.module.css'
 
-  //images
-  import WCD from '../../public/images/westcoastdrive.png'
-  import Mec from '../../public/images/mecanumdrive.png'
-  import Tank from '../../public/images/tankdrive.jpg'
-  import Swerve from '../../public/images/swervedrive.jpg'
+//images
+import WCD from '../../public/images/westcoastdrive.png'
+import Mec from '../../public/images/mecanumdrive.png'
+import Tank from '../../public/images/tankdrive.jpg'
+import Swerve from '../../public/images/swervedrive.jpg'
 
 export default function PitSurveyPage() {
   const [teamNumber, setTeamNumber] = useState('')
@@ -36,7 +36,7 @@ export default function PitSurveyPage() {
   const [centerChecked, setCenter] = useState(false)
   const [rightChecked, setRight] = useState(false)
 
-  //drivetrain radio
+  //drivetrain radio, managed this way because of the custom "button" divs
   const [westSelected, setWest] = useState(false)
   const [mecanumSelected, setMec] = useState(false)
   const [tankSelected, setTank] = useState(false)
@@ -70,7 +70,6 @@ export default function PitSurveyPage() {
   }
 
   function handleInputChange(event, value) {
-    console.log(value);
     setTeamNumber(value);
   }
 
@@ -119,8 +118,8 @@ export default function PitSurveyPage() {
     }
   }
 
-  function handleValidate(){
-    if (!teamNumber || !drivetrain || ! prefPos || !vision
+  function handleValidate(passedEvent){
+    if (teamNumber==='' || !drivetrain || !prefPos || !vision
       || !scoreHeight || !pickup || !climb ||!helpClimb
       || !scoreClimb || !investigate || !name){
     setErrorString('All fields required!')
@@ -129,7 +128,7 @@ export default function PitSurveyPage() {
     return false;
     }
 
-    handleSubmit()
+    handleSubmit(passedEvent)
   }
 
   function handleSubmit(e){
@@ -180,18 +179,23 @@ export default function PitSurveyPage() {
                 setErrorString('Error! Please try again.')
                 break;
           }
-
-          // return Promise.reject(response)
       } else { //reset
           setSuccess(true)
           formRef.current.reset();
-          setTeamNumber('0')
 
-          setLeft(false)
+          setTeamNumber('')
+
+          setLeft(false)    //setting bc customs
           setCenter(false)
           setRight(false)
 
-          setDrivetrain('')
+          setDrivetrain('') //setting bc customs
+          setWest(false)
+          setMec(false)
+          setTank(false)
+          setSwerve(false)
+          setOther(false)
+
           setPrefPos([])
           setVision('')
           setScoreHeight('')
@@ -215,18 +219,18 @@ export default function PitSurveyPage() {
         <MenuButton/>
 
         <h1>Pit Survey</h1>
-        {/* <p style={{color: 'red'}}>Please fill out all form fields</p>
-        <p style={{color: 'red'}}><strong>Current Known Bugs:</strong>: Team Number does not visually reset. The <strong>value is reset on form submit</strong>. Please choose a new number or the field will be empty.</p> */}
         <form ref={formRef}>
         <h2>General</h2>
         <FormControl sx={{ marginBottom: '1rem'}}>
           <FormLabel>Team Number <sup className='req'>*</sup></FormLabel>
           <Autocomplete
             required
+            type="text"
+            inputMode="numeric"
             options={SFLAllTeams}
-            inputValue={teamNumber === '' ? '0' : teamNumber}
-            onInputChange={() => {handleInputChange}}
-            // clearOnBlur
+            value={teamNumber}
+            onChange={handleInputChange}
+            clearOnBlur
             sx={{ width: 300 }}
           />
         </FormControl>
@@ -383,7 +387,7 @@ export default function PitSurveyPage() {
           />
         </FormControl>
         
-        <Button loading={loading} onClick={handleValidate}>Submit Survey</Button>
+        <Button loading={loading} onClick={(e) => {handleValidate(e)}}>Submit Survey</Button>
         </form>
 
         <Snackbar

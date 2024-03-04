@@ -8,6 +8,15 @@ export default function ViewDBPage() {
     const [fetchedResults, setResults] = useState([]);
     const [isEmpty, setEmpty] = useState(false)
 
+    function pitDataHelper(results){ //relying on state in getData does not work because of state's delayed updating
+      setResults(results)
+      // console.log(results)
+
+      if(results.length == 0){
+        setEmpty(true)
+      }
+    }
+
     const getData = async () => {
       await fetch("/api/pit-result", {
         method: "GET",
@@ -16,12 +25,9 @@ export default function ViewDBPage() {
         },
       })
       .then((res) => res.json()) // Parse the response data as JSON
-      .then((data) => {setResults(data.results), console.log(data.results), console.log( typeof data.results)})
-      .catch( err => console.log(err) ); // Update the state with the fetched data
+      .then((data) => {pitDataHelper(data.results)})
+      .catch( err => console.log(err) );
 
-      if(fetchedResults.length == 0){
-        setEmpty(true)
-      }
       isLoading(false)
     }
 
@@ -40,7 +46,7 @@ export default function ViewDBPage() {
         ? <div style={{display:'flex', textAlign:'center'}}>
             <p>Loading...   </p><CircularProgress variant="soft" size="sm"/>
           </div>
-        : isEmpty
+        : (isEmpty && isEmpty == true)
         ? <p>No results yet!</p>
         : (
           <div className="pit-results-container">

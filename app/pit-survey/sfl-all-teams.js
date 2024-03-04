@@ -1,5 +1,5 @@
 export const SFLAllTeams = [
-    '0',
+    '',
     '59',
     '108',
     '179',

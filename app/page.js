@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <>
     <div className={styles.flexHeader}>
-      <p>Version: <span id="version-number" style={{color: '#01a0bb'}}>1.1.0</span></p>
+      <p>Version: <span id="version-number" style={{color: '#01a0bb'}}>1.1.1</span></p>
       <Button component="a" href="/db-view">
         View Data &#8594;
       </Button>
