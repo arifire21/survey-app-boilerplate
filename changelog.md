@@ -17,3 +17,7 @@
 - fix onInputChange by using `onChange`
 - fix Autocomplete value not clearing on submit by using `value`
 - fix rendering ternary in db-view
+
+## 2.1.1
+- match survey
+- todo write out

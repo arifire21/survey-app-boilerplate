@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { Button, Autocomplete, FormControl, FormLabel, Input, RadioGroup, Radio, List, ListItem, Checkbox, FormHelperText, Snackbar, Textarea } from '@mui/joy'
 import MenuButton from "@/components/menu-button";
-import { SFLAllTeams } from "./sfl-all-teams";
+import { SFLAllTeams } from "../data/sfl-all-teams";
 import { useState, useRef } from "react";
 import styles from './pit.module.css'
 
@@ -225,7 +225,7 @@ export default function PitSurveyPage() {
           <FormLabel>Team Number <sup className='req'>*</sup></FormLabel>
           <Autocomplete
             required
-            type="text"
+            type="number"
             inputMode="numeric"
             options={SFLAllTeams}
             value={teamNumber}

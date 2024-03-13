@@ -1,0 +1,183 @@
+/* .input{
+    /* border: none;
+    min-width: 0;
+    width: 100px;
+    outline: 0;
+    padding: 0;
+    -webkit-flex: 1;
+    flex: 1;
+    color: inherit;
+    background-color: transparent;
+    font-family: inherit;
+    font-size: inherit;
+    font-style: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    cursor:unset;
+} */
+
+.container {
+    display: flex;
+    flex-direction: row;
+    height: max-content;
+}
+
+.counterInput {
+    width: 100px;
+    height: 58px;
+}
+
+.leftButton, .rightButton {
+    background-color: #01a0bb;
+    color: white;
+    border-color: white;
+    padding: 1rem;
+    width: 50px;
+    font-size: large;
+    text-align: center;
+}
+
+.leftButton {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+.rightButton {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+
+
+
+
+.selectorContainer{
+    position: relative;
+    /* width: 50%; */
+    width: 90vw;
+    height: 80vh;
+}
+
+.imageContainer {
+    width: fit-content;
+    height: fit-content;
+}
+
+/* .innerContainer{
+    width: max-content;
+    height: max-content;
+} */
+
+.gridContainer {
+    position: relative;
+    display: grid;
+    /* grid-template-columns: auto auto auto auto auto;
+    grid-template-rows: auto auto auto auto auto; */
+    grid-template-areas: 
+    ". b . r ."
+    ". b-diag . r-diag ."
+    ". b-center . r-center ."
+    ". b-diag . r-diag ."
+    ". b . r ."
+    ". b . r .";
+    /* grid-template-columns:  */
+    /* 200px 200px 200p 200px 200px; */
+    grid-template-rows:
+    25% [b] 10% 30% [inner] 10% 25%;
+    /* grid-template-columns: auto auto auto auto auto;
+    grid-template-rows: auto auto auto auto auto; */
+    background-color: #2196F3;
+    /* padding: 10px; */
+    z-index: 2;
+    width: 100%;
+}
+
+.gridItem {
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    font-size: 30px;
+    text-align: center;
+}
+
+.buttonContainer, .selectRender, .redRender, .blueRender {
+    position: relative;
+}
+
+.buttonContainer {
+    top: 50%;
+    z-index: 2;
+    /* display: flex;
+    justify-content: center; */
+}
+
+.selectRender {
+    left: 40%;
+    color: #fff;
+    font-size: xx-large;
+    text-shadow: #01a0bb 1px 0 10px;
+}
+
+.redRender {
+    left: 75%
+}
+
+.blueRender {
+    left: 30%
+}
+
+.option {
+    background-color: transparent;
+    color: white;
+    border: 2px solid #fff;
+    border-radius: 10px;
+    width: auto;
+    padding: 0.5rem;
+    width: 60px;
+    cursor: pointer;
+}
+
+.posSelected {
+    border-color: #01a0bb;
+    background-color: rgba(169, 242, 255, 0.3);
+}
+
+/* 0066b3 blue alliance */ 
+/* ed1c24 red  */
+
+.b {
+    grid-area: b;
+}
+
+.blueDiag{
+    grid-area: blue-diag;
+}
+
+.blueCenter {
+    grid-area: blue-center;
+}
+
+.r {
+    grid-area: r;
+}
+
+.redDiag{
+    grid-area: red-diag;
+}
+
+.redCenter {
+    grid-area: red-center;
+}
+
+.outer {
+    grid-area: outer;
+}
+
+.inner {
+    grid-area: inner;
+}
+
