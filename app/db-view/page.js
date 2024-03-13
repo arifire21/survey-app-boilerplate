@@ -60,8 +60,13 @@ export default function ViewDBPage() {
               <p>Scores in Amp or Speaker: <strong>{item.score_height}</strong></p>
               <p>Pickup at floor or HPS: <strong>{item.pickup_pos}</strong></p>
               <p>Can climb: <strong>{item.can_climb}</strong></p>
-              <p>Can help others climb: <strong>{item.help_climb}</strong></p>
-              <p>Can score while climbing: <strong>{item.score_climb}</strong></p>
+              {item.can_climb && item.can_climb === 'yes' && (
+                <>
+                  <p>Can help others climb: <strong>{item.help_climb}</strong></p>
+                  <p>Can score while climbing: <strong>{item.score_climb}</strong></p>
+                </>
+              )}
+              {item.feedback && item.feedback.length > 0 && <p>Thoughts: {item.feedback}</p>}
               <small>Survey by: <strong>{item.name}</strong></small>
             </div>
             )

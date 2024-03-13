@@ -93,6 +93,14 @@ export default function MatchSurveyPage(){
         setTeamNumber(value);
     }
 
+    function handleTextareaLimit(value){
+        // loop back to this w physically stopping the input
+        //for now use component error state
+        // if(value.length <= 255){
+            setComments(value)
+        // }
+    }
+
     return (
         <>
             <MenuButton/>
@@ -142,6 +150,7 @@ export default function MatchSurveyPage(){
                         <Radio value='red' label='Red'/>
                         <Radio value='blue' label='Blue'/>
                 </RadioGroup> */}
+                {/* fancy buttons */}
                     <RadioGroup
                         orientation="horizontal"
                         aria-label="alliance color"
@@ -195,7 +204,7 @@ export default function MatchSurveyPage(){
                             />
                             </Box>
                         ))}
-                        </RadioGroup>
+                    </RadioGroup>
 
                 <FormLabel>Starting Position</FormLabel>
                 {/* <FormHelperText>Positions are from <strong>driver's POV (them facing the field)</strong></FormHelperText> */}
@@ -467,8 +476,15 @@ export default function MatchSurveyPage(){
 
                 <FormControl>
                     <FormLabel>Post-Match Comments</FormLabel>
-                    <FormHelperText>Why disabled, fouls, etc.</FormHelperText>
-                    <Textarea minRows={2} onChange={(e) => setFeedback(e.target.value)} sx={{ maxWidth: 500, minWidth: 300 }}/>
+                    <FormHelperText>Why disabled, any fouls, etc.</FormHelperText>
+                    <Textarea
+                    minRows={2}
+                    onChange={(e) => handleTextareaLimit(e.target.value)}
+                    sx={{ maxWidth: 500, minWidth: 300 }}
+                    inputProps={{maxLength: 5}}
+                    error={comments.length > 255 ? true : false}
+                    />
+                    <FormHelperText>{comments.length}/255</FormHelperText>
                 </FormControl>
 
                 <Button loading={loading} onClick={(e) => {handleValidate(e)}}>Submit Survey</Button>
