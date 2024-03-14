@@ -26,7 +26,7 @@ export default function Home() {
         <Button component="a" href="/pit-survey">
           Pit Survey
         </Button>
-        <Button disabled component="a" href="/match-survey">
+        <Button component="a" href="/match-survey">
           Match Survey
         </Button>
         </div>

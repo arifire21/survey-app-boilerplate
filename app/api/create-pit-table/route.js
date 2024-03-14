@@ -14,7 +14,7 @@ export async function GET(request) {
         can_climb varchar(3),
         help_climb varchar(3),
         score_climb varchar(3),
-        investigate varchar(3),
+        feedback varchar(255),
         name varchar(50)
       );`;
     return NextResponse.json({ result }, { status: 200 });

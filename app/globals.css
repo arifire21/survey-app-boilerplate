@@ -25,9 +25,30 @@ form {
   border: 2px solid #01a0bb;
   border-radius: 10px;
   padding: 1.5rem;
+  margin: 0.5rem;
 }
 
 .pit-results-number {
   text-align: center;
   margin-top: 0;
+}
+
+.red-alliance {
+  color: #ed1c24;
+}
+
+.blue-alliance {
+  color: #0066b3;
+}
+
+.red-backdrop {
+  background-color: #ff000836;
+}
+
+.blue-backdrop {
+  background-color: rgba(68, 95, 116, 0.3);
+}
+
+.result-flex {
+  display: flex;
 }

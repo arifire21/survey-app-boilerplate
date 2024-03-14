@@ -1,5 +1,6 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
+import ThemeRegistry from "./theme-registry";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -12,10 +13,16 @@ export const metadata = {
   }
 };
 
+export const viewport = {
+  colorScheme: 'dark',
+}
+
 export default function RootLayout({ children }) {
   return (
+    <ThemeRegistry  options={{ key: 'joy' }}>
     <html lang="en">
       <body className={inter.className}>{children}</body>
     </html>
+    </ThemeRegistry>
   );
 }

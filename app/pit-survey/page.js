@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { Button, Autocomplete, FormControl, FormLabel, Input, RadioGroup, Radio, List, ListItem, Checkbox, FormHelperText, Snackbar, Textarea } from '@mui/joy'
 import MenuButton from "@/components/menu-button";
-import { SFLAllTeams } from "./sfl-all-teams";
+import { SFLAllTeams } from "../data/sfl-all-teams";
 import { useState, useRef } from "react";
 import styles from './pit.module.css'
 
@@ -20,10 +20,10 @@ export default function PitSurveyPage() {
   const [scoreHeight, setScoreHeight] = useState('')
   const [pickup, setPickup] = useState('')
   const [climb, setClimb] = useState('')
-  const [helpClimb, setHelpClimb] = useState('')
-  const [scoreClimb, setScoreClimb] = useState('')
+  const [helpClimb, setHelpClimb] = useState(null)
+  const [scoreClimb, setScoreClimb] = useState(null)
   const [investigate, setInvestigate] = useState('')
-  const [feedback, setFeedback] = useState('')
+  const [feedback, setFeedback] = useState(null)
   const [name, setName] = useState('')
 
   //form state
@@ -120,12 +120,18 @@ export default function PitSurveyPage() {
 
   function handleValidate(passedEvent){
     if (teamNumber==='' || !drivetrain || !prefPos || !vision
-      || !scoreHeight || !pickup || !climb ||!helpClimb
-      || !scoreClimb || !investigate || !name){
+      || !scoreHeight || !pickup || !climb || !investigate || !name){
     setErrorString('All fields required!')
     setSuccess(false)
     setOpen(true)
     return false;
+    }
+
+    else if(feedback && feedback.length > 255){
+      setErrorString('Feedback must be at most 255 chars.')
+      setSuccess(false)
+      setOpen(true)
+      return false;
     }
 
     handleSubmit(passedEvent)
@@ -135,15 +141,11 @@ export default function PitSurveyPage() {
     setLoading(true)
     e.preventDefault()
 
-    if(investigate === 'no'){
-      setFeedback(null)
-    }
-
     //join into one string
     var allPrefPos = prefPos.join(",");
     console.log(allPrefPos)
  
-    console.log(teamNumber, drivetrain, vision, scoreHeight, pickup, climb, helpClimb, scoreClimb, investigate, name)
+    console.log(teamNumber, drivetrain, vision, scoreHeight, pickup, climb, helpClimb, scoreClimb, investigate, feedback, name)
 
     const data = {
       teamNumber: teamNumber,
@@ -156,6 +158,7 @@ export default function PitSurveyPage() {
       helpClimb: helpClimb,
       scoreClimb: scoreClimb,
       investigate: investigate,
+      feedback: feedback,
       name: name
      }
 
@@ -174,6 +177,7 @@ export default function PitSurveyPage() {
                 break;
             case 500:
                 setErrorString('API error!')
+                console.log(response.text)
                 break;
             default:
                 setErrorString('Error! Please try again.')
@@ -201,9 +205,10 @@ export default function PitSurveyPage() {
           setScoreHeight('')
           setPickup('')
           setClimb('')
-          setHelpClimb('')
-          setScoreClimb('')
+          setHelpClimb(null)
+          setScoreClimb(null)
           setInvestigate('')
+          setFeedback(null)
           setName('')
       }
       setOpen(true)
@@ -225,7 +230,7 @@ export default function PitSurveyPage() {
           <FormLabel>Team Number <sup className='req'>*</sup></FormLabel>
           <Autocomplete
             required
-            type="text"
+            type="number"
             inputMode="numeric"
             options={SFLAllTeams}
             value={teamNumber}
@@ -340,30 +345,34 @@ export default function PitSurveyPage() {
           </RadioGroup>
         </FormControl>
 
-        <FormControl  sx={{ marginBottom: '1rem'}}>
-          <FormLabel>Can the robot help another robot to climb? <sup className='req'>*</sup></FormLabel>
-          <RadioGroup name="radio-buttons-climb-help"
-          value={helpClimb}
-          onChange={(e) => setHelpClimb(e.target.value)}>
-            <Radio value="yes" label="Yes" />
-            <Radio value="no" label="No" />
-          </RadioGroup>
-        </FormControl>
+        { climb === 'yes' && (
+          <>
+          <FormControl  sx={{ marginBottom: '1rem'}}>
+            <FormLabel>Can the robot help another robot to climb?</FormLabel>
+            <RadioGroup name="radio-buttons-climb-help"
+            value={helpClimb}
+            onChange={(e) => setHelpClimb(e.target.value)}>
+              <Radio value="yes" label="Yes" />
+              <Radio value="no" label="No" />
+            </RadioGroup>
+          </FormControl>
 
-        <FormControl  sx={{ marginBottom: '1rem'}}>
-          <FormLabel>Can the robot score while climbing? <sup className='req'>*</sup></FormLabel>
-          <RadioGroup name="radio-buttons-climb-score"
-          value={scoreClimb}
-          onChange={(e) => setScoreClimb(e.target.value)}>
-            <Radio value="yes" label="Yes" />
-            <Radio value="no" label="No" />
-          </RadioGroup>
-        </FormControl>
+          <FormControl  sx={{ marginBottom: '1rem'}}>
+            <FormLabel>Can the robot score while climbing?</FormLabel>
+            <RadioGroup name="radio-buttons-climb-score"
+            value={scoreClimb}
+            onChange={(e) => setScoreClimb(e.target.value)}>
+              <Radio value="yes" label="Yes" />
+              <Radio value="no" label="No" />
+            </RadioGroup>
+          </FormControl>
+          </>
+        )}
 
         <h2>Information</h2>
         <FormControl  sx={{ marginBottom: '1rem'}}>
           <FormLabel>Do you think this robot is worth investigating? <sup className='req'>*</sup></FormLabel>
-          <RadioGroup name="radio-buttons-invesitgate"
+          <RadioGroup name="radio-buttons-investigate"
           value={investigate}
           onChange={(e) => setInvestigate(e.target.value)}>
             <Radio value="yes" label="Yes" />
@@ -373,13 +382,19 @@ export default function PitSurveyPage() {
           {investigate && investigate === 'yes' && 
           <div>
             <FormLabel>Why? Explain your reason.</FormLabel>
-            <Textarea minRows={3} onChange={(e) => setFeedback(e.target.value)} sx={{ width: 500 }}/>
+            <Textarea
+            minRows={3}
+            onChange={(e) => setFeedback(e.target.value)}
+            sx={{ width: 500 }}
+            error={feedback.length > 255 ? true : false}
+            />
+            <FormHelperText>{feedback.length}/255</FormHelperText>
           </div>
           }
         </FormControl>
 
         <FormControl  sx={{ marginBottom: '1rem'}}>
-          <FormLabel>Full Name <sup className='req'>*</sup></FormLabel>
+          <FormLabel>First Name <sup className='req'>*</sup></FormLabel>
           <Input
           required
           onChange={(e) => setName(e.target.value)}
