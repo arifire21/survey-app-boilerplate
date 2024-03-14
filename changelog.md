@@ -19,5 +19,6 @@
 - fix rendering ternary in db-view
 
 ## 2.1.1
-- match survey
-- todo write out
+- match survey form
+- api points made
+- basic match result render with colored backdrop

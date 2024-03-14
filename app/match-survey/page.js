@@ -26,9 +26,10 @@ export default function MatchSurveyPage(){
     //child states
     const [name, setName] = useState('')
     const [matchNumber, setMatchNumber] = useState(0)
+    const [matchType, setMatchType] = useState('')
     const [teamNumber, setTeamNumber] = useState('')
     const [startPos, setStartPos] = useState('')
-    const [color, setColor] = useState('');
+    const [color, setColor] = useState('')
 
     const [autoLine, setLine] = useState('')
     const [autoAmpCount, setAutoAmpCount] = useState(0)
@@ -38,9 +39,9 @@ export default function MatchSurveyPage(){
     const [teleSpeakerCount, setTeleSpeakerCount] = useState(0)
     const [amplifyCount, setAmplifyCount] = useState(0)
 
-    const [endPark, setEndPark] = useState('')
-    const [endClimbSuccess, setClimbSuccess] = useState('')
-    const [endScoreClimb, setScoreClimb] = useState('')
+    const [parkOrClimb, setParkOrClimb] = useState('')
+    const [endClimbSuccess, setClimbSuccess] = useState(null)
+    const [endScoreClimb, setScoreClimb] = useState(null)
     const [endThrow, setEndThrow] = useState('')
     const [endHumanCount, setEndHumanCount] = useState(0)
 
@@ -106,6 +107,115 @@ export default function MatchSurveyPage(){
         // }
     }
 
+    function handleDefenseChange(event, value, activeThumb) {
+        setDefense(value);
+    }
+
+    function handleSpotlightChange(event, value, activeThumb) {
+        setEndHumanCount(value);
+    }
+
+    function handleValidate(passedEvent){
+        if (teamNumber==='' || !name || matchNumber == 0 || !color || !matchType || !startPos){
+        setErrorString('Check required fields!')
+        setSuccess(false)
+        setOpen(true)
+        return false;
+        }
+    
+        else if(comments && comments.length > 255){
+          setErrorString('Comments must be at most 255 chars.')
+          setSuccess(false)
+          setOpen(true)
+          return false;
+        }
+    
+        handleSubmit(passedEvent)
+      }
+    
+      function handleSubmit(e){
+        setLoading(true)
+        e.preventDefault()
+     
+        console.log(name, matchNumber, matchType, teamNumber, color, startPos, autoLine, autoAmpCount, autoSpeakerCount, teleAmpCount, teleSpeakerCount, amplifyCount, parkOrClimb, endClimbSuccess, endScoreClimb, endThrow, endHumanCount, defense, robotDisabled, comments);
+    
+        const data = {
+          name: name,
+          matchNumber: matchNumber,
+          matchType: matchType,
+          teamNumber: teamNumber,
+          color: color,
+          startPos: startPos,
+          autoLine: autoLine,
+          autoAmpCount: autoAmpCount,
+          autoSpeakerCount: autoSpeakerCount,
+          teleAmpCount: teleAmpCount,
+          teleSpeakerCount: teleSpeakerCount,
+          amplifyCount: amplifyCount,
+          parkOrClimb: parkOrClimb,
+          endClimbSuccess: endClimbSuccess,
+          endScoreClimb: endScoreClimb,
+          endThrow: endThrow,
+          endHumanCount: endHumanCount,
+          defense: defense,
+          robotDisabled: robotDisabled,
+          comments: comments
+         }
+    
+        fetch('/api/match-result', {
+          method: 'POST', 
+          body: JSON.stringify(data),
+          headers:{ 'Content-Type': 'application/json' }
+        })
+        .then((response => {
+          if(!response.ok){
+              setSuccess(false)
+    
+              switch (response.status) {
+                case 400:
+                    setErrorString('Server validation error! All fields required.')
+                    break;
+                case 500:
+                    setErrorString('API error!')
+                    console.log(response.text)
+                    break;
+                default:
+                    setErrorString('Error! Please try again.')
+                    break;
+              }
+          } else { //reset
+              setSuccess(true)
+              formRef.current.reset();
+    
+              setName('')
+              setMatchNumber(0)
+              setMatchType('')
+              setTeamNumber('')
+              setColor('')
+              setStartPos('')
+              setLine('')
+              setAutoAmpCount(0)
+              setAutoSpeakerCount(0)
+              setTeleAmpCount(0)
+              setTeleSpeakerCount(0)
+              setAmplifyCount(0)
+              setParkOrClimb('')
+              setClimbSuccess(null)
+              setScoreClimb(null)
+              setEndThrow('')
+              setEndHumanCount(0)
+              setDefense(0)
+              setRobotDisabled('')
+              setComments('')
+          }
+          setOpen(true)
+          setLoading(false)
+      }))
+      .catch(error => {
+          console.log(error.json())
+      })
+      }
+
     return (
         <>
             <MenuButton/>
@@ -113,7 +223,7 @@ export default function MatchSurveyPage(){
             <form ref={formRef}>
                 {/* <h2>Pre-Start</h2> */}
                 <FormControl  sx={{ marginBottom: '1rem'}}>
-                <FormLabel>Name <sup className='req'>*</sup></FormLabel>
+                <FormLabel>First Name <sup className='req'>*</sup></FormLabel>
                 <Input
                 required
                 onChange={(e) => setName(e.target.value)}
@@ -132,6 +242,67 @@ export default function MatchSurveyPage(){
                 />
                 </FormControl>
 
+                <FormLabel>Match Type <sup className='req'>*</sup></FormLabel>
+                {/* fancy buttons */}
+                <RadioGroup
+                    orientation="horizontal"
+                    aria-label="match type"
+                    name="match-type"
+                    variant="outlined"
+                    value={matchType}
+                    onChange={(event) => setMatchType(event.target.value)}
+                    sx={{width: 'fit-content', marginBottom: '1rem'}}
+                    >
+                    {['Qual', 'Playoff', 'Final'].map((item) => (
+                        <Box
+                        key={item}
+                        sx={(theme) => ({
+                            position: 'relative',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            width: 'fit-content',
+                            height: 48,
+                            padding: '1rem',
+                            '&:not([data-first-child])': {
+                            borderLeft: '1px solid',
+                            borderColor: 'divider',
+                            },
+                            [`&[data-first-child] .${radioClasses.action}`]: {
+                            borderTopLeftRadius: `calc(${theme.vars.radius.sm} - 1px)`,
+                            borderBottomLeftRadius: `calc(${theme.vars.radius.sm} - 1px)`,
+                            },
+                            [`&[data-last-child] .${radioClasses.action}`]: {
+                            borderTopRightRadius: `calc(${theme.vars.radius.sm} - 1px)`,
+                            borderBottomRightRadius: `calc(${theme.vars.radius.sm} - 1px)`,
+                            },
+                        })}
+                        >
+                        <Radio
+                            value={item}
+                            disableIcon
+                            overlay
+                            label={
+                            {
+                                Qual: 'Qualification',
+                                Playoff: 'Playoff',
+                                Final: "Final"
+                            }[item]
+                            }
+                            variant={matchType === item ? 'solid' : 'plain'}
+                            slotProps={{
+                            input: { 'aria-label': item,
+                            sx: { backgroundColor: `${matchType} === 'red' : '#000' ? 'transparent'`}
+                            },
+                            action: {sx: { borderRadius: 0, transition: 'none' }},
+                            label: { sx: { lineHeight: 0 } },
+                            radio: { sx: { backgroundColor: `${matchType} === 'red' : '#000' ? 'transparent'`} }
+                            }}
+                        />
+                        </Box>
+                    ))}
+                </RadioGroup>
+
                 <FormControl sx={{ marginBottom: '1rem'}}>
                 <FormLabel>Team Number <sup className='req'>*</sup></FormLabel>
                 <Autocomplete
@@ -146,67 +317,68 @@ export default function MatchSurveyPage(){
                 />
                 </FormControl>
 
-                <FormLabel>Alliance</FormLabel>
+                <FormLabel>Alliance <sup className='req'>*</sup></FormLabel>
                 {/* fancy buttons */}
-                    <RadioGroup
-                        orientation="horizontal"
-                        aria-label="alliance color"
-                        name="alliance-color"
-                        variant="outlined"
-                        value={color}
-                        onChange={(event) => setColor(event.target.value)}
-                        sx={{width: 'fit-content', marginBottom: '1rem'}}
+                <RadioGroup
+                    orientation="horizontal"
+                    aria-label="alliance color"
+                    name="alliance-color"
+                    variant="outlined"
+                    value={color}
+                    onChange={(event) => setColor(event.target.value)}
+                    sx={{width: 'fit-content', marginBottom: '1rem'}}
+                    >
+                    {['red', 'blue'].map((item) => (
+                        <Box
+                        key={item}
+                        sx={(theme) => ({
+                            position: 'relative',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            width: 'fit-content',
+                            height: 48,
+                            padding: '1rem',
+                            '&:not([data-first-child])': {
+                            borderLeft: '1px solid',
+                            borderColor: 'divider',
+                            },
+                            [`&[data-first-child] .${radioClasses.action}`]: {
+                            borderTopLeftRadius: `calc(${theme.vars.radius.sm} - 1px)`,
+                            borderBottomLeftRadius: `calc(${theme.vars.radius.sm} - 1px)`,
+                            },
+                            [`&[data-last-child] .${radioClasses.action}`]: {
+                            borderTopRightRadius: `calc(${theme.vars.radius.sm} - 1px)`,
+                            borderBottomRightRadius: `calc(${theme.vars.radius.sm} - 1px)`,
+                            },
+                        })}
                         >
-                        {['red', 'blue'].map((item) => (
-                            <Box
-                            key={item}
-                            sx={(theme) => ({
-                                position: 'relative',
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                width: 48,
-                                height: 48,
-                                '&:not([data-first-child])': {
-                                borderLeft: '1px solid',
-                                borderColor: 'divider',
-                                },
-                                [`&[data-first-child] .${radioClasses.action}`]: {
-                                borderTopLeftRadius: `calc(${theme.vars.radius.sm} - 1px)`,
-                                borderBottomLeftRadius: `calc(${theme.vars.radius.sm} - 1px)`,
-                                },
-                                [`&[data-last-child] .${radioClasses.action}`]: {
-                                borderTopRightRadius: `calc(${theme.vars.radius.sm} - 1px)`,
-                                borderBottomRightRadius: `calc(${theme.vars.radius.sm} - 1px)`,
-                                },
-                            })}
-                            >
-                            <Radio
-                                value={item}
-                                disableIcon
-                                overlay
-                                label={
-                                {
-                                    red: 'Red',
-                                    blue: 'Blue'
-                                }[item]
-                                }
-                                variant={color === item ? 'solid' : 'plain'}
-                                slotProps={{
-                                input: { 'aria-label': item,
-                                sx: { backgroundColor: `${color} === 'red' : '#000' ? 'transparent'`}
-                                },
-                                action: {sx: { borderRadius: 0, transition: 'none' }},
-                                label: { sx: { lineHeight: 0 } },
-                                radio: { sx: { backgroundColor: `${color} === 'red' : '#000' ? 'transparent'`} }
-                                }}
-                            />
-                            </Box>
-                        ))}
-                    </RadioGroup>
+                        <Radio
+                            value={item}
+                            disableIcon
+                            overlay
+                            label={
+                            {
+                                red: 'Red',
+                                blue: 'Blue'
+                            }[item]
+                            }
+                            variant={color === item ? 'solid' : 'plain'}
+                            slotProps={{
+                            input: { 'aria-label': item,
+                            sx: { backgroundColor: `${color} === 'red' : '#000' ? 'transparent'`}
+                            },
+                            action: {sx: { borderRadius: 0, transition: 'none' }},
+                            label: { sx: { lineHeight: 0 } },
+                            radio: { sx: { backgroundColor: `${color} === 'red' : '#000' ? 'transparent'`} }
+                            }}
+                        />
+                        </Box>
+                    ))}
+                </RadioGroup>
 
                 <div className={styles.startPosLabel}>
-                    <FormLabel>Starting Position</FormLabel>
+                    <FormLabel>Starting Position <sup className='req'>*</sup></FormLabel>
                     <Button
                         variant='soft'
                         size='sm'
@@ -387,15 +559,15 @@ export default function MatchSurveyPage(){
                     <FormLabel>Did robot park at the stage or attempt to climb?</FormLabel>
                     <RadioGroup
                     name='match-climb-park'
-                    value={endPark}
-                    onChange={(e) => {setEndPark(e.target.value), console.log(endPark)}}
+                    value={parkOrClimb}
+                    onChange={(e) => {setParkOrClimb(e.target.value), console.log(parkOrClimb)}}
                     >
                         <Radio value='park' label='Park'/>
                         <Radio value='climb' label='Climb'/>
                     </RadioGroup>
                 </FormControl>
 
-                {endPark === 'climb' && (
+                {parkOrClimb === 'climb' && (
                     <>
                     <FormControl sx={{ marginBottom: '1rem'}}>
                         <FormLabel>Did robot <strong>successfully climb</strong>?</FormLabel>
@@ -441,13 +613,11 @@ export default function MatchSurveyPage(){
                     <Slider
                         aria-label="HP-note-score"
                         defaultValue={0}
-                        // getAriaValueText={endHumanCount}
                         step={1}
-                        // valueLabelDisplay="auto"
                         marks={humanPlayerMarks}
                         min={0}
                         max={3}
-                        onChange={(e) => {setEndHumanCount(e.target.value)}}
+                        onChange={handleSpotlightChange}
                         sx={{ maxWidth: 500, minWidth: 300 }}
                     />
                   </>
@@ -471,13 +641,11 @@ export default function MatchSurveyPage(){
                 <Slider
                     aria-label="defense"
                     defaultValue={0}
-                    // getAriaValueText={endHumanCount}
                     step={1}
-                    // valueLabelDisplay="auto"
                     marks={defenseMarks}
                     min={0}
                     max={5}
-                    onChange={(e) => {setDefense(e.target.value)}}
+                    onChange={handleDefenseChange}
                     sx={{ maxWidth: 500, minWidth: 300 }}
                 />
                 </FormControl>

@@ -205,10 +205,10 @@ export default function PitSurveyPage() {
           setScoreHeight('')
           setPickup('')
           setClimb('')
-          setHelpClimb('')
-          setScoreClimb('')
+          setHelpClimb(null)
+          setScoreClimb(null)
           setInvestigate('')
-          setFeedback('')
+          setFeedback(null)
           setName('')
       }
       setOpen(true)
@@ -394,7 +394,7 @@ export default function PitSurveyPage() {
         </FormControl>
 
         <FormControl  sx={{ marginBottom: '1rem'}}>
-          <FormLabel>Full Name <sup className='req'>*</sup></FormLabel>
+          <FormLabel>First Name <sup className='req'>*</sup></FormLabel>
           <Input
           required
           onChange={(e) => setName(e.target.value)}

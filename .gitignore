@@ -37,3 +37,6 @@ next-env.d.ts
 
 collection.db
 .vercel
+
+app/api/create-match-table
+app/api/create-pit-table
