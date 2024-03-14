@@ -1,10 +1,13 @@
 'use client'
 // import StartPosSelector from '@/components/start-pos-selector'
-import { Box, Button, Autocomplete, FormControl, FormLabel, Input, RadioGroup, Radio, radioClasses, FormHelperText, Snackbar, Textarea, Slider } from '@mui/joy'
-import MenuButton from '@/components/menu-button'
+import { Box, Button, Autocomplete, FormControl, FormLabel, Input, RadioGroup, Radio, radioClasses, FormHelperText, Snackbar, Textarea, Slider, Modal, ModalDialog, ModalClose } from '@mui/joy'
+import Image from 'next/image'
 import { useState, useRef } from 'react'
+import MenuButton from '@/components/menu-button'
 // import CounterButton from '@/components/counter-button'
 import styles from './match.module.css'
+
+import Guide from '../../public/images/driver-station-wall.png'
 
 import { SFLAllTeams } from "../data/sfl-all-teams";
 
@@ -17,6 +20,8 @@ export default function MatchSurveyPage(){
     const [open, setOpen] = useState(false)
     const [errorString, setErrorString] =useState('')
     const [submitSuccess, setSuccess] = useState(false)
+
+    const [modalOpen, setModalOpen] = useState(false)
 
     //child states
     const [name, setName] = useState('')
@@ -142,14 +147,6 @@ export default function MatchSurveyPage(){
                 </FormControl>
 
                 <FormLabel>Alliance</FormLabel>
-                {/* <RadioGroup
-                    name='match-color'
-                    value={color}
-                    onChange={(e) => {setColor(e.target.value)}}
-                    >
-                        <Radio value='red' label='Red'/>
-                        <Radio value='blue' label='Blue'/>
-                </RadioGroup> */}
                 {/* fancy buttons */}
                     <RadioGroup
                         orientation="horizontal"
@@ -196,7 +193,9 @@ export default function MatchSurveyPage(){
                                 }
                                 variant={color === item ? 'solid' : 'plain'}
                                 slotProps={{
-                                input: { 'aria-label': item },
+                                input: { 'aria-label': item,
+                                sx: { backgroundColor: `${color} === 'red' : '#000' ? 'transparent'`}
+                                },
                                 action: {sx: { borderRadius: 0, transition: 'none' }},
                                 label: { sx: { lineHeight: 0 } },
                                 radio: { sx: { backgroundColor: `${color} === 'red' : '#000' ? 'transparent'`} }
@@ -206,7 +205,15 @@ export default function MatchSurveyPage(){
                         ))}
                     </RadioGroup>
 
-                <FormLabel>Starting Position</FormLabel>
+                <div className={styles.startPosLabel}>
+                    <FormLabel>Starting Position</FormLabel>
+                    <Button
+                        variant='soft'
+                        size='sm'
+                        onClick={() => setModalOpen(true)}
+                        sx={{ml:1}}
+                    >View Guide</Button>
+                </div>
                 {/* <FormHelperText>Positions are from <strong>driver's POV (them facing the field)</strong></FormHelperText> */}
                 <FormControl sx={{marginBottom: '1rem'}}>
                 { color === 'blue' && (
@@ -237,6 +244,7 @@ export default function MatchSurveyPage(){
                         <Radio value='Against R3 Wall' label='Against R3 Wall'/>
                     </RadioGroup>
                 )}
+                { color === '' && (<p>Select an alliance!</p>)}
                 </FormControl>
 
                 <h2>Auto</h2>
@@ -481,7 +489,6 @@ export default function MatchSurveyPage(){
                     minRows={2}
                     onChange={(e) => handleTextareaLimit(e.target.value)}
                     sx={{ maxWidth: 500, minWidth: 300 }}
-                    inputProps={{maxLength: 5}}
                     error={comments.length > 255 ? true : false}
                     />
                     <FormHelperText>{comments.length}/255</FormHelperText>
@@ -502,6 +509,24 @@ export default function MatchSurveyPage(){
             `Submitted!`
             : `${errorString}`}
             </Snackbar>
+
+            <Modal
+                open={modalOpen}
+                onClose={() => setModalOpen(false)}
+                aria-labelledby="driver-station-title"
+                aria-describedby="driver-station-image"
+                sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+            >
+                <ModalDialog>
+                <ModalClose variant="plain"/>
+                <p id='driver-station-title' style={{margin: 0}}>Driver Station Positions</p>
+                <div style={{position: 'relative', maxWidth:'50vw', maxHeight:'50vh'}}>
+                {/* <div style={{maxWidth: '100%', maxHeight: '100%', position:'relative'}}> */}
+                    <Image id='driver-station-image' src={Guide} alt='driver station wall figure' fill/>
+                    <h3>Credit: <cite>FIRST FRC 2024 Game Manual</cite></h3>
+                </div>
+                </ModalDialog>
+            </Modal>
         </>
     )
 }

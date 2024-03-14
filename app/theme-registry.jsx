@@ -35,6 +35,13 @@ const theme = extendTheme({
           borderRadius: '10px'
         }
       }
+    },
+    JoyFormLabel: {
+      styleOverrides: {
+        root: {
+          fontSize: '16px'
+        }
+      }
     }
   }
 })
