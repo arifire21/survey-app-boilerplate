@@ -1,7 +1,7 @@
 # Pre-Release
 ## v0.1.0
-- porting over code form defunct PWA
--Next-ifying it, with statefuls
+- porting over code from defunct PWA
+- Next-ifying it, with statefuls
 
 # SFL
 ## v1.0.0
@@ -22,3 +22,4 @@
 - match survey form
 - api points made
 - basic match result render with colored backdrop
+- fix autocomplete and match number not using numeric keyboard
