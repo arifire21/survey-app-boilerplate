@@ -4,6 +4,7 @@ import { useServerInsertedHTML } from 'next/navigation';
 import { CacheProvider } from '@emotion/react';
 import { CssVarsProvider, extendTheme } from '@mui/joy/styles';
 import CssBaseline from '@mui/joy/CssBaseline';
+import GlobalStyles from '@mui/joy/GlobalStyles';
 import React from 'react';
 
 const theme = extendTheme({
@@ -11,7 +12,7 @@ const theme = extendTheme({
     dark: {
       palette: {
         background: {
-          body: '#121212'
+          body: '#202020'
         },
         primary: {
           50: "#dff5fa",
@@ -107,7 +108,14 @@ export default function ThemeRegistry(props) {
     <CacheProvider value={cache}>
       <CssVarsProvider theme={theme} defaultMode="dark">
         <CssBaseline />
-        {children}
+        <GlobalStyles
+          styles={{
+            body: {
+              padding: '1rem'
+            }
+          }}
+          />
+            {children}
       </CssVarsProvider>
     </CacheProvider>
   );
