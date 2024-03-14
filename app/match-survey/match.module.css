@@ -55,9 +55,29 @@
     display: flex;
 }
 
+.modalStuff {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* transition: all 0.5s fade; */
+}
 
+.modalImgContainer {
+    position: relative;
+    height: 100%;
+}
 
+.driverStationTitle {
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-left: 1rem;
+}
 
+.driverStationImage {
+    /* object-fit: contain; */
+    /* object-position: center; */
+    border-radius: 10px;
+}
 
 .selectorContainer{
     position: relative;

@@ -683,16 +683,16 @@ export default function MatchSurveyPage(){
                 onClose={() => setModalOpen(false)}
                 aria-labelledby="driver-station-title"
                 aria-describedby="driver-station-image"
-                sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                className={styles.modalStuff}
+                // sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', maxWidth:'50vw', maxHeight:'50vh', trans}}
             >
-                <ModalDialog>
-                <ModalClose variant="plain"/>
-                <p id='driver-station-title' style={{margin: 0}}>Driver Station Positions</p>
-                <div style={{position: 'relative', maxWidth:'50vw', maxHeight:'50vh'}}>
-                {/* <div style={{maxWidth: '100%', maxHeight: '100%', position:'relative'}}> */}
-                    <Image id='driver-station-image' src={Guide} alt='driver station wall figure' fill/>
-                    <h3>Credit: <cite>FIRST FRC 2024 Game Manual</cite></h3>
+                <ModalDialog layout='fullscreen-padded' sx={{ transition: `opacity $500ms ease-in-out`,}}>
+                <ModalClose variant="outlined"/>
+                <p id='driver-station-title' className={styles.driverStationTitle}>Driver Station Positions</p>
+                <div className={styles.modalImgContainer}>
+                    <Image id='driver-station-image' className={styles.driverStationImage} src={Guide} alt='driver station wall figure' fill/>
                 </div>
+                <small>Credit: <cite>FIRST FRC 2024 Game Manual</cite></small>
                 </ModalDialog>
             </Modal>
         </>

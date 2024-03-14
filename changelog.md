@@ -18,8 +18,11 @@
 - fix Autocomplete value not clearing on submit by using `value`
 - fix rendering ternary in db-view
 
-## 2.1.1
+## v2.0.0
 - match survey form
 - api points made
 - basic match result render with colored backdrop
-- fix autocomplete and match number not using numeric keyboard
+- fix autocomplete and match number not using numeric keyboard (#4)
+
+## v2.0.1
+- fix [#7](https://github.com/arifire21/744-survey/issues/7)

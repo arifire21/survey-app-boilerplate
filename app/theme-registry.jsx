@@ -35,14 +35,26 @@ const theme = extendTheme({
           borderRadius: '10px'
         }
       }
-    },
+    }, //end JoyButton
     JoyFormLabel: {
       styleOverrides: {
         root: {
           fontSize: '16px'
         }
       }
-    }
+    }, //end JoyFormLabel
+    JoyModalDialog: {
+      defaultProps: { layout: 'fullscreen-padded' },
+      styleOverrides: {
+        root: ({ ownerState }) => ({
+          ...(ownerState.layout === 'fullscreen-padded' && {
+              width: '90vw',
+              height: '50vh',
+              padding: '1rem 0.55rem'
+          }),
+        }),
+      }
+    } //end JoyModalDialog
   }
 })
 
