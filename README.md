@@ -14,7 +14,7 @@ A  web application made to streamline both survey types used during competitions
 TBD
 
 ## More to Come!
-- match survey (to be worked on during build season proper)
+- filtering optiond for pit and match data entries
 - notification of Team 744's match results
 
 ## Changelog
@@ -29,3 +29,7 @@ For changelog, click [here](https://github.com/arifire21/744-survey/blob/trunk/c
   - make branches per each new major change proposed (match survey, new api points, etc)
 ### Issues
   - log issues for bugs or suggestions/enhancements, tag appropriately
+  - close by attaching to PR's or mentioning #[X] in commit message
+### Documentation
+  - TBD
+  - will include variables, functions, components, and APIs
