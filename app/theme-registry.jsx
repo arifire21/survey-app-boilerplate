@@ -40,7 +40,8 @@ const theme = extendTheme({
     JoyFormLabel: {
       styleOverrides: {
         root: {
-          fontSize: '16px'
+          fontSize: '16px',
+          flexWrap: 'nowrap'  //stop required stars from shifting to next line
         }
       }
     }, //end JoyFormLabel

@@ -45,6 +45,7 @@ export default function MatchSurveyPage(){
     const [endThrow, setEndThrow] = useState('')
     const [endHumanCount, setEndHumanCount] = useState(0)
 
+    const [attemptDefense, setAttemptDefense] = useState('')
     const [defense, setDefense] = useState(0)
     const [robotDisabled, setRobotDisabled] = useState('')
     const [comments, setComments] = useState('')
@@ -235,7 +236,7 @@ export default function MatchSurveyPage(){
                 <FormLabel>Match Number <sup className='req'>*</sup></FormLabel>
                 <Input
                 type='number'
-                inputMode='numeric'
+                inputMode='tel'
                 required
                 onChange={(e) => setMatchNumber(e.target.value)}
                 sx={{ width: 300 }}
@@ -282,7 +283,7 @@ export default function MatchSurveyPage(){
                             value={item}
                             disableIcon
                             overlay
-                            label={
+                            label={     //values capitalizd for data display 
                             {
                                 Qual: 'Qualification',
                                 Playoff: 'Playoff',
@@ -308,7 +309,7 @@ export default function MatchSurveyPage(){
                 <Autocomplete
                     required
                     type="number"
-                    inputMode="numeric"
+                    inputMode="tel"
                     options={SFLAllTeams}
                     value={teamNumber}
                     onChange={handleInputChange}
@@ -380,13 +381,12 @@ export default function MatchSurveyPage(){
                 <div className={styles.startPosLabel}>
                     <FormLabel>Starting Position <sup className='req'>*</sup></FormLabel>
                     <Button
-                        variant='soft'
+                        variant='outlined'
                         size='sm'
                         onClick={() => setModalOpen(true)}
                         sx={{ml:1}}
                     >View Guide</Button>
                 </div>
-                {/* <FormHelperText>Positions are from <strong>driver's POV (them facing the field)</strong></FormHelperText> */}
                 <FormControl sx={{marginBottom: '1rem'}}>
                 { color === 'blue' && (
                     <RadioGroup
@@ -560,8 +560,9 @@ export default function MatchSurveyPage(){
                     <RadioGroup
                     name='match-climb-park'
                     value={parkOrClimb}
-                    onChange={(e) => {setParkOrClimb(e.target.value), console.log(parkOrClimb)}}
+                    onChange={(e) => setParkOrClimb(e.target.value)}
                     >
+                        <Radio value='N/A' label='N/A, did not reach stage'/>
                         <Radio value='park' label='Park'/>
                         <Radio value='climb' label='Climb'/>
                     </RadioGroup>
@@ -582,7 +583,7 @@ export default function MatchSurveyPage(){
                     </FormControl>
 
                     <FormControl sx={{ marginBottom: '1rem'}}>
-                        <FormLabel>Did robot score in stage?</FormLabel>
+                        <FormLabel>Did robot score in Stage Trap?</FormLabel>
                         <RadioGroup
                         name='match-climb-score'
                         value={endScoreClimb}
@@ -612,7 +613,7 @@ export default function MatchSurveyPage(){
                     <FormLabel>How many scored?</FormLabel>
                     <Slider
                         aria-label="HP-note-score"
-                        defaultValue={0}
+                        value={endHumanCount}
                         step={1}
                         marks={humanPlayerMarks}
                         min={0}
@@ -625,9 +626,9 @@ export default function MatchSurveyPage(){
 
                 <h2>Information</h2>
                 <FormControl sx={{ marginBottom: '1rem'}}>
-                    <FormLabel>Did robot lose comms at any point (or was disabled)?</FormLabel>
+                    <FormLabel>Did robot lose comms at any point (or get disabled)?</FormLabel>
                     <RadioGroup
-                    name='match-disabled'
+                    name='attempt-defense'
                     value={robotDisabled}
                     onChange={(e) => {setRobotDisabled(e.target.value)}}
                     >
@@ -636,11 +637,25 @@ export default function MatchSurveyPage(){
                     </RadioGroup>
                 </FormControl>
 
+                {attemptDefense === 'yes' && (
+                    <FormControl sx={{ marginBottom: '1rem'}}>
+                        <FormLabel>Did robot attempt to play defense?</FormLabel>
+                        <RadioGroup
+                        name='match-disabled'
+                        value={attemptDefense}
+                        onChange={(e) => {setDefenseAttempt(e.target.value)}}
+                        >
+                            <Radio value='yes' label='Yes'/>
+                            <Radio value='no' label='No'/>
+                        </RadioGroup>
+                    </FormControl>
+                )}
+
                 <FormControl sx={{ marginBottom: '3rem'}}>
                 <FormLabel>Rate effective defense:</FormLabel>
                 <Slider
                     aria-label="defense"
-                    defaultValue={0}
+                    value={defense}
                     step={1}
                     marks={defenseMarks}
                     min={0}
@@ -652,7 +667,7 @@ export default function MatchSurveyPage(){
 
                 <FormControl>
                     <FormLabel>Post-Match Comments</FormLabel>
-                    <FormHelperText>Why disabled, any fouls, etc.</FormHelperText>
+                    <FormHelperText>Why was disabled, any fouls, etc.</FormHelperText>
                     <Textarea
                     minRows={2}
                     onChange={(e) => handleTextareaLimit(e.target.value)}

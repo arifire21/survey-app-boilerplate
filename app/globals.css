@@ -52,3 +52,11 @@ form {
 .result-flex {
   display: flex;
 }
+
+/* cannot add module style to created element so */
+.preview-img {
+  /* width: fit-content !important; */
+  height: 100%;
+  width: 100%;
+  border-radius: 5px;
+}

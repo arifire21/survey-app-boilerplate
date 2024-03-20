@@ -33,6 +33,15 @@
     object-fit: contain;
 }
 
+/* cannot add module style to created element so */
+/* wrapper for image */
+.imgPreview {
+    width: fit-content !important;
+    /* scale: 0.6; */
+    height: 200px;
+
+}
+
 /* ipad sizing, intended device to use */
 @media (max-width:810px) {
     .radioContainer {

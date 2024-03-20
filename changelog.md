@@ -24,5 +24,16 @@
 - basic match result render with colored backdrop
 - fix autocomplete and match number not using numeric keyboard (#4)
 
-## v2.0.1
+## v2.0.1 (MVP State)
 - fix [#7](https://github.com/arifire21/744-survey/issues/7)
+
+## v2.1.1
+ - fix [#5](https://github.com/arifire21/744-survey/issues/5)
+ - added extra conditionals/questions to forms for clarity
+ - changed `numeric` inputMode to `tel` to use more optimized number keyboard
+ - split pit and match views into two pages
+ - fix [#10](https://github.com/arifire21/744-survey/issues/10)
+ - added basic file / image capture input into pit form
+ - added preview image thumbnails
+ - integrating Vercel Blob Server Uploads
+ - added SERIAL PRIMARY KEY `id` field to both tables

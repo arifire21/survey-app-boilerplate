@@ -6,12 +6,17 @@ import Logo from "../public/images/FIS_CRESCENDO_Logo_Horizontal_RGB.png";
 export default function Home() {
   return (
     <>
-    <div className={styles.flexHeader}>
-      <p>Version: <span id="version-number" style={{color: '#01a0bb'}}>2.0.1</span></p>
-      <Button component="a" href="/db-view">
-        View Data &#8594;
-      </Button>
-    </div>
+    <header className={styles.flexHeader}>
+      <p>Version: <span id="version-number" style={{color: '#01a0bb'}}>2.1.1</span></p>
+      <nav style={{display:'flex', flexDirection: 'column'}}>
+        <Button component="a" href="/pit-results" sx={{mb:'0.5rem'}}>
+          View Pit Results &#8594;
+        </Button>
+        <Button component="a" href="/match-results" sx={{mt:'0.5rem'}}>
+          View Match Results &#8594;
+        </Button>
+      </nav>
+    </header>
 
     <div id="game-logo-container">
     {/* <img src="./FIS_CRESCENDO_Logo_Horizontal_RGB.png" alt="FIRST Crescendo Logo" width="100%" height="100%"/> */}
@@ -22,14 +27,14 @@ export default function Home() {
 
     <div className={styles.menuContainer}>
         <h1>Select Survey Mode</h1>
-        <div className={styles.buttonContainer}>
+        <nav className={styles.buttonContainer}>
         <Button component="a" href="/pit-survey">
           Pit Survey
         </Button>
         <Button component="a" href="/match-survey">
           Match Survey
         </Button>
-        </div>
+        </nav>
     </div>
     </>
   );
