@@ -9,7 +9,7 @@ import styles from './match.module.css'
 
 import Guide from '../../public/images/driver-station-wall.png'
 
-import { SFLAllTeams } from "../data/sfl-all-teams";
+import { orlandoAllTeams } from "../data/orlando-all-teams";
 
 export default function MatchSurveyPage(){
     //form state
@@ -174,7 +174,7 @@ export default function MatchSurveyPage(){
     
               switch (response.status) {
                 case 400:
-                    setErrorString('Server validation error! All fields required.')
+                    setErrorString('Server validation error! Some fields required.')
                     break;
                 case 500:
                     setErrorString('API error!')
@@ -236,10 +236,10 @@ export default function MatchSurveyPage(){
                 <FormLabel>Match Number <sup className='req'>*</sup></FormLabel>
                 <Input
                 type='number'
-                inputMode='tel'
                 required
                 onChange={(e) => setMatchNumber(e.target.value)}
                 sx={{ width: 300 }}
+                slotProps={{input: { inputMode:'decimal' }}}
                 />
                 </FormControl>
 
@@ -254,7 +254,7 @@ export default function MatchSurveyPage(){
                     onChange={(event) => setMatchType(event.target.value)}
                     sx={{width: 'fit-content', marginBottom: '1rem'}}
                     >
-                    {['Qual', 'Playoff', 'Final'].map((item) => (
+                    {['Practice', 'Qual', 'Playoff', 'Final'].map((item) => (
                         <Box
                         key={item}
                         sx={(theme) => ({
@@ -285,19 +285,18 @@ export default function MatchSurveyPage(){
                             overlay
                             label={     //values capitalizd for data display 
                             {
+                                Practice: 'Practice',
                                 Qual: 'Qualification',
                                 Playoff: 'Playoff',
-                                Final: "Final"
+                                Final: 'Final'
                             }[item]
                             }
                             variant={matchType === item ? 'solid' : 'plain'}
                             slotProps={{
                             input: { 'aria-label': item,
-                            sx: { backgroundColor: `${matchType} === 'red' : '#000' ? 'transparent'`}
                             },
                             action: {sx: { borderRadius: 0, transition: 'none' }},
                             label: { sx: { lineHeight: 0 } },
-                            radio: { sx: { backgroundColor: `${matchType} === 'red' : '#000' ? 'transparent'`} }
                             }}
                         />
                         </Box>
@@ -309,12 +308,12 @@ export default function MatchSurveyPage(){
                 <Autocomplete
                     required
                     type="number"
-                    inputMode="tel"
-                    options={SFLAllTeams}
+                    options={orlandoAllTeams}
                     value={teamNumber}
                     onChange={handleInputChange}
                     clearOnBlur
                     sx={{ width: 300 }}
+                    slotProps={{input: { inputMode:'decimal' }}}
                 />
                 </FormControl>
 
