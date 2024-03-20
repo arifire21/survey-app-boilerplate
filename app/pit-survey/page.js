@@ -23,7 +23,7 @@ export default function PitSurveyPage() {
   const [helpClimb, setHelpClimb] = useState(null)
   const [scoreClimb, setScoreClimb] = useState(null)
   const [investigate, setInvestigate] = useState('')
-  const [feedback, setFeedback] = useState(null)
+  const [feedback, setFeedback] = useState('')
   const [name, setName] = useState('')
 
   //form state
@@ -47,6 +47,7 @@ export default function PitSurveyPage() {
   const [open, setOpen] = useState(false)
   const [errorString, setErrorString] =useState('')
   const [submitSuccess, setSuccess] = useState(false)
+  const [color, setColor] = useState('neutral')
 
   function handleCheckbox(value, checked){
     console.log(`${value}, ${checked}`)
@@ -122,6 +123,7 @@ export default function PitSurveyPage() {
     if (teamNumber==='' || !drivetrain || !prefPos || !vision
       || !scoreHeight || !pickup || !climb || !investigate || !name){
     setErrorString('All fields required!')
+    setColor('danger')
     setSuccess(false)
     setOpen(true)
     return false;
@@ -129,6 +131,7 @@ export default function PitSurveyPage() {
 
     else if(feedback && feedback.length > 255){
       setErrorString('Feedback must be at most 255 chars.')
+      setColor('danger')
       setSuccess(false)
       setOpen(true)
       return false;
@@ -137,7 +140,7 @@ export default function PitSurveyPage() {
     handleSubmit(passedEvent)
   }
 
-  function handleSubmit(e){
+  const handleSubmit = async (e) => {
     setLoading(true)
     e.preventDefault()
 
@@ -170,6 +173,7 @@ export default function PitSurveyPage() {
     .then((response => {
       if(!response.ok){
           setSuccess(false)
+          setColor('danger')
 
           switch (response.status) {
             case 400:
@@ -185,6 +189,8 @@ export default function PitSurveyPage() {
           }
       } else { //reset
           setSuccess(true)
+          setColor('success')
+
           formRef.current.reset();
 
           setTeamNumber('')
@@ -208,16 +214,18 @@ export default function PitSurveyPage() {
           setHelpClimb(null)
           setScoreClimb(null)
           setInvestigate('')
-          setFeedback(null)
+          setFeedback('')
           setName('')
       }
       setOpen(true)
       setLoading(false)
   }))
   .catch(error => {
-      console.log(error.json())
+      console.log(error)
   })
-  }
+
+  // console.log('outside submit')
+}
 
   return (
     <>
@@ -231,7 +239,7 @@ export default function PitSurveyPage() {
           <Autocomplete
             required
             type="number"
-            inputMode="numeric"
+            inputMode="tel"
             options={SFLAllTeams}
             value={teamNumber}
             onChange={handleInputChange}
@@ -407,8 +415,8 @@ export default function PitSurveyPage() {
 
         <Snackbar
         variant="solid"
-        color={submitSuccess ? 'success' : 'danger'}
-        autoHideDuration={submitSuccess ? 3500 : 5000}
+        color={color}
+        autoHideDuration={submitSuccess ? 3500 : 5000 ?? 3500}
         open={open}
         onClose={() => setOpen(false)}
         // onUnmount={handleReset}
@@ -418,7 +426,5 @@ export default function PitSurveyPage() {
         : `${errorString}`}
         </Snackbar>
     </>
-
-
   )
 }
