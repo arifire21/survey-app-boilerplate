@@ -349,7 +349,7 @@ async function uploadImages(){
     setSuccess(false)
     setOpen(true)
 
-    const response = await fetch(
+    await fetch(
       `/api/upload-pit-images?filename_front=${front.name}&filename_side=${side.name}`,
       {
         method: 'POST',
@@ -362,11 +362,12 @@ async function uploadImages(){
         setErrorString("Error uploading images!")
       } else {
         const newBlob = (response.json()) // as PutBlobResult;
-        console.log(newBlob)
 
         setBlob(newBlob);
       }
-    }));
+    })).catch(error => {
+      console.log(error)
+  });
   }
 }
 
