@@ -50,3 +50,4 @@
 
 ## v3.0.1
 - getting team numbers from posted array now works correctly (via useState)
+- hotfix: match number cannot be 0, added error message
