@@ -117,8 +117,15 @@ export default function MatchSurveyPage(){
     }
 
     function handleValidate(passedEvent){
-        if (teamNumber==='' || !name || matchNumber == 0 || !color || !matchType || !startPos){
+        if (teamNumber==='' || !name || !color || !matchType || !startPos){
         setErrorString('Check required fields!')
+        setSuccess(false)
+        setOpen(true)
+        return false;
+        }
+
+        else if(matchNumber == 0){
+        setErrorString('Match number cannot be 0!')
         setSuccess(false)
         setOpen(true)
         return false;
