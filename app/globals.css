@@ -21,7 +21,7 @@ form {
   justify-content: space-around;
 }
 
-.item-container {
+.item-container, .filtered-item-container {
   border: 2px solid #01a0bb;
   border-radius: 10px;
   padding: 1.5rem;
@@ -51,6 +51,31 @@ form {
 
 .result-flex {
   display: flex;
+}
+
+.filter-container {
+  padding: 1rem;
+  border: 1px solid var(--joy-palette-neutral-300, #CDD7E1);
+  border-radius: 10px;
+  margin-bottom: 2rem;
+}
+
+.filter-label {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.extended-radio-option {
+  display: flex;
+  align-items: center;
+}
+
+.blue {
+  color: #01a0bb;
+}
+
+.both {
+  color: darkred
 }
 
 /* cannot add module style to created element so */

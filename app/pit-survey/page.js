@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { Button, Autocomplete, FormControl, FormLabel, Input, RadioGroup, Radio, List, ListItem, Checkbox, FormHelperText, Snackbar, Textarea } from '@mui/joy'
 import MenuButton from "@/components/menu-button";
-import { SFLAllTeams } from "../data/sfl-all-teams";
+import { orlandoAllTeams } from "../data/orlando-all-teams";
 import { useState, useRef } from "react";
 import styles from './pit.module.css'
 
@@ -146,9 +146,8 @@ export default function PitSurveyPage() {
 
     //join into one string
     var allPrefPos = prefPos.join(",");
-    console.log(allPrefPos)
  
-    console.log(teamNumber, drivetrain, vision, scoreHeight, pickup, climb, helpClimb, scoreClimb, investigate, feedback, name)
+    console.log(teamNumber, drivetrain, allPrefPos, vision, scoreHeight, pickup, climb, helpClimb, scoreClimb, investigate, feedback, name)
 
     const data = {
       teamNumber: teamNumber,
@@ -239,12 +238,17 @@ export default function PitSurveyPage() {
           <Autocomplete
             required
             type="number"
-            inputMode="tel"
-            options={SFLAllTeams}
+            placeholder="start typing..."
+            options={orlandoAllTeams}
             value={teamNumber}
             onChange={handleInputChange}
             clearOnBlur
+            isOptionEqualToValue={(option, value) =>{
+              if(option === '' || value === '') return true;
+              else return true;
+            }} 
             sx={{ width: 300 }}
+            slotProps={{input: { inputMode:'decimal' }}}
           />
         </FormControl>
 
@@ -301,7 +305,7 @@ export default function PitSurveyPage() {
                 <Checkbox label="Left" value='left' checked={leftChecked} onChange={(e) => {setLeft(e.target.checked), handleCheckbox(e.target.value, e.target.checked)}}/>
               </ListItem>
               <ListItem>
-                <Checkbox label="Center/Subwoofer Area" value='center' checked={centerChecked} onChange={(e) => {setCenter(e.target.checked), handleCheckbox(e.target.value, e.target.checked)}}/>
+                <Checkbox label="Center/Subwoofer Area" value='center area' checked={centerChecked} onChange={(e) => {setCenter(e.target.checked), handleCheckbox(e.target.value, e.target.checked)}}/>
               </ListItem>
               <ListItem>
                 <Checkbox label="Right" value='right'  checked={rightChecked} onChange={(e) => {setRight(e.target.checked), handleCheckbox(e.target.value, e.target.checked)}}/>

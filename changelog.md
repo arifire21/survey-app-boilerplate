@@ -28,10 +28,22 @@
 - fix [#7](https://github.com/arifire21/744-survey/issues/7)
 
 ## v2.1.1
- - fix [#5](https://github.com/arifire21/744-survey/issues/5)
- - added extra conditionals/questions to forms for clarity
- - changed `numeric` inputMode to `tel` to use more optimized number keyboard
- - split pit and match views into two pages
- - fix [#10](https://github.com/arifire21/744-survey/issues/10)
- - added SERIAL PRIMARY KEY `id` field to both tables
- - uninstall sqlite packages - unused
+- fix [#5](https://github.com/arifire21/744-survey/issues/5)
+- added extra conditionals/questions to forms for clarity
+- changed `numeric` inputMode to `tel` to use more optimized number keyboard
+- split pit and match views into two pages
+- fix [#10](https://github.com/arifire21/744-survey/issues/10)
+- added SERIAL PRIMARY KEY `id` field to both tables
+- uninstall sqlite packages - unused
+
+# Orlando
+## 3.0
+- team list updated to orlando roster
+- change `tel` to `decimal` - fix #4 again?
+- added `practice` match type
+- changed drivetrain radio button colors for clarity
+- added placeholder text to Autocompletes for clarity
+- Pit Survey filtering
+    - all: sorted in ascending order
+    - by team number: avail options grabbed from posted array
+    - by [x] trait: TBD

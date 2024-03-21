@@ -1,5 +1,4 @@
-export const SFLAllTeams = [
-    '',
+export const orlandoAllTeams = [
     '59',
     '108',
     '179',
