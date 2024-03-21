@@ -305,7 +305,7 @@ export default function PitSurveyPage() {
                 <Checkbox label="Left" value='left' checked={leftChecked} onChange={(e) => {setLeft(e.target.checked), handleCheckbox(e.target.value, e.target.checked)}}/>
               </ListItem>
               <ListItem>
-                <Checkbox label="Center/Subwoofer Area" value='center' checked={centerChecked} onChange={(e) => {setCenter(e.target.checked), handleCheckbox(e.target.value, e.target.checked)}}/>
+                <Checkbox label="Center/Subwoofer Area" value='center/subwoofer area' checked={centerChecked} onChange={(e) => {setCenter(e.target.checked), handleCheckbox(e.target.value, e.target.checked)}}/>
               </ListItem>
               <ListItem>
                 <Checkbox label="Right" value='right'  checked={rightChecked} onChange={(e) => {setRight(e.target.checked), handleCheckbox(e.target.value, e.target.checked)}}/>

@@ -44,6 +44,7 @@ export default function ViewPitResultsPage(){
       console.log(value)
 
       filteredTeams = [] //reset
+      setFilteredTeamsRender([])
 
       switch (value) {
         case 'drivetrain is WCD':
