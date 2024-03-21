@@ -2,7 +2,7 @@
 import MenuButton from "@/components/menu-button";
 import { CircularProgress, RadioGroup, Radio, Select, Option, Autocomplete } from "@mui/joy";
 import { useState, useEffect } from "react";
-import { orlandoAllTeams } from "../data/orlando-all-teams";
+// import { orlandoAllTeams } from "../data/orlando-all-teams";
 
 export default function ViewPitResultsPage(){
     const [pitLoading, isPitLoading] = useState(true)
@@ -14,7 +14,7 @@ export default function ViewPitResultsPage(){
     const [teamCriteria, setTeamCriteria] = useState('')
     const [traitCriteria, setTraitCriteria] = useState('')
     const [filteredTeamsRender, setFilteredTeamsRender] = useState([])
-    // const [availTeamsRender, setAvailTeamsRender] = useState([])
+    const [availTeamsRender, setAvailTeamsRender] = useState([])
 
     let availTeams = []
     let filteredTeams = []
@@ -25,7 +25,7 @@ export default function ViewPitResultsPage(){
         return true;
       }
       //use .sort method here to just make this easier when using .filter
-      let sortedResults = results.sort((a, b) => a - b) //ascending order
+      let sortedResults = results.sort((a, b) => a.team_number - b.team_number) //ascending order
       setPitResults(sortedResults)
       // console.log(sortedResults)
 
@@ -33,6 +33,10 @@ export default function ViewPitResultsPage(){
         availTeams.push(team.team_number)
       });
       console.log(availTeams)
+
+      setAvailTeamsRender(availTeams)
+        
+      return true;
     }
 
     function handleInputChange(event, value) {
@@ -257,7 +261,8 @@ export default function ViewPitResultsPage(){
         .then((data) => {pitDataHelper(data.results)})
         .catch( err => console.log(err) );
 
-        isPitLoading(false)
+        console.log(availTeamsRender)
+        isPitLoading(false) //should stay here regardless if empty or not
       }
   
       useEffect(() => {
@@ -297,7 +302,7 @@ export default function ViewPitResultsPage(){
               disabled={filterType === 'team' ? false : true}
               type="number"
               placeholder="start typing..."
-              options={orlandoAllTeams}
+              options={availTeamsRender}
               value={teamCriteria}
               onChange={handleInputChange}
               clearOnBlur
