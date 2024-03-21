@@ -2,7 +2,7 @@
 import MenuButton from "@/components/menu-button";
 import { CircularProgress, RadioGroup, Radio, Select, Option, Autocomplete } from "@mui/joy";
 import { useState, useEffect } from "react";
-// import { orlandoAllTeams } from "../data/orlando-all-teams";
+import { orlandoAllTeams } from "../data/orlando-all-teams";
 
 export default function ViewPitResultsPage(){
     const [pitLoading, isPitLoading] = useState(true)
@@ -14,6 +14,7 @@ export default function ViewPitResultsPage(){
     const [teamCriteria, setTeamCriteria] = useState('')
     const [traitCriteria, setTraitCriteria] = useState('')
     const [filteredTeamsRender, setFilteredTeamsRender] = useState([])
+    // const [availTeamsRender, setAvailTeamsRender] = useState([])
 
     let availTeams = []
     let filteredTeams = []
@@ -31,6 +32,9 @@ export default function ViewPitResultsPage(){
       sortedResults.forEach(team => {
         availTeams.push(team.team_number)
       });
+      console.log(availTeams)
+
+      isPitLoading(false) //make sure everything is set here
     }
 
     function handleInputChange(event, value) {
@@ -38,13 +42,20 @@ export default function ViewPitResultsPage(){
       console.log(value)
     }
 
-    function handleSelectChange( event, value){
+    function handleSelectChange(event, value){
 
       setTraitCriteria(value)
       console.log(value)
 
       filteredTeams = [] //reset
       setFilteredTeamsRender([])
+  
+      // if(document.querySelectorAll('.filtered-item-container').length){
+      //   document.querySelectorAll('.filtered-item-container').forEach((item) => {
+      //   item.remove();
+      //   console.log('reset')
+      // });
+      // }
 
       switch (value) {
         case 'drivetrain is WCD':
@@ -125,117 +136,116 @@ export default function ViewPitResultsPage(){
 
     function filterBySwerve() {
       filteredTeams = fetchedPitResults.filter((item) => item.drivetrain === 'swerve')
-      console.log(filteredTeams)
+      // console.log(filteredTeams)
       updateFilteredState()
     }
 
     function filterByOther() {
-      filteredTeams = fetchedPitResults.filter((item) => item.drivetrain != 'west coast drive' ||
-                                                         item.drivetrain != 'mecanum'          || 
-                                                         item.drivetrain != 'tank'             ||
+      filteredTeams = fetchedPitResults.filter((item) => item.drivetrain != 'west coast drive' &&
+                                                         item.drivetrain != 'mecanum'          && 
+                                                         item.drivetrain != 'tank'             &&
                                                          item.drivetrain != 'swerve'              )
-      console.log(filteredTeams)
+      // console.log(filteredTeams)
       updateFilteredState()
     }
 
     function filterByStartLeft() {
       filteredTeams = fetchedPitResults.filter((item) => item.preferred_pos.includes('left'))
-      console.log(filteredTeams)
+      // console.log(filteredTeams)
       updateFilteredState()
     }
 
     function filterByStartCenter() {
       filteredTeams = fetchedPitResults.filter((item) => item.preferred_pos.includes('center/subwoofer area'))
-      console.log(filteredTeams)
+      // console.log(filteredTeams)
       updateFilteredState()
     }
 
     function filterByStartRight() {
       filteredTeams = fetchedPitResults.filter((item) => item.preferred_pos.includes('right'))
-      console.log(filteredTeams)
+      // console.log(filteredTeams)
       updateFilteredState()
     }
 
     function filterByVision() {
       filteredTeams = fetchedPitResults.filter((item) => item.vision === 'yes')
-      console.log(filteredTeams)
+      // console.log(filteredTeams)
       updateFilteredState()
     }
 
     function filterByAmp() {
       filteredTeams = fetchedPitResults.filter((item) => item.score_height === 'amp' || item.score_height === 'both')
-      console.log(filteredTeams)
+      // console.log(filteredTeams)
       updateFilteredState()
     }
 
     function filterBySpeaker() {
       filteredTeams = fetchedPitResults.filter((item) => item.score_height === 'speaker' || item.score_height === 'both')
-      console.log(filteredTeams)
+      // console.log(filteredTeams)
       updateFilteredState()
     }
 
     function filterByBothHeight() {
       filteredTeams = fetchedPitResults.filter((item) => item.score_height === 'both')
-      console.log(filteredTeams)
+      // console.log(filteredTeams)
       updateFilteredState()
     }
 
     function filterByFloor() {
       filteredTeams = fetchedPitResults.filter((item) => item.pickup_pos === 'floor' || item.pickup_pos === 'both')
-      console.log(filteredTeams)
+      // console.log(filteredTeams)
       updateFilteredState()
     }
 
     function filterByHPS() {
       filteredTeams = fetchedPitResults.filter((item) => item.pickup_pos === 'human player station' || item.pickup_pos === 'both')
-      console.log(filteredTeams)
+      // console.log(filteredTeams)
       updateFilteredState()
     }
 
     function filterByBothPickup() {
       filteredTeams = fetchedPitResults.filter((item) => item.pickup_pos === 'both')
-      console.log(filteredTeams)
+      // console.log(filteredTeams)
       updateFilteredState()
     }
 
     function filterByClimb() {
       filteredTeams = fetchedPitResults.filter((item) => item.can_climb === 'yes')
-      console.log(filteredTeams)
+      // console.log(filteredTeams)
       updateFilteredState()
     }
 
     function filterByHelpClimb() {
       filteredTeams = fetchedPitResults.filter((item) => item.help_climb === 'yes')
-      console.log(filteredTeams)
+      // console.log(filteredTeams)
       updateFilteredState()
     }
 
     function filterByScoreClimb() {
       filteredTeams = fetchedPitResults.filter((item) => item.score_climb === 'yes')
-      console.log(filteredTeams)
+      // console.log(filteredTeams)
       updateFilteredState()
     }
 
     function filterByClimb() {
       filteredTeams = fetchedPitResults.filter((item) => item.can_climb === 'yes')
-      console.log(filteredTeams)
+      // console.log(filteredTeams)
       updateFilteredState()
     }
 
     function filterByFeedback() {
       filteredTeams = fetchedPitResults.filter((item) => (item.feedback && item.feedback.length > 0))
-      console.log(filteredTeams)
+      // console.log(filteredTeams)
       updateFilteredState()
     }
 
     //last helper, to be called in each method
     function updateFilteredState(){
-      //update the state so it re-renders, pushing to the array does nothing
-      filteredTeams.forEach(team => {
-        setFilteredTeamsRender([...filteredTeamsRender, team])
-      });
+      //update the state so it re-renders, pushing to the array variable does nothing
+      setFilteredTeamsRender(filteredTeams)
     }
 
+    // console.log('outside '+ filteredTeamsRender)
     //end helpers
 
       const getData = async () => {
@@ -248,8 +258,6 @@ export default function ViewPitResultsPage(){
         .then((res) => res.json()) // Parse the response data as JSON
         .then((data) => {pitDataHelper(data.results)})
         .catch( err => console.log(err) );
-  
-        isPitLoading(false)
       }
   
       useEffect(() => {
@@ -274,7 +282,7 @@ export default function ViewPitResultsPage(){
           // ? if not empty...
         : (
           // : filtering options
-          <section>
+          <section id="main-section">
           <header className="filter-container">
           <label className="filter-label">Filter Mode:</label>
           <RadioGroup name="radio-buttons-pit-filter"
@@ -289,7 +297,7 @@ export default function ViewPitResultsPage(){
               disabled={filterType === 'team' ? false : true}
               type="number"
               placeholder="start typing..."
-              options={isPitEmpty ? [] : availTeams}
+              options={orlandoAllTeams}
               value={teamCriteria}
               onChange={handleInputChange}
               clearOnBlur
@@ -382,7 +390,7 @@ export default function ViewPitResultsPage(){
                 {/* ((value, or index, or another array) => what to compare against) */}
                 {fetchedPitResults.filter((item) => item.team_number === teamCriteria).map((item, index) => {
                 return(
-                <div key={index} className="item-container">
+                <div key={`${index}-${item.team_number}`} className="item-container">
                   <h3 className="pit-results-number">{item.team_number}</h3>
                   <p>Drivetrain: <strong>{item.drivetrain}</strong></p>
                   <p>Preferred Start Position(s): <strong>{item.preferred_pos}</strong></p>
@@ -410,11 +418,11 @@ export default function ViewPitResultsPage(){
           {(filterType && filterType === 'trait') && (traitCriteria === '' ?
           <p>Select a trait!</p>
           : (
-              <div className="pit-results-container">
+              <div className="pit-results-container" id="filtered-container">
                 {/* ((value, or index, or another array) => what to compare against) */}
                 {filteredTeamsRender && !filteredTeamsRender.length ? <p>No results.</p> : filteredTeamsRender.map((item, index) => {
                 return(
-                <div key={index} className="item-container">
+                <div key={`${index}-${item.team_number}`} className="filtered-item-container">
                   <h3 className="pit-results-number">{item.team_number}</h3>
                   <p>Drivetrain: <strong>{item.drivetrain}</strong></p>
                   <p>Preferred Start Position(s): <strong>{item.preferred_pos}</strong></p>
