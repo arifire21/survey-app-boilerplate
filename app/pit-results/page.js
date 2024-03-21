@@ -33,8 +33,6 @@ export default function ViewPitResultsPage(){
         availTeams.push(team.team_number)
       });
       console.log(availTeams)
-
-      isPitLoading(false) //make sure everything is set here
     }
 
     function handleInputChange(event, value) {
@@ -258,6 +256,8 @@ export default function ViewPitResultsPage(){
         .then((res) => res.json()) // Parse the response data as JSON
         .then((data) => {pitDataHelper(data.results)})
         .catch( err => console.log(err) );
+
+        isPitLoading(false)
       }
   
       useEffect(() => {
