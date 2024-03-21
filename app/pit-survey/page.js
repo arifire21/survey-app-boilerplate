@@ -146,9 +146,8 @@ export default function PitSurveyPage() {
 
     //join into one string
     var allPrefPos = prefPos.join(",");
-    console.log(allPrefPos)
  
-    console.log(teamNumber, drivetrain, vision, scoreHeight, pickup, climb, helpClimb, scoreClimb, investigate, feedback, name)
+    console.log(teamNumber, drivetrain, allPrefPos, vision, scoreHeight, pickup, climb, helpClimb, scoreClimb, investigate, feedback, name)
 
     const data = {
       teamNumber: teamNumber,
@@ -239,10 +238,15 @@ export default function PitSurveyPage() {
           <Autocomplete
             required
             type="number"
+            placeholder="start typing..."
             options={orlandoAllTeams}
             value={teamNumber}
             onChange={handleInputChange}
             clearOnBlur
+            isOptionEqualToValue={(option, value) =>{
+              if(option === '' || value === '') return true;
+              else return true;
+            }} 
             sx={{ width: 300 }}
             slotProps={{input: { inputMode:'decimal' }}}
           />

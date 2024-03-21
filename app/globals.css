@@ -53,6 +53,31 @@ form {
   display: flex;
 }
 
+.filter-container {
+  padding: 1rem;
+  border: 1px solid var(--joy-palette-neutral-300, #CDD7E1);
+  border-radius: 10px;
+  margin-bottom: 2rem;
+}
+
+.filter-label {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.extended-radio-option {
+  display: flex;
+  align-items: center;
+}
+
+.blue {
+  color: #01a0bb;
+}
+
+.both {
+  color: darkred
+}
+
 /* cannot add module style to created element so */
 .preview-img {
   /* width: fit-content !important; */

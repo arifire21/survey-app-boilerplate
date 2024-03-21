@@ -39,5 +39,11 @@
 # Orlando
 ## 3.0
 - team list updated to orlando roster
-- change `tel` to `decimal`  - fix #4 again?
-- added practice match type
+- change `tel` to `decimal` - fix #4 again?
+- added `practice` match type
+- changed drivetrain radio button colors for clarity
+- added placeholder text to Autocompletes for clarity
+- Pit Survey filtering
+    - all: sorted in ascending order
+    - by team number: avail options grabbed from posted array
+    - by [x] trait: TBD

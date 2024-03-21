@@ -308,10 +308,15 @@ export default function MatchSurveyPage(){
                 <Autocomplete
                     required
                     type="number"
+                    placeholder="start typing..."
                     options={orlandoAllTeams}
                     value={teamNumber}
                     onChange={handleInputChange}
                     clearOnBlur
+                    isOptionEqualToValue={(option, value) =>{
+                    if(option === '' || value === '') return true;
+                    else return true;
+                    }}
                     sx={{ width: 300 }}
                     slotProps={{input: { inputMode:'decimal' }}}
                 />
@@ -664,7 +669,7 @@ export default function MatchSurveyPage(){
                 />
                 </FormControl>
 
-                <FormControl>
+                <FormControl  sx={{ marginBottom: '2rem'}}>
                     <FormLabel>Post-Match Comments</FormLabel>
                     <FormHelperText>Why was disabled, any fouls, etc.</FormHelperText>
                     <Textarea
