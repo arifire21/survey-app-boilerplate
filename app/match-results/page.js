@@ -21,7 +21,7 @@ export default function ViewMatchResultsPage() {
     }
 
     const getData = async () => {
-      await fetch("/api/dev/match-result", {
+      await fetch("/api/match-result", {
         method: "GET",
         headers: {
         "Content-Type": "application/json",
