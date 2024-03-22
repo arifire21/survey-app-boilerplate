@@ -9,16 +9,19 @@ export default function ViewMatchResultsPage() {
     const [isMatchEmpty, setMatchEmpty] = useState(false)
 
     function matchDataHelper(results){ //relying on state in getData does not work because of state's delayed updating
-      setMatchResults(results)
-      // console.log(results)
-
       if(results.length == 0){
         setMatchEmpty(true)
+        return true;
       }
+
+      // if mun is different, sort on that, if num is same, sort by color
+      let sortedByNumberAndColor = results.sort((a, b) => a.match_number - b.match_number || (b.alliance).localeCompare(a.alliance))
+      console.log(sortedByNumberAndColor)
+      setMatchResults(sortedByNumberAndColor)
     }
 
     const getData = async () => {
-      await fetch("/api/match-result", {
+      await fetch("/api/dev/match-result", {
         method: "GET",
         headers: {
         "Content-Type": "application/json",
@@ -39,8 +42,7 @@ export default function ViewMatchResultsPage() {
         <>
         <MenuButton/>
         
-        <h1>Survey Results</h1>
-        <h2>Match Survey</h2>
+        <h1>Match Survey Results</h1>
         {matchLoading
         ? <div style={{display:'flex', textAlign:'center'}}>
             <p>Loading...   </p><CircularProgress variant="soft" size="sm"/>
@@ -52,22 +54,22 @@ export default function ViewMatchResultsPage() {
           {fetchedMatchResults.map((item, index) => {
             return(
             <div key={index} className={`item-container ${item.alliance === 'red' ? 'red-backdrop' : 'blue-backdrop'}`}>
-              <h3 className={`pit-results-number ${item.alliance === 'red' ? 'red-alliance' : 'blue-alliance'}`}>{item.team_number}</h3>
               <h3 className={`pit-results-number ${item.alliance === 'red' ? 'red-alliance' : 'blue-alliance'}`}>{item.match_type} {item.match_number}</h3>
+              <h3 className={`pit-results-number ${item.alliance === 'red' ? 'red-alliance' : 'blue-alliance'}`}>Team {item.team_number}</h3>
               <p>Starting Pos: <strong>{item.start_pos}</strong></p>
 
               <h4>Auto</h4>
               <p>Crossed Auto Line: <strong>{item.cross_auto_line}</strong></p>
               {item.cross_auto_line && item.cross_auto_line === 'yes' && (
                 <div className="result-flex">
-                  <p>Amp Count: <strong>{item.auto_amp}</strong></p>
+                  <p style={{marginRight:'0.5rem'}}>Amp Count: <strong>{item.auto_amp}</strong></p>
                   <p>Speaker Count: <strong>{item.auto_speaker}</strong></p>
                 </div>
               )}
 
               <h4>Teleop</h4>
               <div className="result-flex">
-                <p>Amp Count: <strong>{item.tele_amp}</strong></p>
+                <p style={{marginRight:'0.5rem'}}>Amp Count: <strong>{item.tele_amp}</strong></p>
                 <p>Speaker Count: <strong>{item.tele_speaker}</strong></p>
               </div>
               <p>Amplify Pressed: <strong>{item.amplify_count}</strong></p>
@@ -83,7 +85,7 @@ export default function ViewMatchResultsPage() {
               {item.hp_throw && item.hp_throw === 'yes' && (
                   <p>HP spotlighted: <strong>{item.hp_score}/3</strong></p>
               )}
-              <br/>
+              {/* <br/> */}
               <p>Defense rating: <strong>{item.defense}/5</strong></p>
               <p>Lost comms or disabled: <strong>{item.lost_comms_disabled}</strong></p>
               {item.comments && item.comments.length > 0 && <p>Post-Match Comments: {item.comments}</p>}

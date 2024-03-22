@@ -51,3 +51,9 @@
 ## v3.0.1
 - getting team numbers from posted array now works correctly (via useState)
 - hotfix: match number cannot be 0, added error message
+
+## v3.0.2
+- hotfix: increment meachNumber + 1 to avoid error (new issue, onchange does not fire after form submit [#16](https://github.com/arifire21/744-survey/issues/16))
+- added dev tables, dev mode in development
+- while better match result rendering is developed, added sorting to improve readability
+    - sorts by match number, then alliance color, to map/render them in sequence of red then blue

@@ -273,8 +273,7 @@ export default function ViewPitResultsPage(){
         <>
         <MenuButton/>
         
-        <h1>Survey Results</h1>
-        <h2>Pit Survey</h2>
+        <h1>Pit Survey Results</h1>
 
         {pitLoading && pitLoading == true   //is request loading...
         ? <div style={{display:'flex', textAlign:'center'}}>

@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <>
     <header className={styles.flexHeader}>
-      <p>Version: <span id="version-number" style={{color: '#01a0bb'}}>3.0.1-Orlando</span></p>
+      <p>Version: <span id="version-number" style={{color: '#01a0bb'}}>3.0.2-Orlando</span></p>
       <nav style={{display:'flex', flexDirection: 'column'}}>
         <Button component="a" href="/pit-results" sx={{mb:'0.5rem'}}>
           View Pit Results &#8594;
