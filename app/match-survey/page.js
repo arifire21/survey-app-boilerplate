@@ -88,7 +88,7 @@ export default function MatchSurveyPage(){
         },
         {
          value: 4,
-         label: '3',
+         label: '4',
         },
         {
          value: 5,
@@ -196,7 +196,7 @@ export default function MatchSurveyPage(){
               formRef.current.reset();
     
               setName('')
-              setMatchNumber(0)
+              setMatchNumber(matchNumber + 1) //temp hotfix for onChange issue
               setMatchType('')
               setTeamNumber('')
               setColor('')
