@@ -685,7 +685,7 @@ export default function MatchSurveyPage(){
                     sx={{ maxWidth: 500, minWidth: 300 }}
                     error={comments.length > comments ? true : false}
                     />
-                    <FormHelperText><span style={{color: (comments.length > 500 ? 'red' : 'unset' ?? 'unset')}}>{feedback.length}</span>/500</FormHelperText>
+                    <FormHelperText><span style={{color: (comments.length > 500 ? 'red' : 'unset' ?? 'unset')}}>{comments.length}</span>/500</FormHelperText>
                 </FormControl>
 
                 <Button loading={loading} onClick={(e) => {handleValidate(e)}}>Submit Survey</Button>
