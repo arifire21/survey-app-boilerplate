@@ -53,7 +53,9 @@
 - hotfix: match number cannot be 0, added error message
 
 ## v3.0.2
-- hotfix: increment meachNumber + 1 to avoid error (new issue, onchange does not fire after form submit [#16](https://github.com/arifire21/744-survey/issues/16))
+- hotfix: increment matchNumber + 1 to avoid error (new issue, onchange does not fire after form submit [#16](https://github.com/arifire21/744-survey/issues/16))
 - added dev tables, dev mode in development
+- indented section details and adjusted margins for cleaner/more compact look
 - while better match result rendering is developed, added sorting to improve readability
     - sorts by match number, then alliance color, to map/render them in sequence of red then blue
+    - MUI Accordion (collapsible) per mapped item, to help with visual busyness
