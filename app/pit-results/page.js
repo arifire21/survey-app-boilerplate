@@ -358,19 +358,19 @@ export default function ViewPitResultsPage(){
               return(
               <div key={index} className="item-container">
                 <h3 className="pit-results-number">{item.team_number}</h3>
-                <p>Drivetrain: <strong>{item.drivetrain}</strong></p>
-                <p>Preferred Start Position(s): <strong>{item.preferred_pos}</strong></p>
-                <p>Has Vision Tracking: <strong>{item.vision}</strong></p>
-                <p>Scores in Amp or Speaker: <strong>{item.score_height}</strong></p>
-                <p>Pickup at floor or HPS: <strong>{item.pickup_pos}</strong></p>
-                <p>Can climb: <strong>{item.can_climb}</strong></p>
+                <p className="detail">Drivetrain: <strong>{item.drivetrain}</strong></p>
+                <p className="detail">Preferred Start Position(s): <strong>{item.preferred_pos}</strong></p>
+                <p className="detail">Has Vision Tracking: <strong>{item.vision}</strong></p>
+                <p className="detail">Scores in Amp or Speaker: <strong>{item.score_height}</strong></p>
+                <p className="detail">Pickup at floor or HPS: <strong>{item.pickup_pos}</strong></p>
+                <p className="detail">Can climb: <strong>{item.can_climb}</strong></p>
                 {item.can_climb && item.can_climb === 'yes' && (
                   <>
-                    <p>Can help others climb: <strong>{item.help_climb}</strong></p>
-                    <p>Can score while climbing: <strong>{item.score_climb}</strong></p>
+                    <p className="detail">Can help others climb: <strong>{item.help_climb}</strong></p>
+                    <p className="detail">Can score while climbing: <strong>{item.score_climb}</strong></p>
                   </>
                 )}
-                {item.feedback && item.feedback.length > 0 && <p>Thoughts: {item.feedback}</p>}
+                {item.feedback && item.feedback.length > 0 && <p className="detail">Thoughts: {item.feedback}</p>}
                 <small>Survey by: <strong>{item.name}</strong></small>
               </div>
               )
