@@ -129,7 +129,7 @@ export default function PitSurveyPage() {
     return false;
     }
 
-    else if(feedback && feedback.length > 255){
+    else if(feedback && feedback.length > 500){
       setErrorString('Feedback must be at most 255 chars.')
       setColor('danger')
       setSuccess(false)
@@ -397,10 +397,10 @@ export default function PitSurveyPage() {
             <Textarea
             minRows={3}
             onChange={(e) => setFeedback(e.target.value)}
-            sx={{ width: 500 }}
-            error={feedback.length > 255 ? true : false ?? false}
+            sx={{ minWidth: 300, maxWidth: 500 }}
+            error={feedback.length > 500 ? true : false ?? false}
             />
-            <FormHelperText>{feedback.length}/255</FormHelperText>
+            <FormHelperText><span style={{color: (feedback.length > 500 ? 'red' : 'unset' ?? 'unset')}}>{feedback.length}</span>/500</FormHelperText>
           </div>
           }
         </FormControl>

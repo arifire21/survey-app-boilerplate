@@ -131,8 +131,8 @@ export default function MatchSurveyPage(){
         return false;
         }
     
-        else if(comments && comments.length > 255){
-          setErrorString('Comments must be at most 255 chars.')
+        else if(comments && comments.length > 500){
+          setErrorString('Comments must be at most 500 chars.')
           setSuccess(false)
           setOpen(true)
           return false;
@@ -683,9 +683,9 @@ export default function MatchSurveyPage(){
                     minRows={2}
                     onChange={(e) => handleTextareaLimit(e.target.value)}
                     sx={{ maxWidth: 500, minWidth: 300 }}
-                    error={comments.length > 255 ? true : false}
+                    error={comments.length > comments ? true : false}
                     />
-                    <FormHelperText>{comments.length}/255</FormHelperText>
+                    <FormHelperText><span style={{color: (comments.length > 500 ? 'red' : 'unset' ?? 'unset')}}>{comments.length}</span>/500</FormHelperText>
                 </FormControl>
 
                 <Button loading={loading} onClick={(e) => {handleValidate(e)}}>Submit Survey</Button>
