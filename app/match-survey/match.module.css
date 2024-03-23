@@ -38,6 +38,12 @@
     text-align: center;
 }
 
+.leftButton:active, .rightButton:active {
+    background-color: #008ba1;
+    color: lightgray;
+    border-color: lightgray;
+}
+
 .leftButton {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;

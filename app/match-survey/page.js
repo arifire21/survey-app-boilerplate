@@ -271,7 +271,7 @@ export default function MatchSurveyPage(){
                             alignItems: 'center',
                             width: 'fit-content',
                             height: 48,
-                            padding: '1rem',
+                            padding: '0.5rem',
                             '&:not([data-first-child])': {
                             borderLeft: '1px solid',
                             borderColor: 'divider',
@@ -350,7 +350,7 @@ export default function MatchSurveyPage(){
                             alignItems: 'center',
                             width: 'fit-content',
                             height: 48,
-                            padding: '1rem',
+                            padding: '1rem !important',
                             '&:not([data-first-child])': {
                             borderLeft: '1px solid',
                             borderColor: 'divider',
