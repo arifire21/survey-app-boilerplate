@@ -5,12 +5,14 @@ import { useState, useEffect } from "react";
 // import { orlandoAllTeams } from "../data/orlando-all-teams";
 
 export default function ViewPitResultsPage(){
+  const isDevMode = process.env.NEXT_PUBLIC_DEV_MODE;
+
     const [pitLoading, isPitLoading] = useState(true)
     const [fetchedPitResults, setPitResults] = useState([]);
     const [isPitEmpty, setPitEmpty] = useState(false)
 
     //filter states
-    const [filterType, setFilterType] = useState('trait') //requested default
+    const [filterType, setFilterType] = useState('all')
     const [teamCriteria, setTeamCriteria] = useState('')
     const [traitCriteria, setTraitCriteria] = useState('')
     const [filteredTeamsRender, setFilteredTeamsRender] = useState([])
@@ -251,7 +253,12 @@ export default function ViewPitResultsPage(){
     //end helpers
 
       const getData = async () => {
-        await fetch("/api/pit-result", {
+        let fetchString = '/api/pit-result' //default
+        if(isDevMode == 'true'){
+          fetchString = '/api/dev/pit-result'
+        }
+
+        await fetch(fetchString, {
           method: "GET",
           headers: {
           "Content-Type": "application/json",

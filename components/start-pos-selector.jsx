@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import styles from '../app/match-survey/startpos.module.css'
+import styles from '@/styles/startpos.module.css'
 import Field from '../public/images/field-render.png'
 import { RadioGroup, Radio, FormControl, Box } from '@mui/joy'
 import { radioClasses } from '@mui/joy'

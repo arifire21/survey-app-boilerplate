@@ -13,6 +13,9 @@ import Tank from '../../public/images/tankdrive.jpg'
 import Swerve from '../../public/images/swervedrive.jpg'
 
 export default function PitSurveyPage() {
+  const isDevMode = process.env.NEXT_PUBLIC_DEV_MODE;
+  const isPostSeason = process.env.NEXT_PUBLIC_POSTSEASON;
+
   const [teamNumber, setTeamNumber] = useState('')
   const [drivetrain, setDrivetrain] = useState('')
   const [prefPos, setPrefPos] = useState([])
@@ -119,6 +122,17 @@ export default function PitSurveyPage() {
     }
   }
 
+  function submitHelper(isPostSeason, e){
+    if(isPostSeason == 'true' && isDevMode == 'false'){
+      handlePostseasonSubmit()
+      return true
+    }
+
+    if(isPostSeason == 'false' || isDevMode == 'true'){
+      handleValidate(e)
+    }
+  }
+
   function handleValidate(passedEvent){
     if (teamNumber==='' || !drivetrain || !prefPos || !vision
       || !scoreHeight || !pickup || !climb || !investigate || !name){
@@ -164,7 +178,12 @@ export default function PitSurveyPage() {
       name: name
      }
 
-    fetch('/api/pit-result', {
+     let fetchString = '/api/pit-result' //default
+     if(isDevMode == "true"){
+       fetchString = '/api/dev/pit-result'
+     }
+
+    fetch(fetchString, {
       method: 'POST', 
       body: JSON.stringify(data),
       headers:{ 'Content-Type': 'application/json' }
@@ -222,8 +241,14 @@ export default function PitSurveyPage() {
   .catch(error => {
       console.log(error)
   })
+}
 
-  // console.log('outside submit')
+function handlePostseasonSubmit(){
+  // setLoading(true)
+  setColor('warning')
+  setErrorString('POSTSEASON MODE enabled: cannot submit new records!')
+  setSuccess(false)
+  setOpen(true)
 }
 
   return (
@@ -414,7 +439,7 @@ export default function PitSurveyPage() {
           />
         </FormControl>
         
-        <Button loading={loading} onClick={(e) => {handleValidate(e)}}>Submit Survey</Button>
+        <Button loading={loading} onClick={(e) => submitHelper(isPostSeason, e)}>Submit Survey</Button>
         </form>
 
         <Snackbar
