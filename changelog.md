@@ -1,3 +1,4 @@
+# 2024
 # Pre-Release
 ## v0.1.0
 - porting over code from defunct PWA
@@ -60,3 +61,10 @@
     - sorts by match number, then alliance color, to map/render them in sequence of red then blue
     - MUI Accordion (collapsible) per mapped item, to help with visual busyness
 - [Saturday Hotfix] Pit and Match Surveys: change feedback max length to 500 chars
+
+# Post-Orlando
+## v4.0.0
+- dev and postseason modes added, toggled via ENVs
+    - for serving as a portfolio example
+    - for archiving results
+- organizing some files

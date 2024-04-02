@@ -5,13 +5,16 @@ import Image from 'next/image'
 import { useState, useRef } from 'react'
 import MenuButton from '@/components/menu-button'
 // import CounterButton from '@/components/counter-button'
-import styles from './match.module.css'
+import styles from '@/styles/match.module.css'
 
 import Guide from '../../public/images/driver-station-wall.png'
 
 import { orlandoAllTeams } from "../data/orlando-all-teams";
 
 export default function MatchSurveyPage(){
+    const isDevMode = process.env.NEXT_PUBLIC_DEV_MODE;
+    const isPostSeason = process.env.NEXT_PUBLIC_POSTSEASON;
+
     //form state
     const [loading, setLoading] = useState(false)
     const formRef = useRef(null);
@@ -169,8 +172,13 @@ export default function MatchSurveyPage(){
           robotDisabled: robotDisabled,
           comments: comments
          }
+
+         let fetchString = '/api/match-result' //default
+         if(isDevMode == "true"){
+           fetchString = '/api/dev/match-result'
+         }
     
-        fetch('/api/match-result', {
+         fetch(fetchString, {
           method: 'POST', 
           body: JSON.stringify(data),
           headers:{ 'Content-Type': 'application/json' }
@@ -222,6 +230,23 @@ export default function MatchSurveyPage(){
       .catch(error => {
           console.log(error.json())
       })
+      }
+
+      function submitHelper(isPostSeason, e){
+        if(isPostSeason == 'true' && isDevMode == 'false'){
+          handlePostseasonSubmit()
+          return true
+        }
+    
+        if(isPostSeason == 'false' || isDevMode == 'true'){
+          handleValidate(e)
+        }
+      }
+
+      function handlePostseasonSubmit(){
+        setErrorString('POSTSEASON MODE enabled: cannot submit new records!')
+        setSuccess(false)
+        setOpen(true)
       }
 
     return (
@@ -685,10 +710,10 @@ export default function MatchSurveyPage(){
                     sx={{ maxWidth: 500, minWidth: 300 }}
                     error={comments.length > comments ? true : false}
                     />
-                    <FormHelperText><span style={{color: (comments.length > 500 ? 'red' : 'unset' ?? 'unset')}}>{feedback.length}</span>/500</FormHelperText>
+                    <FormHelperText><span style={{color: (comments.length > 500 ? 'red' : 'unset' ?? 'unset')}}>{comments.length}</span>/500</FormHelperText>
                 </FormControl>
 
-                <Button loading={loading} onClick={(e) => {handleValidate(e)}}>Submit Survey</Button>
+                <Button loading={loading} onClick={(e) => submitHelper(isPostSeason, e)}>Submit Survey</Button>
             </form>
 
             <Snackbar

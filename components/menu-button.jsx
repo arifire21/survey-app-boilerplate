@@ -1,4 +1,3 @@
-
 import { Button } from '@mui/joy'
 
 export default function MenuButton() {

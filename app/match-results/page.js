@@ -9,6 +9,8 @@ import { accordionSummaryClasses, accordionDetailsClasses } from '@mui/joy'
 import { useState, useEffect } from "react";
 
 export default function ViewMatchResultsPage() {
+  const isDevMode = process.env.NEXT_PUBLIC_DEV_MODE;
+
     const [matchLoading, isMatchLoading] = useState(true)
     const [fetchedMatchResults, setMatchResults] = useState([]);
     const [isMatchEmpty, setMatchEmpty] = useState(false)
@@ -26,7 +28,12 @@ export default function ViewMatchResultsPage() {
     }
 
     const getData = async () => {
-      await fetch("/api/match-result", {
+      let fetchString = '/api/match-result' //default
+      if(isDevMode == "true"){
+        fetchString = '/api/dev/match-result'
+      }
+      
+      await fetch(fetchString, {
         method: "GET",
         headers: {
         "Content-Type": "application/json",

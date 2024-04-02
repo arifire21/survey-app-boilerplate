@@ -1,4 +1,4 @@
-import styles from '../app/match-survey/match.module.css'
+import styles from '@/styles/match.module.css'
 import { Input } from "@mui/joy"
 
 export default function CounterButton(count){
