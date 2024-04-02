@@ -703,7 +703,7 @@ export default function MatchSurveyPage(){
 
                 <FormControl  sx={{ marginBottom: '2rem'}}>
                     <FormLabel>Post-Match Comments</FormLabel>
-                    <FormHelperText>Why was disabled, any fouls, etc.</FormHelperText>
+                    <FormHelperText>Why disabled, any fouls, defense strategy, etc.</FormHelperText>
                     <Textarea
                     minRows={2}
                     onChange={(e) => handleTextareaLimit(e.target.value)}
