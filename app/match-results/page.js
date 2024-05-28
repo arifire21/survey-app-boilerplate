@@ -14,6 +14,7 @@ export default function ViewMatchResultsPage() {
     const [matchLoading, isMatchLoading] = useState(true)
     const [fetchedMatchResults, setMatchResults] = useState([]);
     const [isMatchEmpty, setMatchEmpty] = useState(false)
+    const [requestFail, setRequestFail] = useState(false)
 
     function matchDataHelper(results){ //relying on state in getData does not work because of state's delayed updating
       if(results.length == 0){
@@ -39,7 +40,16 @@ export default function ViewMatchResultsPage() {
         "Content-Type": "application/json",
         },
       })
-      .then((res) => res.json()) // Parse the response data as JSON
+      .then((res) => {
+        if(!res.ok){
+          console.log('Check Internet Connection')
+          setMatchEmpty(true)
+          setRequestFail(true)
+        }
+        else {
+          res.json() // Parse the response data as JSON
+        }
+      }) 
       .then((data) => {matchDataHelper(data.results)})
       .catch( err => console.log(err) );
 
@@ -55,6 +65,10 @@ export default function ViewMatchResultsPage() {
         <MenuButton/>
         
         <h1>Match Survey Results</h1>
+        {requestFail && requestFail && (
+          <p><strong>API Request Failed</strong>: Check your internet connection and try again!</p>
+        )}
+
         {matchLoading
         ? <div style={{display:'flex', textAlign:'center'}}>
             <p>Loading...   </p><CircularProgress variant="soft" size="sm"/>
