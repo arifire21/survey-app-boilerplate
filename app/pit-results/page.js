@@ -10,6 +10,7 @@ export default function ViewPitResultsPage(){
     const [pitLoading, isPitLoading] = useState(true)
     const [fetchedPitResults, setPitResults] = useState([]);
     const [isPitEmpty, setPitEmpty] = useState(false)
+    const [requestFail, setRequestFail] = useState(false)
 
     //filter states
     const [filterType, setFilterType] = useState('all')
@@ -264,7 +265,16 @@ export default function ViewPitResultsPage(){
           "Content-Type": "application/json",
           },
         })
-        .then((res) => res.json()) // Parse the response data as JSON
+        .then((res) => {
+          if(!res.ok){
+            console.log('Check Internet Connection')
+            setPitEmpty(true)
+            setRequestFail(true)
+          }
+          else {
+            res.json() // Parse the response data as JSON
+          }
+        }) 
         .then((data) => {pitDataHelper(data.results)})
         .catch( err => console.log(err) );
 
@@ -281,6 +291,10 @@ export default function ViewPitResultsPage(){
         <MenuButton/>
         
         <h1>Pit Survey Results</h1>
+        {requestFail && requestFail && (
+          <p><strong>API Request Failed</strong>: Check your internet connection and try again!</p>
+        )}
+
         {pitLoading && pitLoading == true   //is request loading...
         ? <div style={{display:'flex', textAlign:'center'}}>
           {/* ? yes, render circular */}
