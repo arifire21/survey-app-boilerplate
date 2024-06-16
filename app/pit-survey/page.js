@@ -329,8 +329,6 @@ export default function PitSurveyPage() {
   .catch(error => {
       console.log(error)
   })
-
-  console.log('outside submit')
 }
 
 async function uploadImages(){

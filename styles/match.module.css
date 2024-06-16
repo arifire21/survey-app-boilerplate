@@ -31,11 +31,18 @@
     background-color: #01a0bb;
     color: white;
     border-color: white;
+    border-style: solid;
     padding: 1rem;
     width: 50px;
     font-size: larger;
     font-weight: bold;
     text-align: center;
+}
+
+.leftButton:active, .rightButton:active, .leftButton:hover, .rightButton:hover {
+    background-color: #007789;
+    color: lightgray;
+    border-color: lightgray;
 }
 
 .leftButton {

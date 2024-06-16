@@ -11,10 +11,14 @@ A  web application made to streamline both survey types used during competitions
 4. Click "Add"
 
 ### Android
-TBD
+1. Tap the Menu icon (top right of browser bar)
+2. Click "Add to Home Screen"
+3. Leave app name as written
+4. Click "Add"
 
 ## More to Come!
-- filtering optiond for pit and match data entries
+- uploading images of robots for pit survey (currently in development)
+- filtering options for pit and match data entries (currently in development)
 - notification of Team 744's match results
 
 ## Changelog

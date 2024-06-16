@@ -40,3 +40,4 @@ collection.db
 
 app/api/create-match-table
 app/api/create-pit-table
+app/api/dev

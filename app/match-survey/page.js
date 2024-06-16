@@ -5,13 +5,16 @@ import Image from 'next/image'
 import { useState, useRef } from 'react'
 import MenuButton from '@/components/menu-button'
 // import CounterButton from '@/components/counter-button'
-import styles from './match.module.css'
+import styles from '@/styles/match.module.css'
 
 import Guide from '../../public/images/driver-station-wall.png'
 
-import { SFLAllTeams } from "../data/sfl-all-teams";
+import { orlandoAllTeams } from "../data/orlando-all-teams";
 
 export default function MatchSurveyPage(){
+    const isDevMode = process.env.NEXT_PUBLIC_DEV_MODE;
+    const isPostSeason = process.env.NEXT_PUBLIC_POSTSEASON;
+
     //form state
     const [loading, setLoading] = useState(false)
     const formRef = useRef(null);
@@ -88,7 +91,7 @@ export default function MatchSurveyPage(){
         },
         {
          value: 4,
-         label: '3',
+         label: '4',
         },
         {
          value: 5,
@@ -117,15 +120,22 @@ export default function MatchSurveyPage(){
     }
 
     function handleValidate(passedEvent){
-        if (teamNumber==='' || !name || matchNumber == 0 || !color || !matchType || !startPos){
+        if (teamNumber==='' || !name || !color || !matchType || !startPos){
         setErrorString('Check required fields!')
         setSuccess(false)
         setOpen(true)
         return false;
         }
+
+        else if(matchNumber == 0){
+        setErrorString('Match number cannot be 0!')
+        setSuccess(false)
+        setOpen(true)
+        return false;
+        }
     
-        else if(comments && comments.length > 255){
-          setErrorString('Comments must be at most 255 chars.')
+        else if(comments && comments.length > 500){
+          setErrorString('Comments must be at most 500 chars.')
           setSuccess(false)
           setOpen(true)
           return false;
@@ -162,8 +172,13 @@ export default function MatchSurveyPage(){
           robotDisabled: robotDisabled,
           comments: comments
          }
+
+         let fetchString = '/api/match-result' //default
+         if(isDevMode == "true"){
+           fetchString = '/api/dev/match-result'
+         }
     
-        fetch('/api/match-result', {
+         fetch(fetchString, {
           method: 'POST', 
           body: JSON.stringify(data),
           headers:{ 'Content-Type': 'application/json' }
@@ -174,7 +189,7 @@ export default function MatchSurveyPage(){
     
               switch (response.status) {
                 case 400:
-                    setErrorString('Server validation error! All fields required.')
+                    setErrorString('Server validation error! Some fields required.')
                     break;
                 case 500:
                     setErrorString('API error!')
@@ -189,7 +204,7 @@ export default function MatchSurveyPage(){
               formRef.current.reset();
     
               setName('')
-              setMatchNumber(0)
+              setMatchNumber(matchNumber + 1) //temp hotfix for onChange issue
               setMatchType('')
               setTeamNumber('')
               setColor('')
@@ -217,6 +232,23 @@ export default function MatchSurveyPage(){
       })
       }
 
+      function submitHelper(isPostSeason, e){
+        if(isPostSeason == 'true' && isDevMode == 'false'){
+          handlePostseasonSubmit()
+          return true
+        }
+    
+        if(isPostSeason == 'false' || isDevMode == 'true'){
+          handleValidate(e)
+        }
+      }
+
+      function handlePostseasonSubmit(){
+        setErrorString('POSTSEASON MODE enabled: cannot submit new records!')
+        setSuccess(false)
+        setOpen(true)
+      }
+
     return (
         <>
             <MenuButton/>
@@ -240,6 +272,7 @@ export default function MatchSurveyPage(){
                 required
                 onChange={(e) => setMatchNumber(e.target.value)}
                 sx={{ width: 300 }}
+                slotProps={{input: { inputMode:'decimal' }}}
                 />
                 </FormControl>
 
@@ -254,7 +287,7 @@ export default function MatchSurveyPage(){
                     onChange={(event) => setMatchType(event.target.value)}
                     sx={{width: 'fit-content', marginBottom: '1rem'}}
                     >
-                    {['Qual', 'Playoff', 'Final'].map((item) => (
+                    {['Practice', 'Qual', 'Playoff', 'Final'].map((item) => (
                         <Box
                         key={item}
                         sx={(theme) => ({
@@ -264,7 +297,7 @@ export default function MatchSurveyPage(){
                             alignItems: 'center',
                             width: 'fit-content',
                             height: 48,
-                            padding: '1rem',
+                            padding: '0.5rem',
                             '&:not([data-first-child])': {
                             borderLeft: '1px solid',
                             borderColor: 'divider',
@@ -285,19 +318,18 @@ export default function MatchSurveyPage(){
                             overlay
                             label={     //values capitalizd for data display 
                             {
+                                Practice: 'Practice',
                                 Qual: 'Qualification',
                                 Playoff: 'Playoff',
-                                Final: "Final"
+                                Final: 'Final'
                             }[item]
                             }
                             variant={matchType === item ? 'solid' : 'plain'}
                             slotProps={{
                             input: { 'aria-label': item,
-                            sx: { backgroundColor: `${matchType} === 'red' : '#000' ? 'transparent'`}
                             },
                             action: {sx: { borderRadius: 0, transition: 'none' }},
                             label: { sx: { lineHeight: 0 } },
-                            radio: { sx: { backgroundColor: `${matchType} === 'red' : '#000' ? 'transparent'`} }
                             }}
                         />
                         </Box>
@@ -310,11 +342,17 @@ export default function MatchSurveyPage(){
                     required
                     type="number"
                     inputMode="tel"
-                    options={SFLAllTeams}
+                    placeholder="start typing..."
+                    options={orlandoAllTeams}
                     value={teamNumber}
                     onChange={handleInputChange}
                     clearOnBlur
+                    isOptionEqualToValue={(option, value) =>{
+                    if(option === '' || value === '') return true;
+                    else return true;
+                    }}
                     sx={{ width: 300 }}
+                    slotProps={{input: { inputMode:'decimal' }}}
                 />
                 </FormControl>
 
@@ -339,7 +377,7 @@ export default function MatchSurveyPage(){
                             alignItems: 'center',
                             width: 'fit-content',
                             height: 48,
-                            padding: '1rem',
+                            padding: '1rem !important',
                             '&:not([data-first-child])': {
                             borderLeft: '1px solid',
                             borderColor: 'divider',
@@ -665,19 +703,19 @@ export default function MatchSurveyPage(){
                 />
                 </FormControl>
 
-                <FormControl>
+                <FormControl  sx={{ marginBottom: '2rem'}}>
                     <FormLabel>Post-Match Comments</FormLabel>
-                    <FormHelperText>Why was disabled, any fouls, etc.</FormHelperText>
+                    <FormHelperText>Why disabled, any fouls, defense strategy, etc.</FormHelperText>
                     <Textarea
                     minRows={2}
                     onChange={(e) => handleTextareaLimit(e.target.value)}
                     sx={{ maxWidth: 500, minWidth: 300 }}
-                    error={comments.length > 255 ? true : false}
+                    error={comments.length > comments ? true : false}
                     />
-                    <FormHelperText>{comments.length}/255</FormHelperText>
+                    <FormHelperText><span style={{color: (comments.length > 500 ? 'red' : 'unset' ?? 'unset')}}>{comments.length}</span>/500</FormHelperText>
                 </FormControl>
 
-                <Button loading={loading} onClick={(e) => {handleValidate(e)}}>Submit Survey</Button>
+                <Button loading={loading} onClick={(e) => submitHelper(isPostSeason, e)}>Submit Survey</Button>
             </form>
 
             <Snackbar

@@ -1,0 +1,6 @@
+.alertContainer {
+    background-color: #333;
+    color: #fff;
+    border-radius: 10px;
+    z-index: 2;
+}
