@@ -292,7 +292,7 @@ export default function PitSurveyPage() {
     if(bytes < 1000000){
       setUnit('KB')
       convertedSize = Math.floor(bytes/1000).toFixed(2);
-    } else{
+    } else{ //use case: if user reuploads an img
         setUnit('MB')
         convertedSize = Math.floor(bytes/1000000).toFixed(2); 
     }
@@ -306,8 +306,14 @@ export default function PitSurveyPage() {
         setColor('primary')
         setErrorString('Attached front image!')
 
+        //check if img exists
+        if(document.getElementById('front-img')){
+          frontPreview.remove(document.getElementById('front-img'))
+        }
+
         const img = document.createElement("img");
         img.classList.add("preview-img");
+        img.id = 'front-img'
         img.file = file;
         frontPreview.appendChild(img);
 
@@ -331,11 +337,17 @@ export default function PitSurveyPage() {
         setColor('primary')
         setErrorString('Attached side image!')  //custom string aside from vanilla "submitted!"
 
+        //check if img exists
+        if(document.getElementById('side-img')){
+          frontPreview.remove(document.getElementById('side-img'))
+        }
+
         const img = document.createElement("img");
         img.classList.add("preview-img");
+        img.id = 'side-img'
         img.file = file;
         sidePreview.appendChild(img);
-
+      
         const reader = new FileReader();
         reader.onload = (e) => {
           img.src = e.target.result;
