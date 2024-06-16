@@ -2,8 +2,8 @@
 import Image from "next/image";
 import { Button, Autocomplete, FormControl, FormLabel, Input, RadioGroup, Radio, List, ListItem, Checkbox, FormHelperText, Snackbar, Textarea } from '@mui/joy'
 import MenuButton from "@/components/menu-button";
-import { SFLAllTeams } from "../data/sfl-all-teams";
-import { useState, useRef, useDebugValue } from "react";
+import { orlandoAllTeams } from "../data/orlando-all-teams";
+import { useState, useRef } from "react";
 import styles from './pit.module.css'
 
 //images
@@ -15,6 +15,9 @@ import Swerve from '../../public/images/swervedrive.jpg'
 // import type { PutBlobResult } from '@vercel/blob'; //js quickstart does not have typing but has defined w `as`
 
 export default function PitSurveyPage() {
+  const isDevMode = process.env.NEXT_PUBLIC_DEV_MODE;
+  const isPostSeason = process.env.NEXT_PUBLIC_POSTSEASON;
+
   const [teamNumber, setTeamNumber] = useState('')
   const [drivetrain, setDrivetrain] = useState('')
   const [prefPos, setPrefPos] = useState([])
@@ -131,79 +134,15 @@ export default function PitSurveyPage() {
     }
   }
 
-  //grab first element from target because this is
-  //meant to be a array capable of holding multiple images if needed
-  function handleImages(e){
-    const eventTarget = e.target
-    const file = eventTarget.files[0]
-    //show file size bc Vercel Blob only allows a Server Upload of 4.5 MB
-    // const size = file.size / (1024 * 1024).toFixed(2)
-    const frontPreview = document.getElementById('preview-1')
-    const sidePreview = document.getElementById('preview-2')
-
-    const bytes = file.size
-    // console.log(bytes)
-    var convertedSize = 0.0;
-    if(bytes < 1000000){
-      setUnit('KB')
-      convertedSize = Math.floor(bytes/1000).toFixed(2);
-    } else{
-        setUnit('MB')
-        convertedSize = Math.floor(bytes/1000000).toFixed(2); 
+  function submitHelper(isPostSeason, e){
+    if(isPostSeason == 'true' && isDevMode == 'false'){
+      handlePostseasonSubmit()
+      return true
     }
 
-    if(eventTarget.id === 'front-picture'){
-      try {
-        // setFrontImage(file)
-        frontImageRef.current = file
-        console.log(frontImageRef.current)
-        setFrontImageSize(convertedSize)
-        setColor('primary')
-        setErrorString('Attached front image!')
-
-        const img = document.createElement("img");
-        img.classList.add("preview-img");
-        img.file = file;
-        frontPreview.appendChild(img);
-    
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          img.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-      } catch (error) {
-        setColor('warning')
-        setErrorString('Error attaching front image!')
-        alert(error)
-      }
+    if(isPostSeason == 'false' || isDevMode == 'true'){
+      handleValidate(e)
     }
-    else if(eventTarget.id === 'side-picture'){
-      try {
-        // setSideImage(file)
-        sideImageRef.current = file
-        console.log(sideImageRef.current)
-        setSideImageSize(convertedSize)
-        setColor('primary')
-        setErrorString('Attached side image!')  //custom string aside from vanilla "submitted!"
-
-        const img = document.createElement("img");
-        img.classList.add("preview-img");
-        img.file = file;
-        sidePreview.appendChild(img);
-    
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          img.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-      } catch (error) {
-        setColor('warning')
-        setErrorString('Error attaching side image!')
-        alert(error)
-      }
-    }
-
-    setOpen(true) //show snackbar after color/string has been set
   }
 
   function handleValidate(passedEvent){
@@ -216,7 +155,7 @@ export default function PitSurveyPage() {
     return false;
     }
 
-    else if(feedback && feedback.length > 255){
+    else if(feedback && feedback.length > 500){
       setErrorString('Feedback must be at most 255 chars.')
       setColor('danger')
       setSuccess(false)
@@ -233,9 +172,8 @@ export default function PitSurveyPage() {
 
     //join into one string
     var allPrefPos = prefPos.join(",");
-    console.log(allPrefPos)
  
-    console.log(teamNumber, drivetrain, vision, scoreHeight, pickup, climb, helpClimb, scoreClimb, investigate, feedback, name)
+    console.log(teamNumber, drivetrain, allPrefPos, vision, scoreHeight, pickup, climb, helpClimb, scoreClimb, investigate, feedback, name)
 
     const data = {
       teamNumber: teamNumber,
@@ -252,7 +190,12 @@ export default function PitSurveyPage() {
       name: name
      }
 
-    fetch('/api/pit-result', {
+     let fetchString = '/api/pit-result' //default
+     if(isDevMode == "true"){
+       fetchString = '/api/dev/pit-result'
+     }
+
+    fetch(fetchString, {
       method: 'POST', 
       body: JSON.stringify(data),
       headers:{ 'Content-Type': 'application/json' }
@@ -282,6 +225,8 @@ export default function PitSurveyPage() {
           console.log(frontImageRef.current)
           console.log(sideImageRef.current)
           uploadImages()
+
+          setColor('success')
 
           formRef.current.reset();
 
@@ -381,12 +326,17 @@ async function uploadImages(){
           <Autocomplete
             required
             type="number"
-            inputMode="tel"
-            options={SFLAllTeams}
+            placeholder="start typing..."
+            options={orlandoAllTeams}
             value={teamNumber}
             onChange={handleInputChange}
             clearOnBlur
+            isOptionEqualToValue={(option, value) =>{
+              if(option === '' || value === '') return true;
+              else return true;
+            }} 
             sx={{ width: 300 }}
+            slotProps={{input: { inputMode:'decimal' }}}
           />
         </FormControl>
 
@@ -443,7 +393,7 @@ async function uploadImages(){
                 <Checkbox label="Left" value='left' checked={leftChecked} onChange={(e) => {setLeft(e.target.checked), handleCheckbox(e.target.value, e.target.checked)}}/>
               </ListItem>
               <ListItem>
-                <Checkbox label="Center/Subwoofer Area" value='center' checked={centerChecked} onChange={(e) => {setCenter(e.target.checked), handleCheckbox(e.target.value, e.target.checked)}}/>
+                <Checkbox label="Center/Subwoofer Area" value='center area' checked={centerChecked} onChange={(e) => {setCenter(e.target.checked), handleCheckbox(e.target.value, e.target.checked)}}/>
               </ListItem>
               <ListItem>
                 <Checkbox label="Right" value='right'  checked={rightChecked} onChange={(e) => {setRight(e.target.checked), handleCheckbox(e.target.value, e.target.checked)}}/>
@@ -566,10 +516,10 @@ async function uploadImages(){
             <Textarea
             minRows={3}
             onChange={(e) => setFeedback(e.target.value)}
-            sx={{ width: 500 }}
-            error={feedback.length > 255 ? true : false ?? false}
+            sx={{ minWidth: 300, maxWidth: 500 }}
+            error={feedback.length > 500 ? true : false ?? false}
             />
-            <FormHelperText>{feedback.length}/255</FormHelperText>
+            <FormHelperText><span style={{color: (feedback.length > 500 ? 'red' : 'unset' ?? 'unset')}}>{feedback.length}</span>/500</FormHelperText>
           </div>
           }
         </FormControl>
@@ -583,7 +533,7 @@ async function uploadImages(){
           />
         </FormControl>
         
-        <Button loading={loading} onClick={(e) => {handleValidate(e)}}>Submit Survey</Button>
+        <Button loading={loading} onClick={(e) => submitHelper(isPostSeason, e)}>Submit Survey</Button>
         </form>
 
         <Snackbar
