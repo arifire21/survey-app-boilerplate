@@ -68,3 +68,10 @@
     - for serving as a portfolio example
     - for archiving results
 - organizing some files
+
+## v4.1.0
+- [#11](https://github.com/arifire21/744-survey/issues/11) Adding image upload capability to form
+    - frontend buttons
+    - image preview
+    - image size state variable (Vercel has limit of 4.5MB)
+    - server upload / api

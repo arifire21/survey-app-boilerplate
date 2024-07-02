@@ -230,11 +230,6 @@ export default function PitSurveyPage() {
 
           formRef.current.reset();
 
-          frontImageRef.current = null;
-          sideImageRef.current = null; //reset after submitting
-          console.log(frontImageRef.current)
-          console.log(sideImageRef.current)
-
           setTeamNumber('')
 
           setLeft(false)    //setting bc customs
@@ -264,7 +259,7 @@ export default function PitSurveyPage() {
 
           document.querySelectorAll('.preview-img').forEach((img) => {
               img.remove();
-            });
+          });
           console.log('preview-1`s img removed')
           console.log('preview-2`s img removed')
       }
@@ -274,39 +269,37 @@ export default function PitSurveyPage() {
   .catch(error => {
       console.log(error)
   })
-}
+  }
 
-//grab first element from target because this is
-  //meant to be a array capable of holding multiple images if needed
   function handleImages(e){
-    const eventTarget = e.target
+    //grab first element from target because this "e.target" is
+    //meant to be a array capable of holding multiple images if needed (see docs)
+    const eventTarget = e.target  //the upload button that is clicked
     const file = eventTarget.files[0]
-    //show file size bc Vercel Blob only allows a Server Upload of 4.5 MB
-    // const size = file.size / (1024 * 1024).toFixed(2)
     const frontPreview = document.getElementById('preview-1')
     const sidePreview = document.getElementById('preview-2')
 
+    //show file size bc Vercel Blob only allows a Server Upload of 4.5 MB
     const bytes = file.size
     // console.log(bytes)
     var convertedSize = 0.0;
     if(bytes < 1000000){
       setUnit('KB')
       convertedSize = Math.floor(bytes/1000).toFixed(2);
-    } else{ //use case: if user reuploads an img
+    } else{ //use case: if user reuploads an img and it happens to be MB
         setUnit('MB')
         convertedSize = Math.floor(bytes/1000000).toFixed(2); 
     }
 
     if(eventTarget.id === 'front-picture'){
       try {
-        // setFrontImage(file)
         frontImageRef.current = file
-        console.log(frontImageRef.current)
+        // console.log(frontImageRef.current)
         setFrontImageSize(convertedSize)
         setColor('primary')
         setErrorString('Attached front image!')
 
-        //check if img exists
+        //check if img preview exists first (ex: if re-uploading)
         if(document.getElementById('front-img')){
           frontPreview.remove(document.getElementById('front-img'))
         }
@@ -321,7 +314,7 @@ export default function PitSurveyPage() {
         reader.onload = (e) => {
           img.src = e.target.result;
         };
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(file);   //converts to more accessible data url
       } catch (error) {
         setColor('warning')
         setErrorString('Error attaching front image!')
@@ -330,14 +323,13 @@ export default function PitSurveyPage() {
     }
     else if(eventTarget.id === 'side-picture'){
       try {
-        // setSideImage(file)
         sideImageRef.current = file
         console.log(sideImageRef.current)
         setSideImageSize(convertedSize)
         setColor('primary')
         setErrorString('Attached side image!')  //custom string aside from vanilla "submitted!"
 
-        //check if img exists
+        //check if img preview exists
         if(document.getElementById('side-img')){
           frontPreview.remove(document.getElementById('side-img'))
         }
@@ -390,13 +382,17 @@ async function uploadImages(){
         setSuccess(false)
         setColor('danger')
         setErrorString("Error uploading images!")
+        console.error(response)
       } else {
         const newBlob = (response.json()) // as PutBlobResult;
-
+        console.log(newBlob)
         setBlob(newBlob);
+        
+        frontImageRef.current = null;
+        sideImageRef.current = null; //reset after submitting
       }
     })).catch(error => {
-      console.log(error)
+      console.error(error)
   });
   }
 }

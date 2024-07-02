@@ -5,6 +5,8 @@ export async function POST(request) {
   const { searchParams } = new URL(request.url);
   const frontFilename = searchParams.get('filename_front');
   const sideFilename = searchParams.get('filename_side');
+  console.log(frontFilename)
+  console.log(sideFilename)
 
  try {
   const blob = await put(frontFilename, sideFilename, request.body, {
