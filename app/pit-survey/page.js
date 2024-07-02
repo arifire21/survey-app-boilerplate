@@ -224,7 +224,13 @@ export default function PitSurveyPage() {
           console.log(instantlyKnowIfSubmit)
           console.log(frontImageRef.current)
           console.log(sideImageRef.current)
-          uploadImages()
+          // uploadImages()
+          if(frontImageRef.current){
+            uploadImage(frontImageRef)
+          }
+          if(sideImageRef.current){
+            uploadImage(sideImageRef)
+          }
 
           setColor('success')
 
@@ -253,9 +259,6 @@ export default function PitSurveyPage() {
           setInvestigate('')
           setFeedback('')
           setName('')
-
-          setFrontImageSize(0.0)
-          setSideImageSize(0.0)
 
           document.querySelectorAll('.preview-img').forEach((img) => {
               img.remove();
@@ -355,41 +358,47 @@ export default function PitSurveyPage() {
     setOpen(true) //show snackbar after color/string has been set
   }
 
-async function uploadImages(){
+async function uploadImage(ref){
   if(instantlyKnowIfSubmit == true){ // await only allowed at upper level so wrap in conditional
     console.log('reached img upload')
-    const front = frontImageRef.current
-    const side = sideImageRef.current
-    const imageData = {
-      front: front,
-      side: side
-    }
+    const img = ref.current
+    // const side = sideImageRef.current
+    // const imageData = {
+    //   front: front,
+    //   side: side
+    // }
 
     setLoading(true)
     setColor('neutral')
-    setErrorString("Uploading images...")
+    setErrorString("Uploading image...")
     setSuccess(false)
     setOpen(true)
 
     await fetch(
-      `/api/upload-pit-images?filename_front=${front.name}&filename_side=${side.name}`,
+      `/api/upload-pit-images?filename=${img.name}`,
       {
         method: 'POST',
-        body: JSON.stringify(imageData),
+        body: img,
       },
     ).then((response => {
       if(!response.ok){
         setSuccess(false)
         setColor('danger')
-        setErrorString("Error uploading images!")
+        setErrorString("Error uploading image!")
         console.error(response)
       } else {
         const newBlob = (response.json()) // as PutBlobResult;
         console.log(newBlob)
         setBlob(newBlob);
         
-        frontImageRef.current = null;
-        sideImageRef.current = null; //reset after submitting
+        //reset after submitting
+        ref.current = null;
+        // sideImageRef.current = null;
+        // setFrontImageSize(0)
+        // setSideImageSize(0)
+
+        setColor('success')
+        setErrorString(`Uploaded ${ref.current.name} image!`)
       }
     })).catch(error => {
       console.error(error)
