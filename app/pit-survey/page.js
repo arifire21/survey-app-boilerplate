@@ -34,7 +34,8 @@ export default function PitSurveyPage() {
   //form state
   const [loading, setLoading] = useState(false)
   const formRef = useRef(null);
-  const [blob, setBlob] = useState(null)
+  const [frontBlob, setFrontBlob] = useState(null)
+  const [sideBlob, setSideBlob] = useState(null)
   var instantlyKnowIfSubmit = false;  //stupid name lol but used bc state is async
   // const [validated, setValidated] = useState(false)
 
@@ -170,6 +171,20 @@ export default function PitSurveyPage() {
     setLoading(true)
     e.preventDefault()
 
+    //upload image to pass to DB
+    instantlyKnowIfSubmit = true;
+    console.log(instantlyKnowIfSubmit)
+    console.log(frontImageRef.current)
+    console.log(sideImageRef.current)
+    // uploadImages()
+    //temp til better fix
+    if(frontImageRef.current){
+      uploadImage(frontImageRef, 'front')
+    }
+    if(sideImageRef.current){
+      uploadImage(sideImageRef, 'side')
+    }
+
     //join into one string
     var allPrefPos = prefPos.join(",");
  
@@ -187,13 +202,15 @@ export default function PitSurveyPage() {
       scoreClimb: scoreClimb,
       investigate: investigate,
       feedback: feedback,
-      name: name
-     }
+      name: name,
+      frontImageURL: frontBlob.url,
+      sideImageURL: sideBlob.url
+    }
 
-     let fetchString = '/api/pit-result' //default
-     if(isDevMode == "true"){
-       fetchString = '/api/dev/pit-result'
-     }
+    let fetchString = '/api/pit-result' //default
+    if(isDevMode == "true"){
+      fetchString = '/api/dev/pit-result'
+    }
 
     fetch(fetchString, {
       method: 'POST', 
@@ -220,20 +237,6 @@ export default function PitSurveyPage() {
       } else { //reset
           setSuccess(true)
           setColor('success')
-          instantlyKnowIfSubmit = true;
-          console.log(instantlyKnowIfSubmit)
-          console.log(frontImageRef.current)
-          console.log(sideImageRef.current)
-          // uploadImages()
-          if(frontImageRef.current){
-            uploadImage(frontImageRef)
-          }
-          if(sideImageRef.current){
-            uploadImage(sideImageRef)
-          }
-
-          setColor('success')
-
           formRef.current.reset();
 
           setTeamNumber('')
@@ -358,53 +361,71 @@ export default function PitSurveyPage() {
     setOpen(true) //show snackbar after color/string has been set
   }
 
-async function uploadImage(ref){
-  if(instantlyKnowIfSubmit == true){ // await only allowed at upper level so wrap in conditional
-    console.log('reached img upload')
-    const img = ref.current
-    // const side = sideImageRef.current
-    // const imageData = {
-    //   front: front,
-    //   side: side
-    // }
+  async function uploadImage(ref, tag){
+    if(instantlyKnowIfSubmit == true){ // await only allowed at upper level so wrap in conditional
+      console.log('reached img upload')
+      const img = ref.current
+      // const side = sideImageRef.current
+      // const imageData = {
+      //   front: front,
+      //   side: side
+      // }
 
-    setLoading(true)
-    setColor('neutral')
-    setErrorString("Uploading image...")
+      setLoading(true)
+      setColor('neutral')
+      setErrorString("Uploading image...")
+      setSuccess(false)
+      setOpen(true)
+
+      await fetch(
+        `/api/upload-pit-images?filename=${img.name}`,
+        {
+          method: 'POST',
+          body: img,
+        },
+      ).then((response => {
+        if(!response.ok){
+          setSuccess(false)
+          setColor('danger')
+          setErrorString("Error uploading image!")
+          console.error(response)
+        } else {
+          const newBlob = (response.json()) // as PutBlobResult;
+          if(tag.equals('front')){
+            console.log(newBlob)
+            setFrontBlob(newBlob);
+
+            //reset after submitting
+            ref.current = null;
+            setFrontImageSize(0)
+          }
+
+          if(tag.equals('side')){
+            console.log(newBlob)
+            setSideBlob(newBlob);
+            
+            //reset after submitting
+            ref.current = null;
+            setSideImageSize(0)
+          }
+
+          setColor('success')
+          setErrorString(`Uploaded ${ref.current.name} image!`)
+        }
+      })).catch(error => {
+        console.error(error)
+    });
+    }
+  }
+
+  function handlePostseasonSubmit(){
+    // setLoading(true)
+    setColor('warning')
+    setErrorString('POSTSEASON MODE enabled: cannot submit new records!')
     setSuccess(false)
     setOpen(true)
-
-    await fetch(
-      `/api/upload-pit-images?filename=${img.name}`,
-      {
-        method: 'POST',
-        body: img,
-      },
-    ).then((response => {
-      if(!response.ok){
-        setSuccess(false)
-        setColor('danger')
-        setErrorString("Error uploading image!")
-        console.error(response)
-      } else {
-        const newBlob = (response.json()) // as PutBlobResult;
-        console.log(newBlob)
-        setBlob(newBlob);
-        
-        //reset after submitting
-        ref.current = null;
-        // sideImageRef.current = null;
-        // setFrontImageSize(0)
-        // setSideImageSize(0)
-
-        setColor('success')
-        setErrorString(`Uploaded ${ref.current.name} image!`)
-      }
-    })).catch(error => {
-      console.error(error)
-  });
   }
-}
+
   return (
     <>
         <MenuButton/>
