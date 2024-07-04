@@ -66,7 +66,7 @@ export default function PitSurveyPage() {
   const [color, setColor] = useState('neutral')
 
   function handleCheckbox(value, checked){
-    console.log(`${value}, ${checked}`)
+    // console.log(`${value}, ${checked}`)
 
     if(checked == undefined){
       console.log('returning undefined')
@@ -74,15 +74,13 @@ export default function PitSurveyPage() {
     }
     if(checked == true){
       setPrefPos([...prefPos, value])
-      console.log('added')
-      console.log(prefPos)
+      // console.log('added')
     } else if(checked == false) {
       setPrefPos(
         prefPos.filter(a =>
           a !== value
       ))
-      console.log('removed')
-      console.log(prefPos)
+      // console.log('removed')
     }
   }
 
@@ -174,15 +172,30 @@ export default function PitSurveyPage() {
     //upload image to pass to DB
     instantlyKnowIfSubmit = true;
     console.log(instantlyKnowIfSubmit)
-    console.log(frontImageRef.current)
-    console.log(sideImageRef.current)
+    // console.log(frontImageRef.current)
+    // console.log(sideImageRef.current)
     // uploadImages()
     //temp til better fix
+    let frontImgBlobURL = ''
+    let sideImgBlobURL = ''
+
     if(frontImageRef.current){
-      uploadImage(frontImageRef, 'front')
+      // uploadImage(frontImageRef, 'front')
+      frontImgBlobURL = uploadImage(frontImageRef, 'front')
+      console.log(frontImgBlobURL);
+      frontImageRef.current = null;
+      setFrontImageSize(0)
+      setColor('success')
+      setErrorString(`Uploaded front image!`)
     }
     if(sideImageRef.current){
-      uploadImage(sideImageRef, 'side')
+      
+      sideImgBlobURL = uploadImage(sideImageRef, 'side')
+      console.log(sideImgBlobURL)
+      sideImageRef.current = null;
+      setSideImageSize(0)
+      setColor('success')
+      setErrorString(`Uploaded side image!`)
     }
 
     //join into one string
@@ -203,8 +216,8 @@ export default function PitSurveyPage() {
       investigate: investigate,
       feedback: feedback,
       name: name,
-      frontImageURL: frontBlob.url,
-      sideImageURL: sideBlob.url
+      frontImageURL: frontImgBlobURL,
+      sideImageURL: sideImgBlobURL
     }
 
     let fetchString = '/api/pit-result' //default
@@ -361,8 +374,8 @@ export default function PitSurveyPage() {
     setOpen(true) //show snackbar after color/string has been set
   }
 
-  async function uploadImage(ref, tag){
-    if(instantlyKnowIfSubmit == true){ // await only allowed at upper level so wrap in conditional
+  function uploadImage(ref, tag){
+    // if(instantlyKnowIfSubmit == true){ // await only allowed at upper level so wrap in conditional
       console.log('reached img upload')
       const img = ref.current
       // const side = sideImageRef.current
@@ -377,45 +390,38 @@ export default function PitSurveyPage() {
       setSuccess(false)
       setOpen(true)
 
-      await fetch(
+      fetch(
         `/api/upload-pit-images?filename=${img.name}`,
         {
           method: 'POST',
           body: img,
         },
-      ).then((response => {
+      ).then((async response => {
         if(!response.ok){
           setSuccess(false)
           setColor('danger')
           setErrorString("Error uploading image!")
           console.error(response)
+          return null
         } else {
-          const newBlob = (response.json()) // as PutBlobResult;
-          if(tag.equals('front')){
-            console.log(newBlob)
-            setFrontBlob(newBlob);
-
-            //reset after submitting
-            ref.current = null;
-            setFrontImageSize(0)
+          const newBlob = (await response.json()) // as PutBlobResult;
+          console.log(newBlob)
+          if(tag === 'front'){
+            // setFrontBlob(newBlob)
+            // console.log(newBlob.url)
+            return newBlob;
           }
 
-          if(tag.equals('side')){
-            console.log(newBlob)
-            setSideBlob(newBlob);
-            
-            //reset after submitting
-            ref.current = null;
-            setSideImageSize(0)
+          if(tag === 'side'){
+            setSideBlob(newBlob)
+            // console.log(newBlob.url)
+            return newBlob
           }
-
-          setColor('success')
-          setErrorString(`Uploaded ${ref.current.name} image!`)
         }
       })).catch(error => {
         console.error(error)
     });
-    }
+    // }
   }
 
   function handlePostseasonSubmit(){
@@ -660,13 +666,6 @@ export default function PitSurveyPage() {
         `Submitted!`
         : `${errorString}`}
         </Snackbar>
-
-        {/* testing only */}
-        {blob && (
-        <div>
-          Blob url: <a href={blob.url}>{blob.url}</a>
-        </div>
-      )}
     </>
   )
 }
