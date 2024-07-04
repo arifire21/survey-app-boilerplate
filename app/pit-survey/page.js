@@ -34,9 +34,6 @@ export default function PitSurveyPage() {
   //form state
   const [loading, setLoading] = useState(false)
   const formRef = useRef(null);
-  const [frontBlob, setFrontBlob] = useState(null)
-  const [sideBlob, setSideBlob] = useState(null)
-  var instantlyKnowIfSubmit = false;  //stupid name lol but used bc state is async
   // const [validated, setValidated] = useState(false)
 
   //checkboxes
@@ -89,7 +86,6 @@ export default function PitSurveyPage() {
   }
 
   function drivetrainHelper(radioValue){
-    console.log(radioValue)
     switch (radioValue) {
       case 'west coast drive':
         setDrivetrain(radioValue)
@@ -134,12 +130,12 @@ export default function PitSurveyPage() {
   }
 
   function submitHelper(isPostSeason, e){
-    if(isPostSeason == 'true' && isDevMode == 'false'){
+    if(isPostSeason && !isDevMode){
       handlePostseasonSubmit()
-      return true
+      return null
     }
 
-    if(isPostSeason == 'false' || isDevMode == 'true'){
+    if(!isPostSeason || isDevMode){
       handleValidate(e)
     }
   }
@@ -147,7 +143,7 @@ export default function PitSurveyPage() {
   function handleValidate(passedEvent){
     if (teamNumber==='' || !drivetrain || !prefPos || !vision
       || !scoreHeight || !pickup || !climb || !investigate || !name){
-    setErrorString('All fields required!')
+    setErrorString('Check required fields!')
     setColor('danger')
     setSuccess(false)
     setOpen(true)
@@ -162,46 +158,57 @@ export default function PitSurveyPage() {
       return false;
     }
 
-    handleSubmit(passedEvent)
+    //if everything is good, try to upload images here since handleSubmit is async
+    uploadAndSubmit(passedEvent)
   }
 
-  const handleSubmit = async (e) => {
+      //upload image to pass to DB
+      // let frontImgBlobURL = ''
+      // let sideImgBlobURL = ''
+  
+      // if(frontImageRef.current){
+      //   // uploadImage(frontImageRef, 'front')
+      //   frontImgBlobURL = uploadImage(frontImageRef)
+      //   console.log(`outside return: ${frontImgBlobURL}`);
+      //   if(typeof frontImgBlobURL === 'string'){
+      //     console.log('str')
+      //     setColor('success')
+      //     setErrorString(`Uploaded front image!`)
+      //     frontImageRef.current = null;
+      //     setFrontImageSize(0)
+      //   }
+      // }
+      // if(sideImageRef.current){
+        
+      //   sideImgBlobURL = uploadImage(sideImageRef)
+      //   console.log(`outside return: ${sideImgBlobURL}`);
+      //   if(typeof frontImgBlobURL === 'string'){
+      //     console.log('str')
+      //     setColor('success')
+      //     setErrorString(`Uploaded side image!`)
+      //     frontImageRef.current = null;
+      //     setFrontImageSize(0)
+      //   }
+      // }
+
+  async function uploadAndSubmit(passedEvent){
+    console.log('starting...')
+    let frontImgBlobURL = await uploadImage(frontImageRef);
+    console.log(frontImgBlobURL)
+    let sideImgBlobURL = await uploadImage(sideImageRef)
+    console.log(sideImgBlobURL)
+    await handleSubmit(passedEvent, frontImgBlobURL, sideImgBlobURL)
+    console.log('done!')
+  }
+
+  const handleSubmit = async (e, f, s) => {
     setLoading(true)
     e.preventDefault()
-
-    //upload image to pass to DB
-    instantlyKnowIfSubmit = true;
-    console.log(instantlyKnowIfSubmit)
-    // console.log(frontImageRef.current)
-    // console.log(sideImageRef.current)
-    // uploadImages()
-    //temp til better fix
-    let frontImgBlobURL = ''
-    let sideImgBlobURL = ''
-
-    if(frontImageRef.current){
-      // uploadImage(frontImageRef, 'front')
-      frontImgBlobURL = uploadImage(frontImageRef, 'front')
-      console.log(frontImgBlobURL);
-      frontImageRef.current = null;
-      setFrontImageSize(0)
-      setColor('success')
-      setErrorString(`Uploaded front image!`)
-    }
-    if(sideImageRef.current){
-      
-      sideImgBlobURL = uploadImage(sideImageRef, 'side')
-      console.log(sideImgBlobURL)
-      sideImageRef.current = null;
-      setSideImageSize(0)
-      setColor('success')
-      setErrorString(`Uploaded side image!`)
-    }
 
     //join into one string
     var allPrefPos = prefPos.join(",");
  
-    console.log(teamNumber, drivetrain, allPrefPos, vision, scoreHeight, pickup, climb, helpClimb, scoreClimb, investigate, feedback, name)
+    console.log(teamNumber, drivetrain, allPrefPos, vision, scoreHeight, pickup, climb, helpClimb, scoreClimb, investigate, feedback, name, f, s)
 
     const data = {
       teamNumber: teamNumber,
@@ -216,8 +223,8 @@ export default function PitSurveyPage() {
       investigate: investigate,
       feedback: feedback,
       name: name,
-      frontImageURL: frontImgBlobURL,
-      sideImageURL: sideImgBlobURL
+      frontImageURL: f,
+      sideImageURL: s
     }
 
     let fetchString = '/api/pit-result' //default
@@ -279,8 +286,6 @@ export default function PitSurveyPage() {
           document.querySelectorAll('.preview-img').forEach((img) => {
               img.remove();
           });
-          console.log('preview-1`s img removed')
-          console.log('preview-2`s img removed')
       }
       setOpen(true)
       setLoading(false)
@@ -374,53 +379,40 @@ export default function PitSurveyPage() {
     setOpen(true) //show snackbar after color/string has been set
   }
 
-  function uploadImage(ref, tag){
+  async function uploadImage(ref){
     // if(instantlyKnowIfSubmit == true){ // await only allowed at upper level so wrap in conditional
       console.log('reached img upload')
       const img = ref.current
-      // const side = sideImageRef.current
-      // const imageData = {
-      //   front: front,
-      //   side: side
-      // }
 
       setLoading(true)
       setColor('neutral')
-      setErrorString("Uploading image...")
+      setErrorString("Uploading images...")
       setSuccess(false)
       setOpen(true)
 
-      fetch(
+      const response = await fetch(
         `/api/upload-pit-images?filename=${img.name}`,
         {
           method: 'POST',
           body: img,
         },
-      ).then((async response => {
-        if(!response.ok){
-          setSuccess(false)
-          setColor('danger')
-          setErrorString("Error uploading image!")
-          console.error(response)
-          return null
-        } else {
-          const newBlob = (await response.json()) // as PutBlobResult;
-          console.log(newBlob)
-          if(tag === 'front'){
-            // setFrontBlob(newBlob)
-            // console.log(newBlob.url)
-            return newBlob;
-          }
+      ).catch(err => console.log(err))
 
-          if(tag === 'side'){
-            setSideBlob(newBlob)
-            // console.log(newBlob.url)
-            return newBlob
-          }
-        }
-      })).catch(error => {
-        console.error(error)
-    });
+      const blob = (await response.json());
+      return blob.url;
+      // .then((response => {
+      //   if(!response.ok){
+      //     setSuccess(false)
+      //     setColor('danger')
+      //     setErrorString("Error uploading image!")
+      //     console.error(response)
+      //     return null
+      //   } else {
+      //     return response.json() // as PutBlobResult;
+      //   }
+      // }))
+      //   .then(data => {console.log(`data: ${data}`); return data.url})
+      //   .catch(err => console.log(err) )
     // }
   }
 

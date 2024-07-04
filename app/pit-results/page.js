@@ -11,6 +11,7 @@ export default function ViewPitResultsPage(){
     const [fetchedPitResults, setPitResults] = useState([]);
     const [isPitEmpty, setPitEmpty] = useState(false)
     const [requestFail, setRequestFail] = useState(false)
+    const [dataUndef, setUndef] = useState(false)
 
     //filter states
     const [filterType, setFilterType] = useState('all')
@@ -21,26 +22,6 @@ export default function ViewPitResultsPage(){
 
     let availTeams = []
     let filteredTeams = []
-
-    function pitDataHelper(results){ //relying on state in getData does not work because of state's delayed updating
-      if(results.length == 0){
-        setPitEmpty(true)
-        return true;
-      }
-      //use .sort method here to just make this easier when using .filter
-      let sortedResults = results.sort((a, b) => a.team_number - b.team_number) //ascending order
-      setPitResults(sortedResults)
-      // console.log(sortedResults)
-
-      sortedResults.forEach(team => {
-        availTeams.push(team.team_number)
-      });
-      console.log(availTeams)
-
-      setAvailTeamsRender(availTeams)
-        
-      return true;
-    }
 
     function handleInputChange(event, value) {
       setTeamCriteria(value);
@@ -54,13 +35,6 @@ export default function ViewPitResultsPage(){
 
       filteredTeams = [] //reset
       setFilteredTeamsRender([])
-  
-      // if(document.querySelectorAll('.filtered-item-container').length){
-      //   document.querySelectorAll('.filtered-item-container').forEach((item) => {
-      //   item.remove();
-      //   console.log('reset')
-      // });
-      // }
 
       switch (value) {
         case 'drivetrain is WCD':
@@ -141,7 +115,6 @@ export default function ViewPitResultsPage(){
 
     function filterBySwerve() {
       filteredTeams = fetchedPitResults.filter((item) => item.drivetrain === 'swerve')
-      // console.log(filteredTeams)
       updateFilteredState()
     }
 
@@ -150,97 +123,81 @@ export default function ViewPitResultsPage(){
                                                          item.drivetrain != 'mecanum'          && 
                                                          item.drivetrain != 'tank'             &&
                                                          item.drivetrain != 'swerve'              )
-      // console.log(filteredTeams)
       updateFilteredState()
     }
 
     function filterByStartLeft() {
       filteredTeams = fetchedPitResults.filter((item) => item.preferred_pos.includes('left'))
-      // console.log(filteredTeams)
       updateFilteredState()
     }
 
     function filterByStartCenter() {
       filteredTeams = fetchedPitResults.filter((item) => item.preferred_pos.includes('center/subwoofer area'))
-      // console.log(filteredTeams)
       updateFilteredState()
     }
 
     function filterByStartRight() {
       filteredTeams = fetchedPitResults.filter((item) => item.preferred_pos.includes('right'))
-      // console.log(filteredTeams)
       updateFilteredState()
     }
 
     function filterByVision() {
       filteredTeams = fetchedPitResults.filter((item) => item.vision === 'yes')
-      // console.log(filteredTeams)
       updateFilteredState()
     }
 
     function filterByAmp() {
       filteredTeams = fetchedPitResults.filter((item) => item.score_height === 'amp' || item.score_height === 'both')
-      // console.log(filteredTeams)
       updateFilteredState()
     }
 
     function filterBySpeaker() {
       filteredTeams = fetchedPitResults.filter((item) => item.score_height === 'speaker' || item.score_height === 'both')
-      // console.log(filteredTeams)
       updateFilteredState()
     }
 
     function filterByBothHeight() {
       filteredTeams = fetchedPitResults.filter((item) => item.score_height === 'both')
-      // console.log(filteredTeams)
       updateFilteredState()
     }
 
     function filterByFloor() {
       filteredTeams = fetchedPitResults.filter((item) => item.pickup_pos === 'floor' || item.pickup_pos === 'both')
-      // console.log(filteredTeams)
       updateFilteredState()
     }
 
     function filterByHPS() {
       filteredTeams = fetchedPitResults.filter((item) => item.pickup_pos === 'human player station' || item.pickup_pos === 'both')
-      // console.log(filteredTeams)
       updateFilteredState()
     }
 
     function filterByBothPickup() {
       filteredTeams = fetchedPitResults.filter((item) => item.pickup_pos === 'both')
-      // console.log(filteredTeams)
       updateFilteredState()
     }
 
     function filterByClimb() {
       filteredTeams = fetchedPitResults.filter((item) => item.can_climb === 'yes')
-      // console.log(filteredTeams)
       updateFilteredState()
     }
 
     function filterByHelpClimb() {
       filteredTeams = fetchedPitResults.filter((item) => item.help_climb === 'yes')
-      // console.log(filteredTeams)
       updateFilteredState()
     }
 
     function filterByScoreClimb() {
       filteredTeams = fetchedPitResults.filter((item) => item.score_climb === 'yes')
-      // console.log(filteredTeams)
       updateFilteredState()
     }
 
     function filterByClimb() {
       filteredTeams = fetchedPitResults.filter((item) => item.can_climb === 'yes')
-      // console.log(filteredTeams)
       updateFilteredState()
     }
 
     function filterByFeedback() {
       filteredTeams = fetchedPitResults.filter((item) => (item.feedback && item.feedback.length > 0))
-      // console.log(filteredTeams)
       updateFilteredState()
     }
 
@@ -250,7 +207,34 @@ export default function ViewPitResultsPage(){
       setFilteredTeamsRender(filteredTeams)
     }
 
-    // console.log('outside '+ filteredTeamsRender)
+    function pitDataHelper(results){ //relying on state in getData does not work because of state's delayed updating
+      if(results.length == 0){
+        setPitEmpty(true)
+        return null;
+      }
+
+      //is this needed
+      if (typeof results == 'undefined' || typeof results == null){
+        setUndef(true)
+        console.log('undef')
+        console.log(dataUndef)
+        return null;
+      }
+
+      //use .sort method here to just make this easier when using .filter
+      let sortedResults = results.sort((a, b) => a.team_number - b.team_number) //ascending order
+      setPitResults(sortedResults)
+      // console.log(sortedResults)
+
+      sortedResults.forEach(team => {
+        availTeams.push(team.team_number)
+      });
+      // console.log(availTeams)
+
+      setAvailTeamsRender(availTeams)
+
+      return true;
+    } 
     //end helpers
 
       const getData = async () => {
@@ -265,20 +249,21 @@ export default function ViewPitResultsPage(){
           "Content-Type": "application/json",
           },
         })
-        .then((res) => {
+        .then((res => {
           if(!res.ok){
             console.log('Check Internet Connection')
             setPitEmpty(true)
             setRequestFail(true)
+            return null
           }
           else {
-            res.json() // Parse the response data as JSON
+            return res.json() // Parse the response data as JSON
           }
-        }) 
-        .then((data) => {pitDataHelper(data.results)})
+        }))
+        .then((data) => {console.log(`data: ${data}`);pitDataHelper(data.results)})
         .catch( err => console.log(err) );
 
-        console.log(availTeamsRender)
+        // console.log(availTeamsRender)
         isPitLoading(false) //should stay here regardless if empty or not
       }
   
@@ -293,6 +278,10 @@ export default function ViewPitResultsPage(){
         <h1>Pit Survey Results</h1>
         {requestFail && requestFail && (
           <p><strong>API Request Failed</strong>: Check your internet connection and try again!</p>
+        )}
+
+        {dataUndef && dataUndef == true && (
+          <p><strong>API Request Failed</strong>: response data is undefined, contact admin!</p>
         )}
 
         {pitLoading && pitLoading == true   //is request loading...
@@ -373,97 +362,115 @@ export default function ViewPitResultsPage(){
 
           {/* more conditionals yayyyy */}
           {/* filter type all */}
-          { filterType && filterType === 'all' && (
+          {filterType && filterType === 'all' && (
             <div className="pit-results-container">
-            {fetchedPitResults.map((item, index) => {
-              return(
-              <div key={index} className="item-container">
-                <h3 className="pit-results-number">{item.team_number}</h3>
-                <p className="detail">Drivetrain: <strong>{item.drivetrain}</strong></p>
-                <p className="detail">Preferred Start Position(s): <strong>{item.preferred_pos}</strong></p>
-                <p className="detail">Has Vision Tracking: <strong>{item.vision}</strong></p>
-                <p className="detail">Scores in Amp or Speaker: <strong>{item.score_height}</strong></p>
-                <p className="detail">Pickup at floor or HPS: <strong>{item.pickup_pos}</strong></p>
-                <p className="detail">Can climb: <strong>{item.can_climb}</strong></p>
-                {item.can_climb && item.can_climb === 'yes' && (
-                  <>
-                    <p className="detail">Can help others climb: <strong>{item.help_climb}</strong></p>
-                    <p className="detail">Can score while climbing: <strong>{item.score_climb}</strong></p>
-                  </>
-                )}
-                {item.feedback && item.feedback.length > 0 && <p className="detail">Thoughts: {item.feedback}</p>}
-                <small>Survey by: <strong>{item.name}</strong></small>
-              </div>
-              )
-            })}
+              {fetchedPitResults.map((item, index) => {
+                return (
+                  <div key={index} className="item-container">
+                    <h3 className="pit-results-number">{item.team_number}</h3>
+                    <p className="detail">Drivetrain: <strong>{item.drivetrain}</strong></p>
+                    <p className="detail">Preferred Start Position(s): <strong>{item.preferred_pos}</strong></p>
+                    <p className="detail">Has Vision Tracking: <strong>{item.vision}</strong></p>
+                    <p className="detail">Scores in Amp or Speaker: <strong>{item.score_height}</strong></p>
+                    <p className="detail">Pickup at floor or HPS: <strong>{item.pickup_pos}</strong></p>
+                    <p className="detail">Can climb: <strong>{item.can_climb}</strong></p>
+                    {item.can_climb && item.can_climb === 'yes' && (
+                      <>
+                        <p className="detail">Can help others climb: <strong>{item.help_climb}</strong></p>
+                        <p className="detail">Can score while climbing: <strong>{item.score_climb}</strong></p>
+                      </>
+                    )}
+                    {item.front_img_url && (
+                      <img src={item.front_img_url} alt='front pit img' className='img-preview' />
+                    )}
+                    {item.side_img_url && (
+                      <img src={item.side_img_url} alt='side pit img' className='img-preview' />
+                    )}
+                    {item.feedback && item.feedback.length > 0 && <p className="detail">Thoughts: {item.feedback}</p>}
+                    <small>Survey by: <strong>{item.name}</strong></small>
+                  </div>
+                )
+              })}
             </div>
           )}
           {/* end filter type all */}
 
           {/* yes I know these may be computationally costly to do on FE, but working with
-              assumption of little to no signal in event spaces, and possibly limited
-              compute time/idle DB
-          */}
+      assumption of little to no signal in event spaces, and possibly limited
+      compute time/idle DB
+  */}
 
           {/* filter type team */}
           {/* avoid re-renders, check if not null/team first, then ternary */}
           {(filterType && filterType === 'team') && (teamCriteria === '' ?
-          <p>Select a team number!</p>
-          : (
+            <p style={{ textAlign: 'center' }}>Select a team number!</p>
+            : (
               <div className="pit-results-container">
                 {/* ((value, or index, or another array) => what to compare against) */}
                 {fetchedPitResults.filter((item) => item.team_number === teamCriteria).map((item, index) => {
-                return(
-                <div key={`${index}-${item.team_number}`} className="item-container">
-                  <h3 className="pit-results-number">{item.team_number}</h3>
-                  <p>Drivetrain: <strong>{item.drivetrain}</strong></p>
-                  <p>Preferred Start Position(s): <strong>{item.preferred_pos}</strong></p>
-                  <p>Has Vision Tracking: <strong>{item.vision}</strong></p>
-                  <p>Scores in Amp or Speaker: <strong>{item.score_height}</strong></p>
-                  <p>Pickup at floor or HPS: <strong>{item.pickup_pos}</strong></p>
-                  <p>Can climb: <strong>{item.can_climb}</strong></p>
-                  {item.can_climb && item.can_climb === 'yes' && (
-                    <>
-                      <p>Can help others climb: <strong>{item.help_climb}</strong></p>
-                      <p>Can score while climbing: <strong>{item.score_climb}</strong></p>
-                    </>
-                  )}
-                  {item.feedback && item.feedback.length > 0 && <p>Thoughts: {item.feedback}</p>}
-                  <small>Survey by: <strong>{item.name}</strong></small>
-                </div>
-                )
+                  return (
+                    <div key={index} className="item-container">
+                      <h3 className="pit-results-number">{item.team_number}</h3>
+                      <p className="detail">Drivetrain: <strong>{item.drivetrain}</strong></p>
+                      <p className="detail">Preferred Start Position(s): <strong>{item.preferred_pos}</strong></p>
+                      <p className="detail">Has Vision Tracking: <strong>{item.vision}</strong></p>
+                      <p className="detail">Scores in Amp or Speaker: <strong>{item.score_height}</strong></p>
+                      <p className="detail">Pickup at floor or HPS: <strong>{item.pickup_pos}</strong></p>
+                      <p className="detail">Can climb: <strong>{item.can_climb}</strong></p>
+                      {item.can_climb && item.can_climb === 'yes' && (
+                        <>
+                          <p className="detail">Can help others climb: <strong>{item.help_climb}</strong></p>
+                          <p className="detail">Can score while climbing: <strong>{item.score_climb}</strong></p>
+                        </>
+                      )}
+                      {item.front_img_url && (
+                        <img src={item.front_img_url} alt='front pit img' className='img-preview' />
+                      )}
+                      {item.side_img_url && (
+                        <img src={item.side_img_url} alt='side pit img' className='img-preview' />
+                      )}
+                      {item.feedback && item.feedback.length > 0 && <p className="detail">Thoughts: {item.feedback}</p>}
+                      <small>Survey by: <strong>{item.name}</strong></small>
+                    </div>
+                  )
                 })}
               </div>
             )
-          )} 
+          )}
           {/* end filter type team */}
 
           {/* filter type trait */}
           {(filterType && filterType === 'trait') && (traitCriteria === '' ?
-          <p>Select a trait!</p>
-          : (
+            <p style={{ textAlign: 'center' }}>Select a trait!</p>
+            : (
               <div className="pit-results-container" id="filtered-container">
                 {/* ((value, or index, or another array) => what to compare against) */}
                 {filteredTeamsRender && !filteredTeamsRender.length ? <p>No results.</p> : filteredTeamsRender.map((item, index) => {
-                return(
-                <div key={`${index}-${item.team_number}`} className="filtered-item-container">
-                  <h3 className="pit-results-number">{item.team_number}</h3>
-                  <p>Drivetrain: <strong>{item.drivetrain}</strong></p>
-                  <p>Preferred Start Position(s): <strong>{item.preferred_pos}</strong></p>
-                  <p>Has Vision Tracking: <strong>{item.vision}</strong></p>
-                  <p>Scores in Amp or Speaker: <strong>{item.score_height}</strong></p>
-                  <p>Pickup at floor or HPS: <strong>{item.pickup_pos}</strong></p>
-                  <p>Can climb: <strong>{item.can_climb}</strong></p>
-                  {item.can_climb && item.can_climb === 'yes' && (
-                    <>
-                      <p>Can help others climb: <strong>{item.help_climb}</strong></p>
-                      <p>Can score while climbing: <strong>{item.score_climb}</strong></p>
-                    </>
-                  )}
-                  {item.feedback && item.feedback.length > 0 && <p>Thoughts: {item.feedback}</p>}
-                  <small>Survey by: <strong>{item.name}</strong></small>
-                </div>
-                )
+                  return (
+                    <div key={index} className="item-container">
+                      <h3 className="pit-results-number">{item.team_number}</h3>
+                      <p className="detail">Drivetrain: <strong>{item.drivetrain}</strong></p>
+                      <p className="detail">Preferred Start Position(s): <strong>{item.preferred_pos}</strong></p>
+                      <p className="detail">Has Vision Tracking: <strong>{item.vision}</strong></p>
+                      <p className="detail">Scores in Amp or Speaker: <strong>{item.score_height}</strong></p>
+                      <p className="detail">Pickup at floor or HPS: <strong>{item.pickup_pos}</strong></p>
+                      <p className="detail">Can climb: <strong>{item.can_climb}</strong></p>
+                      {item.can_climb && item.can_climb === 'yes' && (
+                        <>
+                          <p className="detail">Can help others climb: <strong>{item.help_climb}</strong></p>
+                          <p className="detail">Can score while climbing: <strong>{item.score_climb}</strong></p>
+                        </>
+                      )}
+                      {item.front_img_url && (
+                        <img src={item.front_img_url} alt='front pit img' className='img-preview' />
+                      )}
+                      {item.side_img_url && (
+                        <img src={item.side_img_url} alt='side pit img' className='img-preview' />
+                      )}
+                      {item.feedback && item.feedback.length > 0 && <p className="detail">Thoughts: {item.feedback}</p>}
+                      <small>Survey by: <strong>{item.name}</strong></small>
+                    </div>
+                  )
                 })}
               </div>
             ))}

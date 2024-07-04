@@ -21,7 +21,7 @@ form {
   justify-content: space-around;
 }
 
-.item-container, .filtered-item-container {
+.item-container {
   border: 2px solid #01a0bb;
   border-radius: 10px;
   padding: 1.5rem;
@@ -124,4 +124,12 @@ form {
   border-radius: 15px;
   padding: 0.5rem;
   width: fit-content;
+}
+
+/* wrapper for RESULTS image */
+.img-preview {
+  width: fit-content !important;
+  /* scale: 0.6; */
+  max-height: 220px;
+  max-width: 300px;
 }
