@@ -126,10 +126,16 @@ form {
   width: fit-content;
 }
 
+.img-preview-container {
+  text-align: center;
+}
+
 /* wrapper for RESULTS image */
 .img-preview {
   width: fit-content !important;
   /* scale: 0.6; */
-  max-height: 220px;
+  max-height: 300px;
   max-width: 300px;
+  object-fit: contain;
+  border-radius: 6px;
 }

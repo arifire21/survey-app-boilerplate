@@ -381,10 +381,16 @@ export default function ViewPitResultsPage(){
                       </>
                     )}
                     {item.front_img_url && (
+                      <div className='img-preview-container'>
+                      <p>Front Image</p>
                       <img src={item.front_img_url} alt='front pit img' className='img-preview' />
+                      </div>
                     )}
                     {item.side_img_url && (
+                      <div className='img-preview-container'>
+                      <p>Side Image</p>
                       <img src={item.side_img_url} alt='side pit img' className='img-preview' />
+                      </div>
                     )}
                     {item.feedback && item.feedback.length > 0 && <p className="detail">Thoughts: {item.feedback}</p>}
                     <small>Survey by: <strong>{item.name}</strong></small>

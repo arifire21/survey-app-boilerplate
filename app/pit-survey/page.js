@@ -399,7 +399,17 @@ export default function PitSurveyPage() {
       ).catch(err => console.log(err))
 
       const blob = (await response.json());
-      return blob.url;
+      // console.log(blob)
+      if(blob == null || blob === undefined){
+        setColor('danger')
+        setErrorString("Error uploading image!")
+        console.error(blob)
+        return null;
+      } else {
+        setColor('success')
+        setErrorString("Uploaded image!")
+        return blob.url;
+      }
       // .then((response => {
       //   if(!response.ok){
       //     setSuccess(false)
