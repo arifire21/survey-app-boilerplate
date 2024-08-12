@@ -268,6 +268,7 @@ export default function MatchSurveyPage(){
                 <FormLabel>Match Number <sup className='req'>*</sup></FormLabel>
                 <Input
                 type='number'
+                inputMode='tel'
                 required
                 onChange={(e) => setMatchNumber(e.target.value)}
                 sx={{ width: 300 }}
@@ -340,6 +341,7 @@ export default function MatchSurveyPage(){
                 <Autocomplete
                     required
                     type="number"
+                    inputMode="tel"
                     placeholder="start typing..."
                     options={orlandoAllTeams}
                     value={teamNumber}

@@ -12,6 +12,8 @@ import Mec from '../../public/images/mecanumdrive.png'
 import Tank from '../../public/images/tankdrive.jpg'
 import Swerve from '../../public/images/swervedrive.jpg'
 
+// import type { PutBlobResult } from '@vercel/blob'; //js quickstart does not have typing but has defined w `as`
+
 export default function PitSurveyPage() {
   const isDevMode = process.env.NEXT_PUBLIC_DEV_MODE;
   const isPostSeason = process.env.NEXT_PUBLIC_POSTSEASON;
@@ -46,6 +48,14 @@ export default function PitSurveyPage() {
   const [swerveSelected, setSwerve] = useState(false)
   const [isOtherSelected, setOther] = useState(false)
 
+  // const [frontImage, setFrontImage] = useState()
+  // const [sideImage, setSideImage] = useState()
+  const frontImageRef = useRef()
+  const sideImageRef = useRef()
+  const [frontImageSize, setFrontImageSize] = useState(0.0)
+  const [sideImageSize, setSideImageSize] = useState(0.0)
+  const [unit, setUnit] = useState('MB')
+
   //snackbar state
   const [open, setOpen] = useState(false)
   const [errorString, setErrorString] =useState('')
@@ -53,7 +63,7 @@ export default function PitSurveyPage() {
   const [color, setColor] = useState('neutral')
 
   function handleCheckbox(value, checked){
-    console.log(`${value}, ${checked}`)
+    // console.log(`${value}, ${checked}`)
 
     if(checked == undefined){
       console.log('returning undefined')
@@ -61,15 +71,13 @@ export default function PitSurveyPage() {
     }
     if(checked == true){
       setPrefPos([...prefPos, value])
-      console.log('added')
-      console.log(prefPos)
+      // console.log('added')
     } else if(checked == false) {
       setPrefPos(
         prefPos.filter(a =>
           a !== value
       ))
-      console.log('removed')
-      console.log(prefPos)
+      // console.log('removed')
     }
   }
 
@@ -78,7 +86,6 @@ export default function PitSurveyPage() {
   }
 
   function drivetrainHelper(radioValue){
-    console.log(radioValue)
     switch (radioValue) {
       case 'west coast drive':
         setDrivetrain(radioValue)
@@ -123,12 +130,12 @@ export default function PitSurveyPage() {
   }
 
   function submitHelper(isPostSeason, e){
-    if(isPostSeason == 'true' && isDevMode == 'false'){
+    if(isPostSeason && !isDevMode){
       handlePostseasonSubmit()
-      return true
+      return null
     }
 
-    if(isPostSeason == 'false' || isDevMode == 'true'){
+    if(!isPostSeason || isDevMode){
       handleValidate(e)
     }
   }
@@ -136,7 +143,7 @@ export default function PitSurveyPage() {
   function handleValidate(passedEvent){
     if (teamNumber==='' || !drivetrain || !prefPos || !vision
       || !scoreHeight || !pickup || !climb || !investigate || !name){
-    setErrorString('All fields required!')
+    setErrorString('Check required fields!')
     setColor('danger')
     setSuccess(false)
     setOpen(true)
@@ -151,17 +158,57 @@ export default function PitSurveyPage() {
       return false;
     }
 
-    handleSubmit(passedEvent)
+    //if everything is good, try to upload images here since handleSubmit is async
+    uploadAndSubmit(passedEvent)
   }
 
-  const handleSubmit = async (e) => {
+      //upload image to pass to DB
+      // let frontImgBlobURL = ''
+      // let sideImgBlobURL = ''
+  
+      // if(frontImageRef.current){
+      //   // uploadImage(frontImageRef, 'front')
+      //   frontImgBlobURL = uploadImage(frontImageRef)
+      //   console.log(`outside return: ${frontImgBlobURL}`);
+      //   if(typeof frontImgBlobURL === 'string'){
+      //     console.log('str')
+      //     setColor('success')
+      //     setErrorString(`Uploaded front image!`)
+      //     frontImageRef.current = null;
+      //     setFrontImageSize(0)
+      //   }
+      // }
+      // if(sideImageRef.current){
+        
+      //   sideImgBlobURL = uploadImage(sideImageRef)
+      //   console.log(`outside return: ${sideImgBlobURL}`);
+      //   if(typeof frontImgBlobURL === 'string'){
+      //     console.log('str')
+      //     setColor('success')
+      //     setErrorString(`Uploaded side image!`)
+      //     frontImageRef.current = null;
+      //     setFrontImageSize(0)
+      //   }
+      // }
+
+  async function uploadAndSubmit(passedEvent){
+    console.log('starting...')
+    let frontImgBlobURL = await uploadImage(frontImageRef);
+    console.log(frontImgBlobURL)
+    let sideImgBlobURL = await uploadImage(sideImageRef)
+    console.log(sideImgBlobURL)
+    await handleSubmit(passedEvent, frontImgBlobURL, sideImgBlobURL)
+    console.log('done!')
+  }
+
+  const handleSubmit = async (e, f, s) => {
     setLoading(true)
     e.preventDefault()
 
     //join into one string
     var allPrefPos = prefPos.join(",");
  
-    console.log(teamNumber, drivetrain, allPrefPos, vision, scoreHeight, pickup, climb, helpClimb, scoreClimb, investigate, feedback, name)
+    console.log(teamNumber, drivetrain, allPrefPos, vision, scoreHeight, pickup, climb, helpClimb, scoreClimb, investigate, feedback, name, f, s)
 
     const data = {
       teamNumber: teamNumber,
@@ -175,13 +222,15 @@ export default function PitSurveyPage() {
       scoreClimb: scoreClimb,
       investigate: investigate,
       feedback: feedback,
-      name: name
-     }
+      name: name,
+      frontImageURL: f,
+      sideImageURL: s
+    }
 
-     let fetchString = '/api/pit-result' //default
-     if(isDevMode == "true"){
-       fetchString = '/api/dev/pit-result'
-     }
+    let fetchString = '/api/pit-result' //default
+    if(isDevMode == "true"){
+      fetchString = '/api/dev/pit-result'
+    }
 
     fetch(fetchString, {
       method: 'POST', 
@@ -208,7 +257,6 @@ export default function PitSurveyPage() {
       } else { //reset
           setSuccess(true)
           setColor('success')
-
           formRef.current.reset();
 
           setTeamNumber('')
@@ -234,6 +282,10 @@ export default function PitSurveyPage() {
           setInvestigate('')
           setFeedback('')
           setName('')
+
+          document.querySelectorAll('.preview-img').forEach((img) => {
+              img.remove();
+          });
       }
       setOpen(true)
       setLoading(false)
@@ -241,15 +293,146 @@ export default function PitSurveyPage() {
   .catch(error => {
       console.log(error)
   })
-}
+  }
 
-function handlePostseasonSubmit(){
-  // setLoading(true)
-  setColor('warning')
-  setErrorString('POSTSEASON MODE enabled: cannot submit new records!')
-  setSuccess(false)
-  setOpen(true)
-}
+  function handleImages(e){
+    //grab first element from target because this "e.target" is
+    //meant to be a array capable of holding multiple images if needed (see docs)
+    const eventTarget = e.target  //the upload button that is clicked
+    const file = eventTarget.files[0]
+    const frontPreview = document.getElementById('preview-1')
+    const sidePreview = document.getElementById('preview-2')
+
+    //show file size bc Vercel Blob only allows a Server Upload of 4.5 MB
+    const bytes = file.size
+    // console.log(bytes)
+    var convertedSize = 0.0;
+    if(bytes < 1000000){
+      setUnit('KB')
+      convertedSize = Math.floor(bytes/1000).toFixed(2);
+    } else{ //use case: if user reuploads an img and it happens to be MB
+        setUnit('MB')
+        convertedSize = Math.floor(bytes/1000000).toFixed(2); 
+    }
+
+    if(eventTarget.id === 'front-picture'){
+      try {
+        frontImageRef.current = file
+        // console.log(frontImageRef.current)
+        setFrontImageSize(convertedSize)
+        setColor('primary')
+        setErrorString('Attached front image!')
+
+        //check if img preview exists first (ex: if re-uploading)
+        if(document.getElementById('front-img')){
+          frontPreview.remove(document.getElementById('front-img'))
+        }
+
+        const img = document.createElement("img");
+        img.classList.add("preview-img");
+        img.id = 'front-img'
+        img.file = file;
+        frontPreview.appendChild(img);
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);   //converts to more accessible data url
+      } catch (error) {
+        setColor('warning')
+        setErrorString('Error attaching front image!')
+        alert(error)
+      }
+    }
+    else if(eventTarget.id === 'side-picture'){
+      try {
+        sideImageRef.current = file
+        console.log(sideImageRef.current)
+        setSideImageSize(convertedSize)
+        setColor('primary')
+        setErrorString('Attached side image!')  //custom string aside from vanilla "submitted!"
+
+        //check if img preview exists
+        if(document.getElementById('side-img')){
+          frontPreview.remove(document.getElementById('side-img'))
+        }
+
+        const img = document.createElement("img");
+        img.classList.add("preview-img");
+        img.id = 'side-img'
+        img.file = file;
+        sidePreview.appendChild(img);
+      
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      } catch (error) {
+        setColor('warning')
+        setErrorString('Error attaching side image!')
+        alert(error)
+      }
+    }
+
+    setOpen(true) //show snackbar after color/string has been set
+  }
+
+  async function uploadImage(ref){
+    // if(instantlyKnowIfSubmit == true){ // await only allowed at upper level so wrap in conditional
+      console.log('reached img upload')
+      const img = ref.current
+
+      setLoading(true)
+      setColor('neutral')
+      setErrorString("Uploading images...")
+      setSuccess(false)
+      setOpen(true)
+
+      const response = await fetch(
+        `/api/upload-pit-images?filename=${img.name}`,
+        {
+          method: 'POST',
+          body: img,
+        },
+      ).catch(err => console.log(err))
+
+      const blob = (await response.json());
+      // console.log(blob)
+      if(blob == null || blob === undefined){
+        setColor('danger')
+        setErrorString("Error uploading image!")
+        console.error(blob)
+        return null;
+      } else {
+        setColor('success')
+        setErrorString("Uploaded image!")
+        return blob.url;
+      }
+      // .then((response => {
+      //   if(!response.ok){
+      //     setSuccess(false)
+      //     setColor('danger')
+      //     setErrorString("Error uploading image!")
+      //     console.error(response)
+      //     return null
+      //   } else {
+      //     return response.json() // as PutBlobResult;
+      //   }
+      // }))
+      //   .then(data => {console.log(`data: ${data}`); return data.url})
+      //   .catch(err => console.log(err) )
+    // }
+  }
+
+  function handlePostseasonSubmit(){
+    // setLoading(true)
+    setColor('warning')
+    setErrorString('POSTSEASON MODE enabled: cannot submit new records!')
+    setSuccess(false)
+    setOpen(true)
+  }
 
   return (
     <>
@@ -406,6 +589,37 @@ function handlePostseasonSubmit(){
           </>
         )}
 
+        <h2 style={{marginBottom:0}}>Pictures</h2>
+        <small>Max size of each image: 4.5 MB</small>
+        <FormControl  sx={{ marginBottom: '1rem', height:'fit-content !important'}}>
+          <label htmlFor="front-picture"><strong>Front</strong> View:</label>
+          <input
+            type="file"
+            ref={frontImageRef}
+            id="front-picture"
+            name="picture"
+            accept="image/*"
+            capture="environment" //! this is what allows for camera functionality on mobile. desktop triggers file browser
+            onChange={handleImages}
+          />
+          <output id='filesize-front'><small>{frontImageSize} {unit}</small></output>
+          <div id="preview-1" className={styles.imgPreview}></div>
+        </FormControl>
+        
+        <FormControl  sx={{ marginBottom: '1rem', height:'fit-content !important'}}>
+          <label htmlFor="side-picture"><strong>Side</strong> View:</label>
+          <input
+            type="file"
+            ref={sideImageRef}
+            id="side-picture"
+            name="picture"
+            accept="image/*"
+            capture="environment"  //! this is what allows for camera functionality on mobile. desktop triggers file browser
+            onChange={handleImages}/>
+          <output id='filesize-side'><small>{sideImageSize} {unit}</small></output>
+          <div id="preview-2" className={styles.imgPreview}></div>
+        </FormControl>
+
         <h2>Information</h2>
         <FormControl  sx={{ marginBottom: '1rem'}}>
           <FormLabel>Do you think this robot is worth investigating? <sup className='req'>*</sup></FormLabel>
@@ -445,7 +659,7 @@ function handlePostseasonSubmit(){
         <Snackbar
         variant="solid"
         color={color}
-        autoHideDuration={submitSuccess ? 3500 : 5000 ?? 3500}
+        autoHideDuration={errorString === 'Uploading images...' ? null : (submitSuccess ? 3500 : 5000 ?? 3500)}
         open={open}
         onClose={() => setOpen(false)}
         // onUnmount={handleReset}

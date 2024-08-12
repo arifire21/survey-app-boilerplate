@@ -5,14 +5,15 @@ export async function POST(request) {
   const  body = await request.json()
   const {teamNumber,drivetrain, prefPos, vision,
         scoreHeight, pickup, climb, helpClimb,
-        scoreClimb, investigate, feedback, name} = body
+        scoreClimb, investigate, feedback, name,
+        frontImageURL, sideImageURL} = body
  
   try {
     if (!teamNumber || !drivetrain || ! prefPos || !vision
       || !scoreHeight || !pickup || !climb || !investigate || !name) return NextResponse.json({ error }, { status: 400 });
 
-    await sql`INSERT INTO PitResults (team_number, drivetrain, preferred_pos, vision, score_height, pickup_pos, can_climb, help_climb, score_climb, feedback, name)
-              VALUES (${teamNumber}, ${drivetrain}, ${prefPos}, ${vision}, ${scoreHeight}, ${pickup}, ${climb}, ${helpClimb}, ${scoreClimb}, ${feedback}, ${name});`;
+    await sql`INSERT INTO PitResults (team_number, drivetrain, preferred_pos, vision, score_height, pickup_pos, can_climb, help_climb, score_climb, feedback, name, front_img_url, side_img_url)
+              VALUES (${teamNumber}, ${drivetrain}, ${prefPos}, ${vision}, ${scoreHeight}, ${pickup}, ${climb}, ${helpClimb}, ${scoreClimb}, ${feedback}, ${name}, ${frontImageURL}, ${sideImageURL});`;
   } catch (error) {
     return NextResponse.json({ error }, { message: 'check INSERT INTO statement!', status: 500 });
   }
