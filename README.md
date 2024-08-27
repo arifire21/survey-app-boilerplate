@@ -3,6 +3,8 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 A  web application made to streamline both survey types used during competitions.
 
+*Now featuring* image uploads for pit survey, and filtering options for pit / match data entries
+
 ## Install Instructions
 ### iOS -- Safari (iPhone and iPad)
 1. Click the Share Menu
@@ -17,8 +19,6 @@ A  web application made to streamline both survey types used during competitions
 4. Click "Add"
 
 ## More to Come!
-- uploading images of robots for pit survey (currently in development)
-- filtering options for pit and match data entries (currently in development)
 - notification of Team 744's match results
 
 ## Changelog
@@ -28,7 +28,7 @@ For changelog, click [here](https://github.com/arifire21/744-survey/blob/trunk/c
 ### Branches
 1. Trunk
   - production branch
-  - unless minor changes, to be commited to via Pull Requests to verify Vercel temp deployment is successful
+  - unless minor changes, only commit to this via Pull Requests, to verify Vercel temp deployment is successful
 2. Dev Branches
   - make branches per each new major change proposed (match survey, new api points, etc)
 ### Issues
