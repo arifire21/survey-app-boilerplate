@@ -1,6 +1,6 @@
 "use client"
 import MenuButton from "@/components/menu-button";
-import { CircularProgress, RadioGroup, Radio, Select, Option, Autocomplete } from "@mui/joy";
+import { CircularProgress, RadioGroup, Radio, Select, Option, Autocomplete, Modal, ModalClose, ModalDialog, DialogTitle,DialogContent } from "@mui/joy";
 import { useState, useEffect } from "react";
 // import { orlandoAllTeams } from "../data/orlando-all-teams";
 
@@ -19,6 +19,10 @@ export default function ViewPitResultsPage(){
     const [traitCriteria, setTraitCriteria] = useState('')
     const [filteredTeamsRender, setFilteredTeamsRender] = useState([])
     const [availTeamsRender, setAvailTeamsRender] = useState([])
+
+    const [open, setOpen] = useState(false);
+    const [modalImage, setModalImage] = useState(null);
+    const [modalTitleSpan, setModalTitleSpan] = useState(null);
 
     let availTeams = []
     let filteredTeams = []
@@ -234,7 +238,15 @@ export default function ViewPitResultsPage(){
       setAvailTeamsRender(availTeams)
 
       return true;
-    } 
+    }
+
+    function modalContentHelper(span, url){
+      console.log(`${span}, ${url}`)
+      setModalTitleSpan(span);
+      setModalImage(url);
+      setOpen(true);
+    }
+
     //end helpers
 
       const getData = async () => {
@@ -300,7 +312,7 @@ export default function ViewPitResultsPage(){
           <label className="filter-label">Filter Mode:</label>
           <RadioGroup name="radio-buttons-pit-filter"
               value={filterType}
-              onChange={(e) => {setFilterType(e.target.value), console.log(e.target.value)}}
+              onClick={(e) => {setFilterType(e.target.value), console.log(e.target.value)}}
               sx={{display:'flex', flexDirection:'row', flexWrap:'wrap', alignItems:'center'}}
               >
             <Radio value="all" label="All" sx={{marginBlockStart: '1rem', marginRight:'1rem'}}/>
@@ -383,13 +395,17 @@ export default function ViewPitResultsPage(){
                     {item.front_img_url && (
                       <div className='img-preview-container'>
                       <p>Front Image</p>
-                      <img src={item.front_img_url} alt='front pit img' className='img-preview' />
+                      <img src={item.front_img_url} alt='front pit img' className='img-preview'
+                        onClick={()=>{modalContentHelper('Front', item.front_img_url)}}
+                      />
                       </div>
                     )}
                     {item.side_img_url && (
                       <div className='img-preview-container'>
                       <p>Side Image</p>
-                      <img src={item.side_img_url} alt='side pit img' className='img-preview' />
+                      <img src={item.side_img_url} alt='side pit img' className='img-preview'
+                        onClick={()=>{modalContentHelper('Side', item.side_img_url)}}
+                        />
                       </div>
                     )}
                     {item.feedback && item.feedback.length > 0 && <p className="detail">Thoughts: {item.feedback}</p>}
@@ -402,9 +418,9 @@ export default function ViewPitResultsPage(){
           {/* end filter type all */}
 
           {/* yes I know these may be computationally costly to do on FE, but working with
-      assumption of little to no signal in event spaces, and possibly limited
-      compute time/idle DB
-  */}
+            assumption of little to no signal in event spaces, and possibly limited
+            compute time/idle DB
+        */}
 
           {/* filter type team */}
           {/* avoid re-renders, check if not null/team first, then ternary */}
@@ -430,10 +446,14 @@ export default function ViewPitResultsPage(){
                         </>
                       )}
                       {item.front_img_url && (
-                        <img src={item.front_img_url} alt='front pit img' className='img-preview' />
+                        <img src={item.front_img_url} alt='front pit img' className='img-preview'
+                          onClick={()=>{modalContentHelper('Front', item.front_img_url)}}
+                        />
                       )}
                       {item.side_img_url && (
-                        <img src={item.side_img_url} alt='side pit img' className='img-preview' />
+                        <img src={item.side_img_url} alt='side pit img' className='img-preview'
+                          onClick={()=>{modalContentHelper('Side', item.side_img_url)}}
+                        />
                       )}
                       {item.feedback && item.feedback.length > 0 && <p className="detail">Thoughts: {item.feedback}</p>}
                       <small>Survey by: <strong>{item.name}</strong></small>
@@ -468,10 +488,14 @@ export default function ViewPitResultsPage(){
                         </>
                       )}
                       {item.front_img_url && (
-                        <img src={item.front_img_url} alt='front pit img' className='img-preview' />
+                        <img src={item.front_img_url} alt='front pit img' className='img-preview'
+                          onClick={()=>{modalContentHelper('Front', item.front_img_url)}}
+                        />
                       )}
                       {item.side_img_url && (
-                        <img src={item.side_img_url} alt='side pit img' className='img-preview' />
+                        <img src={item.side_img_url} alt='side pit img' className='img-preview'
+                          onClick={()=>{modalContentHelper('Side', item.side_img_url)}}
+                        />
                       )}
                       {item.feedback && item.feedback.length > 0 && <p className="detail">Thoughts: {item.feedback}</p>}
                       <small>Survey by: <strong>{item.name}</strong></small>
@@ -483,6 +507,20 @@ export default function ViewPitResultsPage(){
           {/* end filter type trait */}
           </section>
         )}
+
+      <Modal
+        aria-labelledby="modal-title"
+        aria-describedby="modal-desc"
+        open={open}
+        onClose={() => {setOpen(false); console.log('closed')}}
+        // sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+      >
+        <ModalDialog>
+          <ModalClose variant="plain" size="lg" sx={{ m: 1 }} />
+          <DialogTitle><h2 id="modal-title">{modalTitleSpan} Image</h2></DialogTitle>
+          <DialogContent><img id="modal-desc" src={modalImage}/></DialogContent>
+        </ModalDialog>
+      </Modal>
 
         </>
         )
