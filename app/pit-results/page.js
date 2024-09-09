@@ -515,7 +515,7 @@ export default function ViewPitResultsPage(){
         onClose={() => {setOpen(false); console.log('closed')}}
         // sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
       >
-        <ModalDialog>
+        <ModalDialog layout="center">
           <ModalClose variant="plain" size="lg" sx={{ m: 1 }} />
           <DialogTitle><h2 id="modal-title">{modalTitleSpan} Image</h2></DialogTitle>
           <DialogContent><img id="modal-desc" src={modalImage}/></DialogContent>

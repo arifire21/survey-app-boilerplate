@@ -75,3 +75,7 @@
     - image preview
     - image size state variable (Vercel has limit of 4.5MB)
     - server upload / api
+
+## v4.1.1
+- added modal to pit results view, for better viewing on mobile devices
+- moved `match.module.css`
