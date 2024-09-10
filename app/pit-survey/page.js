@@ -286,6 +286,15 @@ export default function PitSurveyPage() {
           document.querySelectorAll('.preview-img').forEach((img) => {
               img.remove();
           });
+
+          if(frontImageSize != 0.0){
+            setFrontImageSize(0.0)
+            console.log('front to 0')
+          }
+          if(sideImageSize != 0.0){
+            setSideImageSize(0.0)
+            console.log('side to 0')
+          }
       }
       setOpen(true)
       setLoading(false)
@@ -325,10 +334,10 @@ export default function PitSurveyPage() {
 
         //check if img preview exists first (ex: if re-uploading)
         if(document.getElementById('front-img')){
-          frontPreview.remove(document.getElementById('front-img'))
+          document.getElementById('front-img').remove();
         }
 
-        const img = document.createElement("img");
+        var img = document.createElement("img");
         img.classList.add("preview-img");
         img.id = 'front-img'
         img.file = file;
@@ -345,6 +354,7 @@ export default function PitSurveyPage() {
         alert(error)
       }
     }
+    
     else if(eventTarget.id === 'side-picture'){
       try {
         sideImageRef.current = file
@@ -355,7 +365,7 @@ export default function PitSurveyPage() {
 
         //check if img preview exists
         if(document.getElementById('side-img')){
-          frontPreview.remove(document.getElementById('side-img'))
+          document.getElementById('side-img').remove();
         }
 
         const img = document.createElement("img");
