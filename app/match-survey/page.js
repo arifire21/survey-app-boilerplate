@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { useState, useRef } from 'react'
 import MenuButton from '@/components/menu-button'
 // import CounterButton from '@/components/counter-button'
-import styles from '@/styles/match.module.css'
+import styles from './match.module.css'
 
 import Guide from '../../public/images/driver-station-wall.png'
 
