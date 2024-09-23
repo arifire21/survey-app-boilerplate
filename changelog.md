@@ -78,5 +78,17 @@
 
 ## v4.1.1
 - added modal to pit results view, for better viewing on mobile devices
-- fixed image preview breaking when re-uploading (used 'parentNode.remove(element)` instead of `element.remove`)
+- fixed image preview breaking when re-uploading (used `parentNode.remove(element)` instead of `element.remove`)
 - moved `match.module.css`
+
+## v4.2.1
+- Match Survey Production Bug fixed [#26](https://github.com/arifire21/744-survey/issues/26)
+    - was not explicitly returning `return res.json()` in `getData()`. This lead to it being consumed without being passed to `pitDataHelper()` (which is what helps sets the state variables)
+- App mode clarification:
+    - changed "postseason" to "offseason" to stay in consistent with verbiage
+    - "offseason mode" will now be set up to link to the past years' databases
+    - "hiatus mode" will now now do what "postseason mode" did - not allow users to submit new records, only view ones from past matches/competitions
+- added correct `submitHelper()` method to Pit Survey file
+- changed `handleImages()` to `handleImageAssignmentPreview()` for clearer naming
+- if no images are uploaded (`[ref].current.files` has a length of 0), uploadImage() will return `null` prematurely (`frontImgBlobURL` or `sideImgBlobURL` set to `null`) and not attempt to run its API call
+- TODO: RESEARCH JOINS FOR COMBINING TABLES FOR THE ACCORDION

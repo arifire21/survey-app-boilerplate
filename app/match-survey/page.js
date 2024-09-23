@@ -13,7 +13,8 @@ import { orlandoAllTeams } from "../data/orlando-all-teams";
 
 export default function MatchSurveyPage(){
     const isDevMode = process.env.NEXT_PUBLIC_DEV_MODE;
-    const isPostSeason = process.env.NEXT_PUBLIC_POSTSEASON;
+    const isOffseason = process.env.NEXT_PUBLIC_OFFSEASON;
+    const isHiatus = process.env.NEXT_PUBLIC_SEASON_HIATUS;
 
     //form state
     const [loading, setLoading] = useState(false)
@@ -232,19 +233,19 @@ export default function MatchSurveyPage(){
       })
       }
 
-      function submitHelper(isPostSeason, e){
-        if(isPostSeason == 'true' && isDevMode == 'false'){
-          handlePostseasonSubmit()
+      function submitHelper(isHiatus, e){
+        if(isHiatus == 'true'){
+          handleHiatusSubmit()
           return true
         }
     
-        if(isPostSeason == 'false' || isDevMode == 'true'){
+        if(isHiatus == 'false' || isDevMode == 'true'){
           handleValidate(e)
         }
       }
 
-      function handlePostseasonSubmit(){
-        setErrorString('POSTSEASON MODE enabled: cannot submit new records!')
+      function handleHiatusSubmit(){
+        setErrorString('HIATUS MODE enabled: cannot submit new records!')
         setSuccess(false)
         setOpen(true)
       }
@@ -715,7 +716,7 @@ export default function MatchSurveyPage(){
                     <FormHelperText><span style={{color: (comments.length > 500 ? 'red' : 'unset' ?? 'unset')}}>{comments.length}</span>/500</FormHelperText>
                 </FormControl>
 
-                <Button loading={loading} onClick={(e) => submitHelper(isPostSeason, e)}>Submit Survey</Button>
+                <Button loading={loading} onClick={(e) => submitHelper(isHiatus, e)}>Submit Survey</Button>
             </form>
 
             <Snackbar

@@ -8,14 +8,14 @@ import { useEffect } from "react";
 
 export default function Home() {
   const isDevMode = process.env.NEXT_PUBLIC_DEV_MODE;
-  const isPostSeason = process.env.NEXT_PUBLIC_POSTSEASON;
+  const isOffseason = process.env.NEXT_PUBLIC_OFFSEASON;
 
   useEffect(() => {
     // if(isDevMode){ 
       {isDevMode && isDevMode && <Alert mode='dev'/>}
     // }
-    // if(isPostSeason){
-      {isPostSeason && isPostSeason && <Alert mode='postseason'/>}
+    // if(isOffseason){
+      {isOffseason && isOffseason && <Alert mode='postseason'/>}
     // }
   }, []);
 

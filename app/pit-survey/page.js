@@ -16,7 +16,8 @@ import Swerve from '../../public/images/swervedrive.jpg'
 
 export default function PitSurveyPage() {
   const isDevMode = process.env.NEXT_PUBLIC_DEV_MODE;
-  const isPostSeason = process.env.NEXT_PUBLIC_POSTSEASON;
+  const isOffseason = process.env.NEXT_PUBLIC_OFFSEASON;
+  const isHiatus = process.env.NEXT_PUBLIC_SEASON_HIATUS;
 
   const [teamNumber, setTeamNumber] = useState('')
   const [drivetrain, setDrivetrain] = useState('')
@@ -59,7 +60,7 @@ export default function PitSurveyPage() {
   //snackbar state
   const [open, setOpen] = useState(false)
   const [errorString, setErrorString] =useState('')
-  const [submitSuccess, setSuccess] = useState(false)
+  const [submitSuccess, setSuccess] = useState(false) //mainly used for controlling snackbar open duration
   const [color, setColor] = useState('neutral')
 
   function handleCheckbox(value, checked){
@@ -129,13 +130,13 @@ export default function PitSurveyPage() {
     }
   }
 
-  function submitHelper(isPostSeason, e){
-    if(isPostSeason && !isDevMode){
-      handlePostseasonSubmit()
+  function submitHelper(isHiatus, e){
+    if(isHiatus && !isDevMode){
+      handleisHiatusseasonSubmit()
       return null
     }
 
-    if(!isPostSeason || isDevMode){
+    if(!isHiatus || isDevMode){
       handleValidate(e)
     }
   }
@@ -161,35 +162,6 @@ export default function PitSurveyPage() {
     //if everything is good, try to upload images here since handleSubmit is async
     uploadAndSubmit(passedEvent)
   }
-
-      //upload image to pass to DB
-      // let frontImgBlobURL = ''
-      // let sideImgBlobURL = ''
-  
-      // if(frontImageRef.current){
-      //   // uploadImage(frontImageRef, 'front')
-      //   frontImgBlobURL = uploadImage(frontImageRef)
-      //   console.log(`outside return: ${frontImgBlobURL}`);
-      //   if(typeof frontImgBlobURL === 'string'){
-      //     console.log('str')
-      //     setColor('success')
-      //     setErrorString(`Uploaded front image!`)
-      //     frontImageRef.current = null;
-      //     setFrontImageSize(0)
-      //   }
-      // }
-      // if(sideImageRef.current){
-        
-      //   sideImgBlobURL = uploadImage(sideImageRef)
-      //   console.log(`outside return: ${sideImgBlobURL}`);
-      //   if(typeof frontImgBlobURL === 'string'){
-      //     console.log('str')
-      //     setColor('success')
-      //     setErrorString(`Uploaded side image!`)
-      //     frontImageRef.current = null;
-      //     setFrontImageSize(0)
-      //   }
-      // }
 
   async function uploadAndSubmit(passedEvent){
     console.log('starting...')
@@ -304,11 +276,12 @@ export default function PitSurveyPage() {
   })
   }
 
-  function handleImages(e){
-    //grab first element from target because this "e.target" is
-    //meant to be a array capable of holding multiple images if needed (see docs)
+  function handleImageAssignmentPreview(e){
+    //grab first file from target because this "e.target" is
+    //meant to be a array capable of holding multiple images if needed
+    //(see MDN docs on File API https://developer.mozilla.org/en-US/docs/Web/API/File_API/Using_files_from_web_applications#accessing_selected_files)
     const eventTarget = e.target  //the upload button that is clicked
-    const file = eventTarget.files[0]
+    const file = eventTarget.files[0] //first (and only) file selected with/using the button element
     const frontPreview = document.getElementById('preview-1')
     const sidePreview = document.getElementById('preview-2')
 
@@ -392,7 +365,15 @@ export default function PitSurveyPage() {
   async function uploadImage(ref){
     // if(instantlyKnowIfSubmit == true){ // await only allowed at upper level so wrap in conditional
       console.log('reached img upload')
-      const img = ref.current
+      const img = ref.current;
+      console.log(img)
+      if(img.files.length == 0){  //if nothing was ever attached or was an error
+        setColor('neutral')
+        setErrorString("No image to upload.")
+        setSuccess(false) //use longer time duration
+        setOpen(true)
+        return null;
+      }
 
       setLoading(true)
       setColor('neutral')
@@ -436,10 +417,21 @@ export default function PitSurveyPage() {
     // }
   }
 
-  function handlePostseasonSubmit(){
+  function submitHelper(isHiatus, e){
+    if(isHiatus == 'true'){
+      handleHiatusSubmit()
+      return true
+    }
+
+    if(isHiatus == 'false' || isDevMode == 'true'){
+      handleValidate(e)
+    }
+  }
+
+  function handleHiatusSubmit(){
     // setLoading(true)
     setColor('warning')
-    setErrorString('POSTSEASON MODE enabled: cannot submit new records!')
+    setErrorString('HIATUS MODE enabled: cannot submit new records!')
     setSuccess(false)
     setOpen(true)
   }
@@ -610,7 +602,7 @@ export default function PitSurveyPage() {
             name="picture"
             accept="image/*"
             capture="environment" //! this is what allows for camera functionality on mobile. desktop triggers file browser
-            onChange={handleImages}
+            onChange={handleImageAssignmentPreview}
           />
           <output id='filesize-front'><small>{frontImageSize} {unit}</small></output>
           <div id="preview-1" className={styles.imgPreview}></div>
@@ -625,7 +617,7 @@ export default function PitSurveyPage() {
             name="picture"
             accept="image/*"
             capture="environment"  //! this is what allows for camera functionality on mobile. desktop triggers file browser
-            onChange={handleImages}/>
+            onChange={handleImageAssignmentPreview}/>
           <output id='filesize-side'><small>{sideImageSize} {unit}</small></output>
           <div id="preview-2" className={styles.imgPreview}></div>
         </FormControl>
@@ -663,7 +655,7 @@ export default function PitSurveyPage() {
           />
         </FormControl>
         
-        <Button loading={loading} onClick={(e) => submitHelper(isPostSeason, e)}>Submit Survey</Button>
+        <Button loading={loading} onClick={(e) => submitHelper(isHiatus, e)}>Submit Survey</Button>
         </form>
 
         <Snackbar
