@@ -32,6 +32,9 @@ export async function GET(request) {
     const results = await sql`SELECT * FROM MatchResults;`;
     return NextResponse.json({ results: results.rows }, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ error }, { status: 500 });
+    if(error.message === 'Error connecting to database: fetch failed'){
+      return NextResponse.json({ error: 'Error connecting to database: fetch failed\nCheck Internet connection!' }, { status: 500 });
+    }
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

@@ -15,11 +15,21 @@ export default function ViewMatchResultsPage() {
     const [fetchedMatchResults, setMatchResults] = useState([]);
     const [isMatchEmpty, setMatchEmpty] = useState(false)
     const [requestFail, setRequestFail] = useState(false)
+    const [dataUndef, setUndef] = useState(false)
 
     function matchDataHelper(results){ //relying on state in getData does not work because of state's delayed updating
       if(results.length == 0){
         setMatchEmpty(true)
         return true;
+      }
+
+      //leave for now because there may be a catchall needed if
+      //request returns fine (status 200), but have had issues when not
+      //explicitly returning the res.json for this method to use
+      if (typeof results == 'undefined' || typeof results == null){
+        setUndef(true)
+        console.log('undef')
+        return null;
       }
 
       // if mun is different, sort on that, if num is same, sort by color
@@ -45,15 +55,16 @@ export default function ViewMatchResultsPage() {
           console.log('Check Internet Connection')
           setMatchEmpty(true)
           setRequestFail(true)
+          return null;
         }
         else {
-          res.json() // Parse the response data as JSON
+          return res.json() // Parse the response data as JSON
         }
       }) 
       .then((data) => {matchDataHelper(data.results)})
       .catch( err => console.log(err) );
 
-      isMatchLoading(false)
+      isMatchLoading(false) //should stay here regardless if empty or not
     }
 
     useEffect(() => {
@@ -67,6 +78,10 @@ export default function ViewMatchResultsPage() {
         <h1>Match Survey Results</h1>
         {requestFail && requestFail && (
           <p><strong>API Request Failed</strong>: Check your internet connection and try again!</p>
+        )}
+
+        {dataUndef && dataUndef == true && (
+          <p><strong>API Request Failed</strong>: response data is undefined, contact admin!</p>
         )}
 
         {matchLoading
