@@ -22,7 +22,7 @@ export async function POST(request) {
                 ${endThrow}, ${endHumanCount},
                 ${defense}, ${robotDisabled}, ${comments});`;
   } catch (error) {
-    return NextResponse.json({ error }, { message: 'check INSERT INTO statement!', status: 500 });
+    return NextResponse.json({ error: error.message }, { message: 'check INSERT INTO statement!', status: 500 });
   }
    return NextResponse.json({message: 'Successfully added row!', status: 200 });
 }

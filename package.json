@@ -1,6 +1,6 @@
 {
   "name": "744-survey",
-  "version": "2024-4.1.1",
+  "version": "2024-4.2.1",
   "private": true,
   "scripts": {
     "dev": "next dev",

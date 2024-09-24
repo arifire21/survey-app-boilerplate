@@ -15,7 +15,7 @@ export async function POST(request) {
     await sql`INSERT INTO PitResults (team_number, drivetrain, preferred_pos, vision, score_height, pickup_pos, can_climb, help_climb, score_climb, feedback, name, front_img_url, side_img_url)
               VALUES (${teamNumber}, ${drivetrain}, ${prefPos}, ${vision}, ${scoreHeight}, ${pickup}, ${climb}, ${helpClimb}, ${scoreClimb}, ${feedback}, ${name}, ${frontImageURL}, ${sideImageURL});`;
   } catch (error) {
-    return NextResponse.json({ error }, { message: 'check INSERT INTO statement!', status: 500 });
+    return NextResponse.json({ error: error.message }, { message: 'check INSERT INTO statement!', status: 500 });
   }
    return NextResponse.json({message: 'Successfully added row!', status: 200 });
 }
@@ -25,6 +25,6 @@ export async function GET(request) {
     const results = await sql`SELECT * FROM PitResults;`;
     return NextResponse.json({ results: results.rows }, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ error }, { status: 500 });
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

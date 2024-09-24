@@ -16,7 +16,8 @@ import Swerve from '../../public/images/swervedrive.jpg'
 
 export default function PitSurveyPage() {
   const isDevMode = process.env.NEXT_PUBLIC_DEV_MODE;
-  const isPostSeason = process.env.NEXT_PUBLIC_POSTSEASON;
+  const isOffseason = process.env.NEXT_PUBLIC_OFFSEASON;
+  const isHiatus = process.env.NEXT_PUBLIC_SEASON_HIATUS;
 
   const [teamNumber, setTeamNumber] = useState('')
   const [drivetrain, setDrivetrain] = useState('')
@@ -50,16 +51,16 @@ export default function PitSurveyPage() {
 
   // const [frontImage, setFrontImage] = useState()
   // const [sideImage, setSideImage] = useState()
-  const frontImageRef = useRef()
-  const sideImageRef = useRef()
-  const [frontImageSize, setFrontImageSize] = useState(0.0)
-  const [sideImageSize, setSideImageSize] = useState(0.0)
-  const [unit, setUnit] = useState('MB')
+  const frontImageRef = useRef(null)
+  const sideImageRef = useRef(null)
+  // const [frontImageSize, setFrontImageSize] = useState(0.0)
+  // const [sideImageSize, setSideImageSize] = useState(0.0)
+  // const [unit, setUnit] = useState('MB')
 
   //snackbar state
   const [open, setOpen] = useState(false)
   const [errorString, setErrorString] =useState('')
-  const [submitSuccess, setSuccess] = useState(false)
+  const [submitSuccess, setSuccess] = useState(false) //mainly used for controlling snackbar open duration
   const [color, setColor] = useState('neutral')
 
   function handleCheckbox(value, checked){
@@ -129,13 +130,13 @@ export default function PitSurveyPage() {
     }
   }
 
-  function submitHelper(isPostSeason, e){
-    if(isPostSeason && !isDevMode){
-      handlePostseasonSubmit()
+  function submitHelper(isHiatus, e){
+    if(isHiatus && !isDevMode){
+      handleisHiatusseasonSubmit()
       return null
     }
 
-    if(!isPostSeason || isDevMode){
+    if(!isHiatus || isDevMode){
       handleValidate(e)
     }
   }
@@ -161,35 +162,6 @@ export default function PitSurveyPage() {
     //if everything is good, try to upload images here since handleSubmit is async
     uploadAndSubmit(passedEvent)
   }
-
-      //upload image to pass to DB
-      // let frontImgBlobURL = ''
-      // let sideImgBlobURL = ''
-  
-      // if(frontImageRef.current){
-      //   // uploadImage(frontImageRef, 'front')
-      //   frontImgBlobURL = uploadImage(frontImageRef)
-      //   console.log(`outside return: ${frontImgBlobURL}`);
-      //   if(typeof frontImgBlobURL === 'string'){
-      //     console.log('str')
-      //     setColor('success')
-      //     setErrorString(`Uploaded front image!`)
-      //     frontImageRef.current = null;
-      //     setFrontImageSize(0)
-      //   }
-      // }
-      // if(sideImageRef.current){
-        
-      //   sideImgBlobURL = uploadImage(sideImageRef)
-      //   console.log(`outside return: ${sideImgBlobURL}`);
-      //   if(typeof frontImgBlobURL === 'string'){
-      //     console.log('str')
-      //     setColor('success')
-      //     setErrorString(`Uploaded side image!`)
-      //     frontImageRef.current = null;
-      //     setFrontImageSize(0)
-      //   }
-      // }
 
   async function uploadAndSubmit(passedEvent){
     console.log('starting...')
@@ -259,6 +231,21 @@ export default function PitSurveyPage() {
           setColor('success')
           formRef.current.reset();
 
+          // console.log(`frontImageSize: ${frontImageSize}`)
+          // if(frontImageSize != 0.0){
+          //   setFrontImageSize(0.0)
+          //   console.log('front to 0')
+          //   setUnit("MB")
+          // }
+          // console.log(`frontImageSize: ${frontImageSize}`)
+
+          // console.log(`sideImageSize: ${sideImageSize}`)
+          // if(sideImageSize != 0.0){
+          //   setSideImageSize(0.0)
+          //   console.log('side to 0')
+          // }
+          // console.log(`sideImageSize: ${sideImageSize}`)
+
           setTeamNumber('')
 
           setLeft(false)    //setting bc customs
@@ -283,18 +270,13 @@ export default function PitSurveyPage() {
           setFeedback('')
           setName('')
 
+          //! set back to null here so File object does not remain
+          frontImageRef.current = null;
+          sideImageRef.current = null;
+
           document.querySelectorAll('.preview-img').forEach((img) => {
               img.remove();
           });
-
-          if(frontImageSize != 0.0){
-            setFrontImageSize(0.0)
-            console.log('front to 0')
-          }
-          if(sideImageSize != 0.0){
-            setSideImageSize(0.0)
-            console.log('side to 0')
-          }
       }
       setOpen(true)
       setLoading(false)
@@ -304,31 +286,32 @@ export default function PitSurveyPage() {
   })
   }
 
-  function handleImages(e){
-    //grab first element from target because this "e.target" is
-    //meant to be a array capable of holding multiple images if needed (see docs)
+  function handleImageAssignmentPreview(e){
+    //grab first file from target because this "e.target" is
+    //meant to be a array capable of holding multiple images if needed
+    //(see MDN docs on File API https://developer.mozilla.org/en-US/docs/Web/API/File_API/Using_files_from_web_applications#accessing_selected_files)
     const eventTarget = e.target  //the upload button that is clicked
-    const file = eventTarget.files[0]
+    const file = eventTarget.files[0] //first (and only) file selected with/using the button element
     const frontPreview = document.getElementById('preview-1')
     const sidePreview = document.getElementById('preview-2')
 
     //show file size bc Vercel Blob only allows a Server Upload of 4.5 MB
-    const bytes = file.size
-    // console.log(bytes)
-    var convertedSize = 0.0;
-    if(bytes < 1000000){
-      setUnit('KB')
-      convertedSize = Math.floor(bytes/1000).toFixed(2);
-    } else{ //use case: if user reuploads an img and it happens to be MB
-        setUnit('MB')
-        convertedSize = Math.floor(bytes/1000000).toFixed(2); 
-    }
+    // const bytes = file.size
+    // // console.log(bytes)
+    // var convertedSize = 0.0;
+    // if(bytes < 1000000){
+    //   setUnit('KB')
+    //   convertedSize = Math.floor(bytes/1000).toFixed(2);
+    // } else{ //use case: if user reuploads an img and it happens to be MB
+    //     setUnit('MB')
+    //     convertedSize = Math.floor(bytes/1000000).toFixed(2); 
+    // }
 
     if(eventTarget.id === 'front-picture'){
       try {
         frontImageRef.current = file
         // console.log(frontImageRef.current)
-        setFrontImageSize(convertedSize)
+        // setFrontImageSize(convertedSize)
         setColor('primary')
         setErrorString('Attached front image!')
 
@@ -359,7 +342,7 @@ export default function PitSurveyPage() {
       try {
         sideImageRef.current = file
         console.log(sideImageRef.current)
-        setSideImageSize(convertedSize)
+        // setSideImageSize(convertedSize)
         setColor('primary')
         setErrorString('Attached side image!')  //custom string aside from vanilla "submitted!"
 
@@ -392,7 +375,17 @@ export default function PitSurveyPage() {
   async function uploadImage(ref){
     // if(instantlyKnowIfSubmit == true){ // await only allowed at upper level so wrap in conditional
       console.log('reached img upload')
-      const img = ref.current
+      const img = ref.current;
+      //if nothing was ever attached or was an error,
+      //ref will not change and have ALL properties/attributes associated w an Element.
+      //Ref with an upload will have File Object properties only.
+      if(img == null || img.hasOwnProperty('files')){
+        setColor('neutral')
+        setErrorString("No image to upload.")
+        setSuccess(false) //use longer time duration
+        setOpen(true)
+        return null;
+      }
 
       setLoading(true)
       setColor('neutral')
@@ -420,29 +413,34 @@ export default function PitSurveyPage() {
         setErrorString("Uploaded image!")
         return blob.url;
       }
-      // .then((response => {
-      //   if(!response.ok){
-      //     setSuccess(false)
-      //     setColor('danger')
-      //     setErrorString("Error uploading image!")
-      //     console.error(response)
-      //     return null
-      //   } else {
-      //     return response.json() // as PutBlobResult;
-      //   }
-      // }))
-      //   .then(data => {console.log(`data: ${data}`); return data.url})
-      //   .catch(err => console.log(err) )
-    // }
   }
 
-  function handlePostseasonSubmit(){
+  function submitHelper(isHiatus, e){
+    if(isHiatus == 'true'){
+      handleHiatusSubmit()
+      return true
+    }
+
+    if(isHiatus == 'false' || isDevMode == 'true'){
+      handleValidate(e)
+    }
+  }
+
+  function handleHiatusSubmit(){
     // setLoading(true)
     setColor('warning')
-    setErrorString('POSTSEASON MODE enabled: cannot submit new records!')
+    setErrorString('HIATUS MODE enabled: cannot submit new records!')
     setSuccess(false)
     setOpen(true)
   }
+
+  // useEffect(() => {
+  //   console.log(`frontSize: ${frontImageSize}`);
+  // }, [frontImageSize]);
+
+  // useEffect(() => {
+  //   console.log(`sideSize: ${sideImageSize}`);
+  // }, [sideImageSize]);
 
   return (
     <>
@@ -610,9 +608,9 @@ export default function PitSurveyPage() {
             name="picture"
             accept="image/*"
             capture="environment" //! this is what allows for camera functionality on mobile. desktop triggers file browser
-            onChange={handleImages}
+            onChange={handleImageAssignmentPreview}
           />
-          <output id='filesize-front'><small>{frontImageSize} {unit}</small></output>
+          {/* <output id='filesize-front'><small>{frontImageSize} {unit}</small></output> */}
           <div id="preview-1" className={styles.imgPreview}></div>
         </FormControl>
         
@@ -625,8 +623,8 @@ export default function PitSurveyPage() {
             name="picture"
             accept="image/*"
             capture="environment"  //! this is what allows for camera functionality on mobile. desktop triggers file browser
-            onChange={handleImages}/>
-          <output id='filesize-side'><small>{sideImageSize} {unit}</small></output>
+            onChange={handleImageAssignmentPreview}/>
+          {/* <output id='filesize-side'><small>{sideImageSize} {unit}</small></output> */}
           <div id="preview-2" className={styles.imgPreview}></div>
         </FormControl>
 
@@ -663,7 +661,7 @@ export default function PitSurveyPage() {
           />
         </FormControl>
         
-        <Button loading={loading} onClick={(e) => submitHelper(isPostSeason, e)}>Submit Survey</Button>
+        <Button loading={loading} onClick={(e) => submitHelper(isHiatus, e)}>Submit Survey</Button>
         </form>
 
         <Snackbar

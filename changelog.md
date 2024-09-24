@@ -78,5 +78,22 @@
 
 ## v4.1.1
 - added modal to pit results view, for better viewing on mobile devices
-- fixed image preview breaking when re-uploading (used 'parentNode.remove(element)` instead of `element.remove`)
+- fixed image preview breaking when re-uploading (used `parentNode.remove(element)` instead of `element.remove`)
 - moved `match.module.css`
+
+## v4.2.1
+- [Match Survey] Production Bug fixed [#26](https://github.com/arifire21/744-survey/issues/26)
+    - was not explicitly returning `return res.json()` in `getData()`. This lead to it being consumed without being passed to `pitDataHelper()` (which is what helps sets the state variables)
+- App mode clarification:
+    - changed "postseason" to "offseason" to stay in consistent with verbiage
+    - "offseason mode" will now be set up to link to the past years' databases
+    - "hiatus mode" will now now do what "postseason mode" did - not allow users to submit new records, only view ones from past matches/competitions
+- [Pit Survey] added correct `submitHelper()` method to file
+- [Pit Survey] changed `handleImages()` to `handleImageAssignmentPreview()` for clearer naming
+- if no images are uploaded (~~`[ref].current.files` has a length of 0~~ if `img.hasOwnProperty('files')`, because it becomes a `File` Object, and loses the `files` array property), `uploadImage()` will return `null` prematurely (`frontImgBlobURL` or `sideImgBlobURL` set to `null`) and not attempt to run its API call
+    - caught hidden oversight of not resetting refs after submitting (images could be resubmitted accidentally even without uploading any new ones, the ref would still exist)
+- [Pit Results] added check for duplicate team numbers avoid any possible "duplicate key" warnings
+- [Pit Results] caught overlooked bug of RadioGroup suddenly having an `<empty string>` value. Switched `onClick` event to `onChange` as per MUI docs, and it is now a proper "controlled component."
+- API: updated returned error object to display proper error text
+- FIXME: fixing image size state render is on hold, is QOL fix and not pressing bug
+- FIXME: found occasional API error where a value goes over SQL field 20 char limit?

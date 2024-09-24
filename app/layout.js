@@ -5,7 +5,11 @@ import ThemeRegistry from "./theme-registry";
 const inter = Inter({ subsets: ["latin"] });
 
 const isDevMode = process.env.NEXT_PUBLIC_DEV_MODE;
-const isPostSeason = process.env.NEXT_PUBLIC_POSTSEASON;
+const isOffseason = process.env.NEXT_PUBLIC_OFFSEASON;
+const isHiatus = process.env.NEXT_PUBLIC_SEASON_HIATUS;
+
+//CHANGE THIS TO REFLECT THE PREV YEAR
+const offSeasonYear = 2024;
 
 export const metadata = {
   title: "744 Survey",
@@ -29,8 +33,11 @@ export default function RootLayout({ children }) {
           {isDevMode && (isDevMode == "true") &&
             <div className="dev-mode-box">Dev Mode Enabled</div>
           }
-          {isPostSeason && (isPostSeason == "true") &&
-            <div className="dev-mode-box">PostSeason Mode Enabled</div>
+          {isOffseason && (isOffseason == "true") &&
+            <div className="dev-mode-box">PostSeason Mode Enabled ({offSeasonYear})</div>
+          }
+          {isHiatus && (isHiatus == "true") &&
+            <div className="dev-mode-box">Hiatus Mode Enabled</div>
           }
         </div>
 

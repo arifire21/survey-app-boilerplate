@@ -33,7 +33,6 @@ export default function ViewPitResultsPage(){
     }
 
     function handleSelectChange(event, value){
-
       setTraitCriteria(value)
       console.log(value)
 
@@ -230,10 +229,16 @@ export default function ViewPitResultsPage(){
       setPitResults(sortedResults)
       // console.log(sortedResults)
 
+      let tempLast = 0; //to start
       sortedResults.forEach(team => {
-        availTeams.push(team.team_number)
+        //garbage quick way to check for dupes -- filters
+        //error if there are unique "keys" (more than one dupe team number)
+        if(tempLast != team.team_number){
+          availTeams.push(team.team_number)
+        }
+        tempLast = team.team_number;
       });
-      // console.log(availTeams)
+      console.log(availTeams)
 
       setAvailTeamsRender(availTeams)
 
@@ -310,17 +315,17 @@ export default function ViewPitResultsPage(){
           <section id="main-section">
           <header className="filter-container">
           <label className="filter-label">Filter Mode:</label>
-          <RadioGroup name="radio-buttons-pit-filter"
-              value={filterType}
-              onClick={(e) => {setFilterType(e.target.value), console.log(e.target.value)}}
-              sx={{display:'flex', flexDirection:'row', flexWrap:'wrap', alignItems:'center'}}
-              >
+          <RadioGroup
+            name="radio-buttons-pit-filter"
+            value={filterType}
+            onChange={(e) => {setFilterType(e.target.value)}}
+            sx={{display:'flex', flexDirection:'row', flexWrap:'wrap', alignItems:'center'}}
+          >
             <Radio value="all" label="All" sx={{marginBlockStart: '1rem', marginRight:'1rem'}}/>
             <div className="extended-radio-option">
             <Radio value="team" label="By team" sx={{marginRight:'1rem'}} />
             <Autocomplete
               disabled={filterType === 'team' ? false : true}
-              type="number"
               placeholder="start typing..."
               options={availTeamsRender}
               value={teamCriteria}
@@ -366,7 +371,7 @@ export default function ViewPitResultsPage(){
               <Option value="can help climb">Can <span className="blue">Help Climb</span></Option>
               <Option value="can score climb">Can <span className="blue">Score & Climb</span></Option>
 
-              <Option value="has feedback">has <span className="blue">Feedback</span></Option>
+              <Option value="has feedback">Has <span className="blue">Feedback</span></Option>
             </Select>
             </div>
           </RadioGroup>
@@ -395,7 +400,7 @@ export default function ViewPitResultsPage(){
                     {item.front_img_url && (
                       <div className='img-preview-container'>
                       <p>Front Image</p>
-                      <img src={item.front_img_url} alt='front pit img' className='img-preview'
+                      <img src={item.front_img_url} alt='[cannot load image!]' className='img-preview'
                         onClick={()=>{modalContentHelper('Front', item.front_img_url)}}
                       />
                       </div>
@@ -403,7 +408,7 @@ export default function ViewPitResultsPage(){
                     {item.side_img_url && (
                       <div className='img-preview-container'>
                       <p>Side Image</p>
-                      <img src={item.side_img_url} alt='side pit img' className='img-preview'
+                      <img src={item.side_img_url} alt='[cannot load image!]' className='img-preview'
                         onClick={()=>{modalContentHelper('Side', item.side_img_url)}}
                         />
                       </div>
@@ -446,14 +451,20 @@ export default function ViewPitResultsPage(){
                         </>
                       )}
                       {item.front_img_url && (
-                        <img src={item.front_img_url} alt='front pit img' className='img-preview'
+                        <div className='img-preview-container'>
+                        <p>Front Image</p>
+                        <img src={item.front_img_url} alt='[cannot load image!]' className='img-preview'
                           onClick={()=>{modalContentHelper('Front', item.front_img_url)}}
                         />
+                        </div>
                       )}
                       {item.side_img_url && (
-                        <img src={item.side_img_url} alt='side pit img' className='img-preview'
+                        <div className='img-preview-container'>
+                        <p>Side Image</p>
+                        <img src={item.side_img_url} alt='[cannot load image!]' className='img-preview'
                           onClick={()=>{modalContentHelper('Side', item.side_img_url)}}
-                        />
+                          />
+                        </div>
                       )}
                       {item.feedback && item.feedback.length > 0 && <p className="detail">Thoughts: {item.feedback}</p>}
                       <small>Survey by: <strong>{item.name}</strong></small>
@@ -488,14 +499,20 @@ export default function ViewPitResultsPage(){
                         </>
                       )}
                       {item.front_img_url && (
-                        <img src={item.front_img_url} alt='front pit img' className='img-preview'
+                        <div className='img-preview-container'>
+                        <p>Front Image</p>
+                        <img src={item.front_img_url} alt='[cannot load image!]' className='img-preview'
                           onClick={()=>{modalContentHelper('Front', item.front_img_url)}}
                         />
+                        </div>
                       )}
                       {item.side_img_url && (
-                        <img src={item.side_img_url} alt='side pit img' className='img-preview'
+                        <div className='img-preview-container'>
+                        <p>Side Image</p>
+                        <img src={item.side_img_url} alt='[cannot load image!]' className='img-preview'
                           onClick={()=>{modalContentHelper('Side', item.side_img_url)}}
-                        />
+                          />
+                        </div>
                       )}
                       {item.feedback && item.feedback.length > 0 && <p className="detail">Thoughts: {item.feedback}</p>}
                       <small>Survey by: <strong>{item.name}</strong></small>
@@ -517,7 +534,7 @@ export default function ViewPitResultsPage(){
       >
         <ModalDialog layout="center">
           <ModalClose variant="plain" size="lg" sx={{ m: 1 }} />
-          <DialogTitle><h2 id="modal-title">{modalTitleSpan} Image</h2></DialogTitle>
+          <DialogTitle id="modal-title">{modalTitleSpan} Image</DialogTitle>
           <DialogContent><img id="modal-desc" src={modalImage}/></DialogContent>
         </ModalDialog>
       </Modal>
