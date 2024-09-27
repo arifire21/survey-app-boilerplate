@@ -107,13 +107,70 @@ export default function ViewMatchResultsPage() {
               <div className="pit-results-container">
                 {fetchedPracticeResults.map((match, index) => (
                   <div key={`match-container-${index}`} id={`match-container-${index}`} className={"item-container"}>
-                    <h3 key={`header-${index}`} id={`header-${index}`}>Match {index+1}</h3>
+                    <h3 key={`header-${index}`} id={`header-${index}`} className={'match-header'}>Match {index+1}</h3>
 
                     {match.map((row, index2) => {
                       return( //per Object (orig row from table)
                         <div key={`match-${index}-team-container-${index2}`} id={`match-${index}-team-container-${index2}`} className={`${row.alliance === 'red' ? 'red-backdrop' : 'blue-backdrop'}`}>
-                          <h4>{row.team_number}</h4>
-                          <p>{row.alliance}</p>
+                          <AccordionGroup //needed to customize transition and styling
+                            sx={{
+                              // maxWidth: 400,
+                              borderRadius: 'lg',
+                              [`& .${accordionSummaryClasses.button}:hover`]: {
+                                bgcolor: `${row.alliance === 'red' ? '#ff00083e' : 'rgba(62, 100, 130, 0.5)'} !important`,
+                              },
+                              [`& .${accordionSummaryClasses.button}:active`]: {
+                                bgcolor: `${row.alliance === 'red' ? '#ff00083e' : 'rgba(62, 100, 130, 0.5)'} !important`,
+                              },
+                              [`& .${accordionDetailsClasses.content}`]: {
+                                boxShadow: (theme) => `inset 0 1px ${theme.vars.palette.divider}`,
+                                [`&.${accordionDetailsClasses.expanded}`]: {
+                                  // paddingBlock: '0.75rem',
+                                  bgcolor: `${row.alliance === 'red' ? 'rgba(200, 0, 7, 0.212)' : 'rgba(62, 100, 130, 0.5)'} !important`,
+                                },
+                              },
+                            }}
+                          >
+                            <Accordion>
+                              <AccordionSummary variant="outlined" color={row.alliance === 'red' ? 'danger' : 'primary'}>{row.team_number}</AccordionSummary>
+                              <AccordionDetails>
+                                <p>Starting Pos: <strong>{row.start_pos}</strong></p>
+
+                                <h4 className="match-section-header">Auto</h4>
+                                <p className="detail match-detail">Crossed Auto Line: <strong>{row.cross_auto_line === "" ? '??' : row.cross_auto_line ?? '??'}</strong></p>
+                                {row.cross_auto_line && row.cross_auto_line === 'yes' && (
+                                  <div className="result-flex match-detail">
+                                    <p style={{marginRight:'0.5rem'}}>Amp Count: <strong>{row.auto_amp}</strong></p>
+                                    <p>Speaker Count: <strong>{row.auto_speaker}</strong></p>
+                                  </div>
+                                )}
+
+                                <h4 className="match-section-header">Teleop</h4>
+                                <div className="result-flex match-detail">
+                                  <p style={{marginRight:'0.5rem'}}>Amp Count: <strong>{row.tele_amp}</strong></p>
+                                  <p>Speaker Count: <strong>{row.tele_speaker}</strong></p>
+                                </div>
+                                <p className="detail match-detail">Amplify Pressed: <strong>{row.amplify_count}</strong> time(s)</p>
+
+                                <h4 className="match-section-header">Endgame</h4>
+                                <p className="detail match-detail">Parked or climbed: <strong>{row.park_climb}</strong></p>
+                                {row.park_climb && row.park_climb === 'climb' && (
+                                  <>
+                                    <p className="detail match-detail">Climbed successfully: <strong>{row.climb_success}</strong></p>
+                                    <p className="detail match-detail">Scored while climbing: <strong>{row.score_climb}</strong></p>
+                                  </>
+                                )}
+                                {row.hp_throw && row.hp_throw === 'yes' && (
+                                    <p className="detail match-detail">HP spotlighted <strong>successfully</strong>: <strong>{row.hp_score}/3</strong> time(s)</p>
+                                )}
+                                <h4 className="match-section-header">Info</h4>
+                                <p className="detail match-detail">Defense rating: <strong>{row.defense}/5</strong></p>
+                                <p className="detail match-detail">Lost comms or disabled: <strong>{row.lost_comms_disabled}</strong></p>
+                                {row.comments && row.comments.length > 0 && <p style={{width:'100%'}}>Post-Match Comments: {row.comments}</p>}
+                                <small>Survey by: {row.name}</small>
+                            </AccordionDetails>
+                            </Accordion>
+                          </AccordionGroup>
                         </div>
                       )
                     })}   {/*end inner match map/render */ }

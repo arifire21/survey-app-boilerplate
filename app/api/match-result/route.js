@@ -29,10 +29,10 @@ export async function POST(request) {
 
 export async function GET(request) {
   try {
-  /*  this ORDER BY sequence is done in order of importance, so organization is easier
-    - match number TYPE is before match NUMBER so all "Practice" matches are bundled together ("Practice 1, Practice 2, Qual 1 etc")
+/*  this ORDER BY sequence is done in order of importance, so organization is easier
+    - match NUMBER is before match TYPE so all "Practice" matches are bundled together ("Practice 1, Practice 2, Qual 1 etc")
     - alliance DESC so it matches common robotics order of Red v Blue (technically is reverse alphabetical)
-    - match number to look pretty? is assuming results may not be submitted in match-specific order?*/
+    - team number to look pretty? is assuming results may not be submitted in match-specific order?*/
     const results = await sql`SELECT * FROM MatchResults ORDER BY match_number, match_type, alliance DESC, team_number;`;
     //testing: arrays per each type, put into one big array so it can be sent via response
     const practiceMatches = [], qualMatches = [], playoffMatches = [], finalMatches = [];

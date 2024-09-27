@@ -21,6 +21,10 @@ form {
   justify-content: space-around;
 }
 
+.match-header {
+  margin-top: 0;
+}
+
 .item-container {
   border: 2px solid #01a0bb;
   border-radius: 10px;
@@ -42,7 +46,7 @@ form {
 }
 
 .red-backdrop {
-  background-color: #ff000836;
+  background-color: rgba(200, 0, 7, 0.212);
 }
 
 .blue-backdrop {
