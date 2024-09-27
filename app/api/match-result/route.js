@@ -29,8 +29,33 @@ export async function POST(request) {
 
 export async function GET(request) {
   try {
-    const results = await sql`SELECT * FROM MatchResults;`;
-    return NextResponse.json({ results: results.rows }, { status: 200 });
+  /*  this ORDER BY sequence is done in order of importance, so organization is easier
+    - match number TYPE is before match NUMBER so all "Practice" matches are bundled together ("Practice 1, Practice 2, Qual 1 etc")
+    - alliance DESC so it matches common robotics order of Red v Blue (technically is reverse alphabetical)
+    - match number to look pretty? is assuming results may not be submitted in match-specific order?*/
+    const results = await sql`SELECT * FROM MatchResults ORDER BY match_number, match_type, alliance DESC, team_number;`;
+    //testing: arrays per each type, put into one big array so it can be sent via response
+    const practiceMatches = [], qualMatches = [], playoffMatches = [], finalMatches = [];
+    const matchesPerType = [practiceMatches, qualMatches, playoffMatches, finalMatches]
+
+    const filteredPracticeMatches = results.rows.filter(row => row.match_type === 'Practice');
+    let tempPractice = 0;
+    filteredPracticeMatches.forEach(m => {
+      //test; create arrays per match numbers
+      if(m.match_number != tempPractice){
+        practiceMatches.push([]);
+        tempPractice++;
+        // console.log(tempPractice)
+      }
+
+      //now put into new match #n array
+      if(m.match_number == tempPractice){
+        // console.log('in')
+        practiceMatches[tempPractice-1].push(m)
+      }
+    });
+
+    return NextResponse.json({ results: matchesPerType }, { status: 200 });
   } catch (error) {
     if(error.message === 'Error connecting to database: fetch failed'){
       return NextResponse.json({ error: 'Error connecting to database: fetch failed\nCheck Internet connection!' }, { status: 500 });

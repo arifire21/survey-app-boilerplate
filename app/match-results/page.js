@@ -12,31 +12,18 @@ export default function ViewMatchResultsPage() {
   const isDevMode = process.env.NEXT_PUBLIC_DEV_MODE;
 
     const [matchLoading, isMatchLoading] = useState(true)
-    const [fetchedMatchResults, setMatchResults] = useState([]);
+    // const [fetchedMatchResults, setMatchResults] = useState([]);
+    const [fetchedPracticeResults, setPracticeResults] = useState([]);
+    const [fetchedQualResults, setQualResults] = useState([]);
+    const [fetchedPlayoffResults, setPlayoffResults] = useState([]);
+    const [fetchedFinalResults, setFinalResults] = useState([]);
     const [isMatchEmpty, setMatchEmpty] = useState(false)
     const [requestFail, setRequestFail] = useState(false)
     const [dataUndef, setUndef] = useState(false)
 
-    function matchDataHelper(results){ //relying on state in getData does not work because of state's delayed updating
-      if(results.length == 0){
-        setMatchEmpty(true)
-        return true;
-      }
-
-      //leave for now because there may be a catchall needed if
-      //request returns fine (status 200), but have had issues when not
-      //explicitly returning the res.json for this method to use
-      if (typeof results == 'undefined' || typeof results == null){
-        setUndef(true)
-        console.log('undef')
-        return null;
-      }
-
-      // if mun is different, sort on that, if num is same, sort by color
-      let sortedByNumberAndColor = results.sort((a, b) => a.match_number - b.match_number || (b.alliance).localeCompare(a.alliance))
-      console.log(sortedByNumberAndColor)
-      setMatchResults(sortedByNumberAndColor)
-    }
+    useEffect(() => {
+      getData()
+    }, []);
 
     const getData = async () => {
       let fetchString = '/api/match-result' //default
@@ -67,9 +54,30 @@ export default function ViewMatchResultsPage() {
       isMatchLoading(false) //should stay here regardless if empty or not
     }
 
-    useEffect(() => {
-      getData()
-    }, []);
+    function matchDataHelper(results){ //relying on state in getData does not work because of state's delayed updating
+      // console.log(results)
+      if(results.length == 0){
+        setMatchEmpty(true)
+        return true;
+      }
+
+      //leave for now because there may be a catchall needed if
+      //request returns fine (status 200), but have had issues when not
+      //explicitly returning the res.json for this method to use
+      if (typeof results == 'undefined' || typeof results == null){
+        setUndef(true)
+        return null;
+      }
+      
+      setPracticeResults(results[0])
+      console.log(results[0])
+      setQualResults(results[1])
+      console.log(results[1])
+      setPlayoffResults(results[2])
+      console.log(results[2])
+      setFinalResults(results[3])
+      console.log(results[3])
+    }
 
     return(
         <>
@@ -84,17 +92,44 @@ export default function ViewMatchResultsPage() {
           <p><strong>API Request Failed</strong>: response data is undefined, contact admin!</p>
         )}
 
-        {matchLoading
+        {/* is request loading...? */}
+        {matchLoading && matchLoading == true
+          // ? true, render circular
         ? <div style={{display:'flex', textAlign:'center'}}>
             <p>Loading...   </p><CircularProgress variant="soft" size="sm"/>
           </div>
-        : (isMatchEmpty && isMatchEmpty == true)
-        ? <p>No results yet!</p>
-        : (
-          <div className="pit-results-container">
-          {fetchedMatchResults.map((item, index) => {
-            return(
-            <div key={index} className={`item-container ${item.alliance === 'red' ? 'red-backdrop' : 'blue-backdrop'}`}>
+          // : false, check if whole request array is empty ? true, IS empty, render plain <p> : false, is NOT empty, move on to mapping arrays
+        : (isMatchEmpty && isMatchEmpty == true) ? <p>No results yet!</p> : (
+          <section>
+            <h2>Practice Results</h2>
+            {/* check if PRACTICE results array is empty ? true, render plain <p> : false, show results */}
+            {fetchedPracticeResults.length == 0 ? <p>No practice matches recorded!</p> : (
+              <div className="pit-results-container">
+                {fetchedPracticeResults.map((match, index) => (
+                  <div key={`match-container-${index}`} id={`match-container-${index}`} className={"item-container"}>
+                    <h3 key={`header-${index}`} id={`header-${index}`}>Match {index+1}</h3>
+
+                    {match.map((row, index2) => {
+                      return( //per Object (orig row from table)
+                        <div key={`match-${index}-team-container-${index2}`} id={`match-${index}-team-container-${index2}`} className={`${row.alliance === 'red' ? 'red-backdrop' : 'blue-backdrop'}`}>
+                          <h4>{row.team_number}</h4>
+                          <p>{row.alliance}</p>
+                        </div>
+                      )
+                    })}   {/*end inner match map/render */ }
+
+                  </div>  //end indiv match container
+                ))}       {/*end fetchedPracticeResults map/render */ }
+              </div>      //end pit container
+            )}            {/*end fetchedPracticeResults ternary */ }
+          </section>      //end practice section
+
+
+          )}  {/*end initial isMatchLoading ternary */ }
+          </> //pls remember JSX needs a parent element bc of the menubutton :)
+
+
+               /*<div key={index} className={`item-container ${item.alliance === 'red' ? 'red-backdrop' : 'blue-backdrop'}`}>
               <h3 className={`pit-results-number ${item.alliance === 'red' ? 'red-alliance' : 'blue-alliance'}`}>{item.match_type} {item.match_number}</h3>
               <h3 className={`pit-results-number ${item.alliance === 'red' ? 'red-alliance' : 'blue-alliance'}`}>Team {item.team_number}</h3>
 
@@ -157,11 +192,12 @@ export default function ViewMatchResultsPage() {
                 </AccordionDetails>
                 </Accordion>
               </AccordionGroup>
-            </div>
-            )
-          })}
-          </div> //end pit container
-        )}
-        </>
+            </div> */
+          //   )
+          // })}
+          // </div> //end header
+          // </div> //end pit container
+        // )}
+        // </>
     )
 }
