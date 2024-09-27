@@ -97,3 +97,9 @@
 - API: updated returned error object to display proper error text
 - FIXME: fixing image size state render is on hold, is QOL fix and not pressing bug
 - FIXME: found occasional API error where a value goes over SQL field 20 char limit?
+
+## v4.3.1
+- [#30](https://github.com/arifire21/744-survey/issues/30)
+    - refactored match results API to return rows in an easier-to-use format
+    - WIP overhaul of results rendering, now grouped by match number and alliance
+    - added ternaries to render to catch possible missed fields

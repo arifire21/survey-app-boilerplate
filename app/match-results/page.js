@@ -138,7 +138,7 @@ export default function ViewMatchResultsPage() {
 
                                 <h4 className="match-section-header">Auto</h4>
                                 <p className="detail match-detail">Crossed Auto Line: <strong>{row.cross_auto_line === "" ? '??' : row.cross_auto_line ?? '??'}</strong></p>
-                                {row.cross_auto_line && row.cross_auto_line === 'yes' && (
+                                {(row.cross_auto_line === 'yes' || row.cross_auto_line === '') && (
                                   <div className="result-flex match-detail">
                                     <p style={{marginRight:'0.5rem'}}>Amp Count: <strong>{row.auto_amp}</strong></p>
                                     <p>Speaker Count: <strong>{row.auto_speaker}</strong></p>
@@ -153,19 +153,19 @@ export default function ViewMatchResultsPage() {
                                 <p className="detail match-detail">Amplify Pressed: <strong>{row.amplify_count}</strong> time(s)</p>
 
                                 <h4 className="match-section-header">Endgame</h4>
-                                <p className="detail match-detail">Parked or climbed: <strong>{row.park_climb}</strong></p>
-                                {row.park_climb && row.park_climb === 'climb' && (
+                                <p className="detail match-detail">Parked or climbed: <strong>{row.park_climb === "" ? '??' : row.park_climb ?? '??'}</strong></p>
+                                {(row.park_climb === 'climb' || row.park_climb === '') && (
                                   <>
-                                    <p className="detail match-detail">Climbed successfully: <strong>{row.climb_success}</strong></p>
-                                    <p className="detail match-detail">Scored while climbing: <strong>{row.score_climb}</strong></p>
+                                    <p className="detail match-detail">Climbed successfully: <strong>{row.climb_success ?? 'N/A'}</strong></p>
+                                    <p className="detail match-detail">Scored while climbing: <strong>{row.score_climb  ?? 'N/A'}</strong></p>
                                   </>
                                 )}
-                                {row.hp_throw && row.hp_throw === 'yes' && (
+                                {(row.hp_throw === 'yes' || row.hp_throw === '') && (
                                     <p className="detail match-detail">HP spotlighted <strong>successfully</strong>: <strong>{row.hp_score}/3</strong> time(s)</p>
                                 )}
                                 <h4 className="match-section-header">Info</h4>
                                 <p className="detail match-detail">Defense rating: <strong>{row.defense}/5</strong></p>
-                                <p className="detail match-detail">Lost comms or disabled: <strong>{row.lost_comms_disabled}</strong></p>
+                                <p className="detail match-detail">Lost comms or disabled: <strong>{row.lost_comms_disabled === "" ? '??' : row.lost_comms_disabled ?? '??'}</strong></p>
                                 {row.comments && row.comments.length > 0 && <p style={{width:'100%'}}>Post-Match Comments: {row.comments}</p>}
                                 <small>Survey by: {row.name}</small>
                             </AccordionDetails>
