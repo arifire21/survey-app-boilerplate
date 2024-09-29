@@ -106,34 +106,17 @@ export default function ViewMatchResultsPage() {
             {fetchedPracticeResults.length == 0 ? <p>No practice matches recorded!</p> : (
               <div className="pit-results-container">
                 {fetchedPracticeResults.map((match, index) => (
-                  <div key={`match-container-${index}`} id={`match-container-${index}`} className={"item-container"}>
-                    <h3 key={`header-${index}`} id={`header-${index}`} className={'match-header'}>Match {index+1}</h3>
+                  <div key={`match-container-${index}`} id={`match-container-${index}`} className="item-container">
+                    <h3 key={`header-${index}`} id={`header-${index}`} className='match-header'>Match {index+1}</h3>
 
+                    <AccordionGroup> {/* to group all 6 accordions together in DOM, per match*/}
                     {match.map((row, index2) => {
                       return( //per Object (orig row from table)
-                        <div key={`match-${index}-team-container-${index2}`} id={`match-${index}-team-container-${index2}`} className={`${row.alliance === 'red' ? 'red-backdrop' : 'blue-backdrop'}`}>
-                          <AccordionGroup //needed to customize transition and styling
-                            sx={{
-                              // maxWidth: 400,
-                              borderRadius: 'lg',
-                              [`& .${accordionSummaryClasses.button}:hover`]: {
-                                bgcolor: `${row.alliance === 'red' ? '#ff00083e' : 'rgba(62, 100, 130, 0.5)'} !important`,
-                              },
-                              [`& .${accordionSummaryClasses.button}:active`]: {
-                                bgcolor: `${row.alliance === 'red' ? '#ff00083e' : 'rgba(62, 100, 130, 0.5)'} !important`,
-                              },
-                              [`& .${accordionDetailsClasses.content}`]: {
-                                boxShadow: (theme) => `inset 0 1px ${theme.vars.palette.divider}`,
-                                [`&.${accordionDetailsClasses.expanded}`]: {
-                                  // paddingBlock: '0.75rem',
-                                  bgcolor: `${row.alliance === 'red' ? 'rgba(200, 0, 7, 0.212)' : 'rgba(62, 100, 130, 0.5)'} !important`,
-                                },
-                              },
-                            }}
-                          >
-                            <Accordion>
-                              <AccordionSummary variant="outlined" color={row.alliance === 'red' ? 'danger' : 'primary'}>{row.team_number}</AccordionSummary>
-                              <AccordionDetails>
+                        //<div key={`match-${index}-team-container-${index2}`} id={`match-${index}-team-container-${index2}`} className={`${row.alliance === 'red' ? 'red-backdrop' : 'blue-backdrop'}`}>
+                            <Accordion variant="outlined">
+                              {/* note: custom color in theme-registry file */}
+                              <AccordionSummary variant="solid" color={row.alliance === 'red' ? 'danger' : 'blueAllianceColor'}>{row.team_number}</AccordionSummary>
+                              <AccordionDetails variant="soft" color={row.alliance === 'red' ? 'danger' : 'blueAllianceColor'}> {/* note: overriding font color to white in theme-registry file */}
                                 <p>Starting Pos: <strong>{row.start_pos}</strong></p>
 
                                 <h4 className="match-section-header">Auto</h4>
@@ -170,10 +153,10 @@ export default function ViewMatchResultsPage() {
                                 <small>Survey by: {row.name}</small>
                             </AccordionDetails>
                             </Accordion>
-                          </AccordionGroup>
-                        </div>
+                        //</div>
                       )
                     })}   {/*end inner match map/render */ }
+                    </AccordionGroup>
 
                   </div>  //end indiv match container
                 ))}       {/*end fetchedPracticeResults map/render */ }

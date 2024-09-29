@@ -101,5 +101,7 @@
 ## v4.3.1
 - [#30](https://github.com/arifire21/744-survey/issues/30)
     - refactored match results API to return rows in an easier-to-use format
-    - WIP overhaul of results rendering, now grouped by match number and alliance
+    - overhaul of results rendering, now grouped by match number and alliance in AccordionGroups
     - added ternaries to render to catch possible missed fields
+    - added original blue `joy-primary` pallette back to use for blue alliance items
+        - needed dark *and* light palettes defined in order to define customs
