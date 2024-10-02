@@ -301,17 +301,14 @@ export default function ViewPitResultsPage(){
           <p><strong>API Request Failed</strong>: response data is undefined, contact admin!</p>
         )}
 
-        {pitLoading && pitLoading == true   //is request loading...
+        {pitLoading && pitLoading == true
         ? <div style={{display:'flex', textAlign:'center'}}>
           {/* ? yes, render circular */}
             <p>Loading...</p><br/><CircularProgress variant="soft" size="sm"/>
           </div>
-          // : no, check if empty
-        : (isPitEmpty && isPitEmpty == true)
-        ? <p>No results yet!</p>
-          // ? if not empty...
-        : (
-          // : filtering options
+          // : no, check if empty ? true, IS empty, render plain <p> : false, is NOT empty, move on to mapping arrays
+        : (isPitEmpty && isPitEmpty == true) ? <p>No results yet!</p> : (
+          // filtering options
           <section id="main-section">
           <header className="filter-container">
           <label className="filter-label">Filter Mode:</label>
@@ -378,7 +375,7 @@ export default function ViewPitResultsPage(){
           </header>
 
           {/* more conditionals yayyyy */}
-          {/* filter type all */}
+          {/* filter type all results*/}
           {filterType && filterType === 'all' && (
             <div className="pit-results-container">
               {fetchedPitResults.map((item, index) => {
@@ -523,7 +520,7 @@ export default function ViewPitResultsPage(){
             ))}
           {/* end filter type trait */}
           </section>
-        )}
+        )} {/*end initial isPitLoading ternary */ }
 
       <Modal
         aria-labelledby="modal-title"
