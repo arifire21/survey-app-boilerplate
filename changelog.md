@@ -99,9 +99,11 @@
 - FIXME: found occasional API error where a value goes over SQL field 20 char limit?
 
 ## v4.3.1
-- [#30](https://github.com/arifire21/744-survey/issues/30)
+- Improve Match Survey presentation [#30](https://github.com/arifire21/744-survey/issues/30)
     - refactored match results API to return rows in an easier-to-use format
     - overhaul of results rendering, now grouped by match number and alliance in AccordionGroups
+        - replaced clunky `sx` overrides with `soft` and `solid` built-in styles that achieved the same effect
     - added ternaries to render to catch possible missed fields
     - added original blue `joy-primary` pallette back to use for blue alliance items
         - needed dark *and* light palettes defined in order to define customs
+- [Match Results] cleanup margins, added renders for other types

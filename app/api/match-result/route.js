@@ -35,27 +35,42 @@ export async function GET(request) {
     - team number to look pretty? is assuming results may not be submitted in match-specific order?*/
     const results = await sql`SELECT * FROM MatchResults ORDER BY match_number, match_type, alliance DESC, team_number;`;
     //testing: arrays per each type, put into one big array so it can be sent via response
-    const practiceMatches = [], qualMatches = [], playoffMatches = [], finalMatches = [];
-    const matchesPerType = [practiceMatches, qualMatches, playoffMatches, finalMatches]
+    const practiceMatches = {}, qualMatches = {}, playoffMatches = {}, finalMatches = {};
+    
+    // Loop through results once, filter and group matches by both match type and match number
+    results.rows.forEach(row => {
+      const matchNumber = row.match_number;
 
-    const filteredPracticeMatches = results.rows.filter(row => row.match_type === 'Practice');
-    let tempPractice = 0;
-    filteredPracticeMatches.forEach(m => {
-      //test; create arrays per match numbers
-      if(m.match_number != tempPractice){
-        practiceMatches.push([]);
-        tempPractice++;
-        // console.log(tempPractice)
-      }
-
-      //now put into new match #n array
-      if(m.match_number == tempPractice){
-        // console.log('in')
-        practiceMatches[tempPractice-1].push(m)
+      // Group based on match type
+      switch (row.match_type) {
+        case 'Practice':
+          if (!practiceMatches[matchNumber]) practiceMatches[matchNumber] = [];
+          practiceMatches[matchNumber].push(row);
+          break;
+        case 'Qual':
+          if (!qualMatches[matchNumber]) qualMatches[matchNumber] = [];
+          qualMatches[matchNumber].push(row);
+          break;
+        case 'Playoff':
+          if (!playoffMatches[matchNumber]) playoffMatches[matchNumber] = [];
+          playoffMatches[matchNumber].push(row);
+          break;
+        case 'Final':
+          if (!finalMatches[matchNumber]) finalMatches[matchNumber] = [];
+          finalMatches[matchNumber].push(row);
+          break;
+        default:
+          console.warn('Unexpected match type:', row.match_type);
       }
     });
 
-    return NextResponse.json({ results: matchesPerType }, { status: 200 });
+    // Convert the objects into arrays (or leave them as objects if that's preferred)
+    const practiceMatchesArray = Object.values(practiceMatches);
+    const qualMatchesArray = Object.values(qualMatches);
+    const playoffMatchesArray = Object.values(playoffMatches);
+    const finalMatchesArray = Object.values(finalMatches);
+
+    return NextResponse.json({ results: {practiceMatchesArray, qualMatchesArray, playoffMatchesArray, finalMatchesArray} }, { status: 200 });
   } catch (error) {
     if(error.message === 'Error connecting to database: fetch failed'){
       return NextResponse.json({ error: 'Error connecting to database: fetch failed\nCheck Internet connection!' }, { status: 500 });

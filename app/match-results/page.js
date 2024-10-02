@@ -1,11 +1,12 @@
 "use client"
 import MenuButton from "@/components/menu-button";
 import { CircularProgress } from "@mui/joy";
-import Accordion from '@mui/joy/Accordion';
+import Accordion, { accordionClasses } from '@mui/joy/Accordion';
 import AccordionDetails from '@mui/joy/AccordionDetails';
 import AccordionSummary from '@mui/joy/AccordionSummary';
 import AccordionGroup from '@mui/joy/AccordionGroup';
-import { accordionSummaryClasses, accordionDetailsClasses } from '@mui/joy'
+// import { accordionSummaryClasses, accordionDetailsClasses } from '@mui/joy'
+
 import { useState, useEffect } from "react";
 
 export default function ViewMatchResultsPage() {
@@ -69,175 +70,287 @@ export default function ViewMatchResultsPage() {
         return null;
       }
       
-      setPracticeResults(results[0])
-      console.log(results[0])
-      setQualResults(results[1])
-      console.log(results[1])
-      setPlayoffResults(results[2])
-      console.log(results[2])
-      setFinalResults(results[3])
-      console.log(results[3])
+      setPracticeResults(results.practiceMatchesArray)
+      console.log(results.practiceMatchesArray)
+      setQualResults(results.qualMatchesArray)
+      console.log(results.qualMatchesArray)
+      setPlayoffResults(results.playoffMatchesArray)
+      console.log(results.playoffMatchesArray)
+      setFinalResults(results.finalMatchesArray)
+      console.log(results.finalMatchesArray)
     }
 
     return(
-        <>
-        <MenuButton/>
-        
-        <h1>Match Survey Results</h1>
-        {requestFail && requestFail && (
-          <p><strong>API Request Failed</strong>: Check your internet connection and try again!</p>
-        )}
+      <>
+      <MenuButton/>
+      
+      <h1>Match Survey Results</h1>
+      {requestFail && requestFail && (
+        <p><strong>API Request Failed</strong>: Check your internet connection and try again!</p>
+      )}
 
-        {dataUndef && dataUndef == true && (
-          <p><strong>API Request Failed</strong>: response data is undefined, contact admin!</p>
-        )}
+      {dataUndef && dataUndef == true && (
+        <p><strong>API Request Failed</strong>: response data is undefined, contact admin!</p>
+      )}
 
-        {/* is request loading...? */}
-        {matchLoading && matchLoading == true
-          // ? true, render circular
-        ? <div style={{display:'flex', textAlign:'center'}}>
-            <p>Loading...   </p><CircularProgress variant="soft" size="sm"/>
-          </div>
-          // : false, check if whole request array is empty ? true, IS empty, render plain <p> : false, is NOT empty, move on to mapping arrays
-        : (isMatchEmpty && isMatchEmpty == true) ? <p>No results yet!</p> : (
-          <section>
-            <h2>Practice Results</h2>
-            {/* check if PRACTICE results array is empty ? true, render plain <p> : false, show results */}
-            {fetchedPracticeResults.length == 0 ? <p>No practice matches recorded!</p> : (
-              <div className="pit-results-container">
-                {fetchedPracticeResults.map((match, index) => (
-                  <div key={`match-container-${index}`} id={`match-container-${index}`} className="item-container">
-                    <h3 key={`header-${index}`} id={`header-${index}`} className='match-header'>Match {index+1}</h3>
+      {/* is request loading...? */}
+      {matchLoading && matchLoading == true
+        // ? true, render circular
+      ? <div style={{display:'flex', textAlign:'center'}}>
+          <p>Loading...   </p><CircularProgress variant="soft" size="sm"/>
+        </div>
+        // : false, check if whole request array is empty ? true, IS empty, render plain <p> : false, is NOT empty, move on to mapping arrays
+      : (isMatchEmpty && isMatchEmpty == true) ? <p>No results yet!</p> : (
+        <> {/* parent elem */}
+        <section id='practice-section'>
+          <h2>Practice Results</h2>
+          {/* check if PRACTICE results array is empty ? true, render plain <p> : false, show results */}
+          {fetchedPracticeResults.length == 0 ? <p>No practice matches recorded!</p> : (
+            <div className="pit-results-container">
+              {fetchedPracticeResults.map((match, index) => (
+                <div key={`match-container-${index}`} id={`match-container-${index}`} className="item-container">
+                  <h3 key={`header-${index}`} id={`header-${index}`} style={{marginTop:'0px'}}>Match {index+1}</h3>
 
-                    <AccordionGroup> {/* to group all 6 accordions together in DOM, per match*/}
-                    {match.map((row, index2) => {
-                      return( //per Object (orig row from table)
-                        //<div key={`match-${index}-team-container-${index2}`} id={`match-${index}-team-container-${index2}`} className={`${row.alliance === 'red' ? 'red-backdrop' : 'blue-backdrop'}`}>
-                            <Accordion variant="outlined">
-                              {/* note: custom color in theme-registry file */}
-                              <AccordionSummary variant="solid" color={row.alliance === 'red' ? 'danger' : 'blueAllianceColor'}>{row.team_number}</AccordionSummary>
-                              <AccordionDetails variant="soft" color={row.alliance === 'red' ? 'danger' : 'blueAllianceColor'}> {/* note: overriding font color to white in theme-registry file */}
-                                <p>Starting Pos: <strong>{row.start_pos}</strong></p>
+                  <AccordionGroup> {/* to group all 6 accordions together in DOM, per match*/}
+                  {match.map((row, index2) => {
+                    return( //per Object (orig row from table)
+                      <Accordion variant="outlined" key={`match-${index}-team-row-${index2}`}>
+                        {/* note: custom color in theme-registry file */}
+                        <AccordionSummary variant="solid" color={row.alliance === 'red' ? 'danger' : 'blueAllianceColor'}>{row.team_number}</AccordionSummary>
+                        <AccordionDetails variant="soft" color={row.alliance === 'red' ? 'danger' : 'blueAllianceColor'}> {/* note: overriding font color to white in theme-registry file */}
+                          <p>Starting Pos: <strong>{row.start_pos}</strong></p>
 
-                                <h4 className="match-section-header">Auto</h4>
-                                <p className="detail match-detail">Crossed Auto Line: <strong>{row.cross_auto_line === "" ? '??' : row.cross_auto_line ?? '??'}</strong></p>
-                                {(row.cross_auto_line === 'yes' || row.cross_auto_line === '') && (
-                                  <div className="result-flex match-detail">
-                                    <p style={{marginRight:'0.5rem'}}>Amp Count: <strong>{row.auto_amp}</strong></p>
-                                    <p>Speaker Count: <strong>{row.auto_speaker}</strong></p>
-                                  </div>
-                                )}
+                          <h4 className="match-section-header">Auto</h4>
+                          <p className="detail match-detail">Crossed Auto Line: <strong>{row.cross_auto_line === "" ? '??' : row.cross_auto_line ?? '??'}</strong></p>
+                          {(row.cross_auto_line === 'yes' || row.cross_auto_line === '') && (
+                            <div className="result-flex match-detail">
+                              <p style={{marginRight:'0.5rem'}}>Amp Count: <strong>{row.auto_amp}</strong></p>
+                              <p>Speaker Count: <strong>{row.auto_speaker}</strong></p>
+                            </div>
+                          )}
 
-                                <h4 className="match-section-header">Teleop</h4>
-                                <div className="result-flex match-detail">
-                                  <p style={{marginRight:'0.5rem'}}>Amp Count: <strong>{row.tele_amp}</strong></p>
-                                  <p>Speaker Count: <strong>{row.tele_speaker}</strong></p>
-                                </div>
-                                <p className="detail match-detail">Amplify Pressed: <strong>{row.amplify_count}</strong> time(s)</p>
+                          <h4 className="match-section-header">Teleop</h4>
+                          <div className="result-flex match-detail">
+                            <p style={{marginRight:'0.5rem'}}>Amp Count: <strong>{row.tele_amp}</strong></p>
+                            <p>Speaker Count: <strong>{row.tele_speaker}</strong></p>
+                          </div>
+                          <p className="detail match-detail">Amplify Pressed: <strong>{row.amplify_count}</strong> time(s)</p>
 
-                                <h4 className="match-section-header">Endgame</h4>
-                                <p className="detail match-detail">Parked or climbed: <strong>{row.park_climb === "" ? '??' : row.park_climb ?? '??'}</strong></p>
-                                {(row.park_climb === 'climb' || row.park_climb === '') && (
-                                  <>
-                                    <p className="detail match-detail">Climbed successfully: <strong>{row.climb_success ?? 'N/A'}</strong></p>
-                                    <p className="detail match-detail">Scored while climbing: <strong>{row.score_climb  ?? 'N/A'}</strong></p>
-                                  </>
-                                )}
-                                {(row.hp_throw === 'yes' || row.hp_throw === '') && (
-                                    <p className="detail match-detail">HP spotlighted <strong>successfully</strong>: <strong>{row.hp_score}/3</strong> time(s)</p>
-                                )}
-                                <h4 className="match-section-header">Info</h4>
-                                <p className="detail match-detail">Defense rating: <strong>{row.defense}/5</strong></p>
-                                <p className="detail match-detail">Lost comms or disabled: <strong>{row.lost_comms_disabled === "" ? '??' : row.lost_comms_disabled ?? '??'}</strong></p>
-                                {row.comments && row.comments.length > 0 && <p style={{width:'100%'}}>Post-Match Comments: {row.comments}</p>}
-                                <small>Survey by: {row.name}</small>
-                            </AccordionDetails>
-                            </Accordion>
-                        //</div>
-                      )
-                    })}   {/*end inner match map/render */ }
-                    </AccordionGroup>
+                          <h4 className="match-section-header">Endgame</h4>
+                          <p className="detail match-detail">Parked or climbed: <strong>{row.park_climb === "" ? '??' : row.park_climb ?? '??'}</strong></p>
+                          {(row.park_climb === 'climb' || row.park_climb === '') && (
+                            <>
+                              <p className="detail match-detail">Climbed successfully: <strong>{row.climb_success ?? 'N/A'}</strong></p>
+                              <p className="detail match-detail">Scored while climbing: <strong>{row.score_climb  ?? 'N/A'}</strong></p>
+                            </>
+                          )}
+                          {(row.hp_throw === 'yes' || row.hp_throw === '') && (
+                              <p className="detail match-detail">HP spotlighted <strong>successfully</strong>: <strong>{row.hp_score}/3</strong> time(s)</p>
+                          )}
+                          <h4 className="match-section-header">Info</h4>
+                          <p className="detail match-detail">Defense rating: <strong>{row.defense}/5</strong></p>
+                          <p className="detail match-detail">Lost comms or disabled: <strong>{row.lost_comms_disabled === "" ? '??' : row.lost_comms_disabled ?? '??'}</strong></p>
+                          {row.comments && row.comments.length > 0 && <p style={{width:'100%'}}>Post-Match Comments: {row.comments}</p>}
+                          <small>Survey by: {row.name}</small>
+                        </AccordionDetails>
+                      </Accordion>
+                    )
+                  })}   {/*end inner match map/render */ }
+                  </AccordionGroup>
 
-                  </div>  //end indiv match container
-                ))}       {/*end fetchedPracticeResults map/render */ }
-              </div>      //end pit container
-            )}            {/*end fetchedPracticeResults ternary */ }
-          </section>      //end practice section
+                </div>  //end indiv match container
+              ))}       {/*end fetchedPracticeResults map/render */ }
+            </div>      //end pit container
+          )}            {/*end fetchedPracticeResults ternary */ }
+        </section>      {/*end end practice section */ }
 
+        <section id='qual-section'>
+        <h2>Qualification Results</h2>
+        {/* check if QUAL results array is empty ? true, render plain <p> : false, show results */}
+        {fetchedQualResults.length == 0 ? <p>No qualification matches recorded!</p> : (
+          <div className="pit-results-container">
+            {fetchedQualResults.map((match, index) => (
+              <div key={`match-container-${index}`} id={`match-container-${index}`} className="item-container">
+                <h3 key={`header-${index}`} id={`header-${index}`} style={{marginTop:'0px'}}>Match {index+1}</h3>
 
-          )}  {/*end initial isMatchLoading ternary */ }
-          </> //pls remember JSX needs a parent element bc of the menubutton :)
+                <AccordionGroup> {/* to group all 6 accordions together in DOM, per match*/}
+                {match.map((row, index2) => {
+                  return( //per Object (orig row from table)
+                    <Accordion variant="outlined" key={`match-${index}-team-row-${index2}`}>
+                      {/* note: custom color in theme-registry file */}
+                      <AccordionSummary variant="solid" color={row.alliance === 'red' ? 'danger' : 'blueAllianceColor'}>{row.team_number}</AccordionSummary>
+                      <AccordionDetails variant="soft" color={row.alliance === 'red' ? 'danger' : 'blueAllianceColor'}> {/* note: overriding font color to white in theme-registry file */}
+                        <p>Starting Pos: <strong>{row.start_pos}</strong></p>
 
+                        <h4 className="match-section-header">Auto</h4>
+                        <p className="detail match-detail">Crossed Auto Line: <strong>{row.cross_auto_line === "" ? '??' : row.cross_auto_line ?? '??'}</strong></p>
+                        {(row.cross_auto_line === 'yes' || row.cross_auto_line === '') && (
+                          <div className="result-flex match-detail">
+                            <p style={{marginRight:'0.5rem'}}>Amp Count: <strong>{row.auto_amp}</strong></p>
+                            <p>Speaker Count: <strong>{row.auto_speaker}</strong></p>
+                          </div>
+                        )}
 
-               /*<div key={index} className={`item-container ${item.alliance === 'red' ? 'red-backdrop' : 'blue-backdrop'}`}>
-              <h3 className={`pit-results-number ${item.alliance === 'red' ? 'red-alliance' : 'blue-alliance'}`}>{item.match_type} {item.match_number}</h3>
-              <h3 className={`pit-results-number ${item.alliance === 'red' ? 'red-alliance' : 'blue-alliance'}`}>Team {item.team_number}</h3>
+                        <h4 className="match-section-header">Teleop</h4>
+                        <div className="result-flex match-detail">
+                          <p style={{marginRight:'0.5rem'}}>Amp Count: <strong>{row.tele_amp}</strong></p>
+                          <p>Speaker Count: <strong>{row.tele_speaker}</strong></p>
+                        </div>
+                        <p className="detail match-detail">Amplify Pressed: <strong>{row.amplify_count}</strong> time(s)</p>
 
-              <AccordionGroup
-                sx={{
-                  // maxWidth: 400,
-                  borderRadius: 'lg',
-                  [`& .${accordionSummaryClasses.button}:hover`]: {
-                    bgcolor: `${item.alliance === 'red' ? '#ff00083e' : 'rgba(62, 100, 130, 0.5)'} !important`,
-                  },
-                  [`& .${accordionSummaryClasses.button}:active`]: {
-                    bgcolor: `${item.alliance === 'red' ? '#ff00083e' : 'rgba(62, 100, 130, 0.5)'} !important`,
-                  },
-                  [`& .${accordionDetailsClasses.content}`]: {
-                    boxShadow: (theme) => `inset 0 1px ${theme.vars.palette.divider}`,
-                    [`&.${accordionDetailsClasses.expanded}`]: {
-                      // paddingBlock: '0.75rem',
-                      bgcolor: `${item.alliance === 'red' ? '#ff00083e' : 'rgba(62, 100, 130, 0.5)'} !important`,
-                    },
-                  },
-                }}
-              >
-                <Accordion variant="plain">
-                  <AccordionSummary variant="outlined">Details</AccordionSummary>
-                  <AccordionDetails variant="outlined">
-                    <p>Starting Pos: <strong>{item.start_pos}</strong></p>
+                        <h4 className="match-section-header">Endgame</h4>
+                        <p className="detail match-detail">Parked or climbed: <strong>{row.park_climb === "" ? '??' : row.park_climb ?? '??'}</strong></p>
+                        {(row.park_climb === 'climb' || row.park_climb === '') && (
+                          <>
+                            <p className="detail match-detail">Climbed successfully: <strong>{row.climb_success ?? 'N/A'}</strong></p>
+                            <p className="detail match-detail">Scored while climbing: <strong>{row.score_climb  ?? 'N/A'}</strong></p>
+                          </>
+                        )}
+                        {(row.hp_throw === 'yes' || row.hp_throw === '') && (
+                            <p className="detail match-detail">HP spotlighted <strong>successfully</strong>: <strong>{row.hp_score}/3</strong> time(s)</p>
+                        )}
+                        <h4 className="match-section-header">Info</h4>
+                        <p className="detail match-detail">Defense rating: <strong>{row.defense}/5</strong></p>
+                        <p className="detail match-detail">Lost comms or disabled: <strong>{row.lost_comms_disabled === "" ? '??' : row.lost_comms_disabled ?? '??'}</strong></p>
+                        {row.comments && row.comments.length > 0 && <p style={{width:'100%'}}>Post-Match Comments: {row.comments}</p>}
+                        <small>Survey by: {row.name}</small>
+                      </AccordionDetails>
+                    </Accordion>
+                  )
+                })}   {/*end inner match map/render */ }
+                </AccordionGroup>
 
-                    <h4 className="match-section-header">Auto</h4>
-                    <p className="detail match-detail">Crossed Auto Line: <strong>{item.cross_auto_line}</strong></p>
-                    {item.cross_auto_line && item.cross_auto_line === 'yes' && (
-                      <div className="result-flex match-detail">
-                        <p style={{marginRight:'0.5rem'}}>Amp Count: <strong>{item.auto_amp}</strong></p>
-                        <p>Speaker Count: <strong>{item.auto_speaker}</strong></p>
-                      </div>
-                    )}
+              </div>  //end indiv match container
+            ))}       {/*end fetchedQualResults map/render */ }
+          </div>      //end pit container
+        )}            {/*end fetchedQualResults ternary */ }
+        </section>    {/* end qual section*/}
 
-                    <h4 className="match-section-header">Teleop</h4>
-                    <div className="result-flex match-detail">
-                      <p style={{marginRight:'0.5rem'}}>Amp Count: <strong>{item.tele_amp}</strong></p>
-                      <p>Speaker Count: <strong>{item.tele_speaker}</strong></p>
-                    </div>
-                    <p className="detail match-detail">Amplify Pressed: <strong>{item.amplify_count}</strong></p>
+        <section id='playoff-section'>
+        <h2>Playoffs Results</h2>
+        {/* check if QUAL results array is empty ? true, render plain <p> : false, show results */}
+        {fetchedPlayoffResults.length == 0 ? <p>No playoffs matches recorded!</p> : (
+          <div className="pit-results-container">
+            {fetchedPlayoffResults.map((match, index) => (
+              <div key={`match-container-${index}`} id={`match-container-${index}`} className="item-container">
+                <h3 key={`header-${index}`} id={`header-${index}`} style={{marginTop:'0px'}}>Match {index+1}</h3>
 
-                    <h4 className="match-section-header">Endgame</h4>
-                    <p className="detail match-detail">Parked or climbed: <strong>{item.park_climb}</strong></p>
-                    {item.park_climb && item.park_climb === 'climb' && (
-                      <>
-                        <p className="detail match-detail">Climbed successfully: <strong>{item.climb_success}</strong></p>
-                        <p className="detail match-detail">Scored while climbing: <strong>{item.score_climb}</strong></p>
-                      </>
-                    )}
-                    {item.hp_throw && item.hp_throw === 'yes' && (
-                        <p className="detail match-detail">HP spotlighted: <strong>{item.hp_score}/3</strong></p>
-                    )}
-                    <h4 className="match-section-header">Info</h4>
-                    <p className="detail match-detail">Defense rating: <strong>{item.defense}/5</strong></p>
-                    <p className="detail match-detail">Lost comms or disabled: <strong>{item.lost_comms_disabled}</strong></p>
-                    {item.comments && item.comments.length > 0 && <p>Post-Match Comments: {item.comments}</p>}
-                    <small>Survey by: <strong>{item.name}</strong></small>
-                </AccordionDetails>
-                </Accordion>
-              </AccordionGroup>
-            </div> */
-          //   )
-          // })}
-          // </div> //end header
-          // </div> //end pit container
-        // )}
-        // </>
+                <AccordionGroup> {/* to group all 6 accordions together in DOM, per match*/}
+                {match.map((row, index2) => {
+                  return( //per Object (orig row from table)
+                    <Accordion variant="outlined" key={`match-${index}-team-row-${index2}`}>
+                      {/* note: custom color in theme-registry file */}
+                      <AccordionSummary variant="solid" color={row.alliance === 'red' ? 'danger' : 'blueAllianceColor'}>{row.team_number}</AccordionSummary>
+                      <AccordionDetails variant="soft" color={row.alliance === 'red' ? 'danger' : 'blueAllianceColor'}> {/* note: overriding font color to white in theme-registry file */}
+                        <p>Starting Pos: <strong>{row.start_pos}</strong></p>
+
+                        <h4 className="match-section-header">Auto</h4>
+                        <p className="detail match-detail">Crossed Auto Line: <strong>{row.cross_auto_line === "" ? '??' : row.cross_auto_line ?? '??'}</strong></p>
+                        {(row.cross_auto_line === 'yes' || row.cross_auto_line === '') && (
+                          <div className="result-flex match-detail">
+                            <p style={{marginRight:'0.5rem'}}>Amp Count: <strong>{row.auto_amp}</strong></p>
+                            <p>Speaker Count: <strong>{row.auto_speaker}</strong></p>
+                          </div>
+                        )}
+
+                        <h4 className="match-section-header">Teleop</h4>
+                        <div className="result-flex match-detail">
+                          <p style={{marginRight:'0.5rem'}}>Amp Count: <strong>{row.tele_amp}</strong></p>
+                          <p>Speaker Count: <strong>{row.tele_speaker}</strong></p>
+                        </div>
+                        <p className="detail match-detail">Amplify Pressed: <strong>{row.amplify_count}</strong> time(s)</p>
+
+                        <h4 className="match-section-header">Endgame</h4>
+                        <p className="detail match-detail">Parked or climbed: <strong>{row.park_climb === "" ? '??' : row.park_climb ?? '??'}</strong></p>
+                        {(row.park_climb === 'climb' || row.park_climb === '') && (
+                          <>
+                            <p className="detail match-detail">Climbed successfully: <strong>{row.climb_success ?? 'N/A'}</strong></p>
+                            <p className="detail match-detail">Scored while climbing: <strong>{row.score_climb  ?? 'N/A'}</strong></p>
+                          </>
+                        )}
+                        {(row.hp_throw === 'yes' || row.hp_throw === '') && (
+                            <p className="detail match-detail">HP spotlighted <strong>successfully</strong>: <strong>{row.hp_score}/3</strong> time(s)</p>
+                        )}
+                        <h4 className="match-section-header">Info</h4>
+                        <p className="detail match-detail">Defense rating: <strong>{row.defense}/5</strong></p>
+                        <p className="detail match-detail">Lost comms or disabled: <strong>{row.lost_comms_disabled === "" ? '??' : row.lost_comms_disabled ?? '??'}</strong></p>
+                        {row.comments && row.comments.length > 0 && <p style={{width:'100%'}}>Post-Match Comments: {row.comments}</p>}
+                        <small>Survey by: {row.name}</small>
+                      </AccordionDetails>
+                    </Accordion>
+                  )
+                })}   {/*end inner match map/render */ }
+                </AccordionGroup>
+
+              </div>  //end indiv match container
+            ))}       {/*end fetchedPlayoffResults map/render */ }
+          </div>      //end pit container
+        )}            {/*end fetchedPlayoffResults ternary */ }
+        </section>    {/* end playoff section*/}
+
+        <section id='finals-section'>
+        <h2>Finals Results</h2>
+        {/* check if QUAL results array is empty ? true, render plain <p> : false, show results */}
+        {fetchedFinalResults.length == 0 ? <p>No finals matches recorded!</p> : (
+          <div className="pit-results-container">
+            {fetchedFinalResults.map((match, index) => (
+              <div key={`match-container-${index}`} id={`match-container-${index}`} className="item-container">
+                <h3 key={`header-${index}`} id={`header-${index}`} style={{marginTop:'0px'}}>Match {index+1}</h3>
+
+                <AccordionGroup> {/* to group all 6 accordions together in DOM, per match*/}
+                {match.map((row, index2) => {
+                  return( //per Object (orig row from table)
+                    <Accordion variant="outlined" key={`match-${index}-team-row-${index2}`}>
+                      {/* note: custom color in theme-registry file */}
+                      <AccordionSummary variant="solid" color={row.alliance === 'red' ? 'danger' : 'blueAllianceColor'}>{row.team_number}</AccordionSummary>
+                      <AccordionDetails variant="soft" color={row.alliance === 'red' ? 'danger' : 'blueAllianceColor'}> {/* note: overriding font color to white in theme-registry file */}
+                        <p>Starting Pos: <strong>{row.start_pos}</strong></p>
+
+                        <h4 className="match-section-header">Auto</h4>
+                        <p className="detail match-detail">Crossed Auto Line: <strong>{row.cross_auto_line === "" ? '??' : row.cross_auto_line ?? '??'}</strong></p>
+                        {(row.cross_auto_line === 'yes' || row.cross_auto_line === '') && (
+                          <div className="result-flex match-detail">
+                            <p style={{marginRight:'0.5rem'}}>Amp Count: <strong>{row.auto_amp}</strong></p>
+                            <p>Speaker Count: <strong>{row.auto_speaker}</strong></p>
+                          </div>
+                        )}
+
+                        <h4 className="match-section-header">Teleop</h4>
+                        <div className="result-flex match-detail">
+                          <p style={{marginRight:'0.5rem'}}>Amp Count: <strong>{row.tele_amp}</strong></p>
+                          <p>Speaker Count: <strong>{row.tele_speaker}</strong></p>
+                        </div>
+                        <p className="detail match-detail">Amplify Pressed: <strong>{row.amplify_count}</strong> time(s)</p>
+
+                        <h4 className="match-section-header">Endgame</h4>
+                        <p className="detail match-detail">Parked or climbed: <strong>{row.park_climb === "" ? '??' : row.park_climb ?? '??'}</strong></p>
+                        {(row.park_climb === 'climb' || row.park_climb === '') && (
+                          <>
+                            <p className="detail match-detail">Climbed successfully: <strong>{row.climb_success ?? 'N/A'}</strong></p>
+                            <p className="detail match-detail">Scored while climbing: <strong>{row.score_climb  ?? 'N/A'}</strong></p>
+                          </>
+                        )}
+                        {(row.hp_throw === 'yes' || row.hp_throw === '') && (
+                            <p className="detail match-detail">HP spotlighted <strong>successfully</strong>: <strong>{row.hp_score}/3</strong> time(s)</p>
+                        )}
+                        <h4 className="match-section-header">Info</h4>
+                        <p className="detail match-detail">Defense rating: <strong>{row.defense}/5</strong></p>
+                        <p className="detail match-detail">Lost comms or disabled: <strong>{row.lost_comms_disabled === "" ? '??' : row.lost_comms_disabled ?? '??'}</strong></p>
+                        {row.comments && row.comments.length > 0 && <p style={{width:'100%'}}>Post-Match Comments: {row.comments}</p>}
+                        <small>Survey by: {row.name}</small>
+                      </AccordionDetails>
+                    </Accordion>
+                  )
+                })}   {/*end inner match map/render */ }
+                </AccordionGroup>
+
+              </div>  //end indiv match container
+            ))}       {/*end fetchedFinalResults map/render */ }
+          </div>      //end pit container
+        )}            {/*end fetchedFinalResults ternary */ }
+        </section>    {/* end playoff section*/}
+        </>
+      )}  {/*end initial isMatchLoading ternary */ }
+      </> //pls remember JSX needs a parent element bc of the menubutton :)
     )
 }
