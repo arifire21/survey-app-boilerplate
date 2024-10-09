@@ -9,6 +9,8 @@ import AccordionGroup from '@mui/joy/AccordionGroup';
 import trophy from '@/images/trophy.png'
 import sharkfin from '../favicon.ico'
 
+import styles from '@/styles/match-results.module.css'
+
 import { useState, useEffect } from "react";
 import Image from "next/image";
 
@@ -105,10 +107,10 @@ export default function ViewMatchResultsPage() {
           <h2>Practice Results <small>({fetchedPracticeResults.length})</small></h2>
           {/* check if PRACTICE results array is empty ? true, render plain <p> : false, show results */}
           {fetchedPracticeResults.length == 0 ? <p>No practice matches recorded!</p> : (
-            <div className="pit-results-container">
+            <div className="full-results-container">
               {fetchedPracticeResults.map((match, index) => (
                 <div key={`match-container-${index}`} id={`match-container-${index}`} className="item-container">
-                  <h3 key={`header-${index}`} id={`header-${index}`} className='match-number-header'>Match {index+1}</h3>
+                  <h3 key={`header-${index}`} id={`header-${index}`} className='item-number'>Match {index+1}</h3>
 
                   <AccordionGroup  sx={{maxWidth:'400px'}}> {/* to group all 6 accordions together in DOM, per match*/}
                   {match.map((row, index2) => {
@@ -123,36 +125,36 @@ export default function ViewMatchResultsPage() {
                         <AccordionDetails variant="soft" color={row.alliance === 'red' ? 'danger' : 'blueAllianceColor'}> {/* note: overriding font color to white in theme-registry file */}
                           <p>Starting Pos: <strong>{row.start_pos}</strong></p>
 
-                          <h4 className="match-section-header">Auto</h4>
-                          <p className="detail match-detail">Crossed Auto Line: <strong>{row.cross_auto_line === "" ? '??' : row.cross_auto_line ?? '??'}</strong></p>
+                          <h4 className={styles.matchDetailHeader}>Auto</h4>
+                          <p className={styles.matchDetail}>Crossed Auto Line: <strong>{row.cross_auto_line === "" ? '??' : row.cross_auto_line ?? '??'}</strong></p>
                           {(row.cross_auto_line === 'yes' || row.cross_auto_line === '') && (
-                            <div className="result-flex match-detail">
+                            <div className={`${styles.resultFlex} match-detail`}>
                               <p style={{marginRight:'0.5rem'}}>Amp Count: <strong>{row.auto_amp}</strong></p>
                               <p>Speaker Count: <strong>{row.auto_speaker}</strong></p>
                             </div>
                           )}
 
-                          <h4 className="match-section-header">Teleop</h4>
-                          <div className="result-flex match-detail">
+                          <h4 className={styles.matchDetailHeader}>Teleop</h4>
+                          <div className={`${styles.resultFlex} match-detail`}>
                             <p style={{marginRight:'0.5rem'}}>Amp Count: <strong>{row.tele_amp}</strong></p>
                             <p>Speaker Count: <strong>{row.tele_speaker}</strong></p>
                           </div>
-                          <p className="detail match-detail">Amplify Pressed: <strong>{row.amplify_count}</strong> time(s)</p>
+                          <p className={styles.matchDetail}>Amplify Pressed: <strong>{row.amplify_count}</strong> time(s)</p>
 
-                          <h4 className="match-section-header">Endgame</h4>
-                          <p className="detail match-detail">Parked or climbed: <strong>{row.park_climb === "" ? '??' : row.park_climb ?? '??'}</strong></p>
+                          <h4 className={styles.matchDetailHeader}>Endgame</h4>
+                          <p className={styles.matchDetail}>Parked or climbed: <strong>{row.park_climb === "" ? '??' : row.park_climb ?? '??'}</strong></p>
                           {(row.park_climb === 'climb' || row.park_climb === '') && (
                             <>
-                              <p className="detail match-detail">Climbed successfully: <strong>{row.climb_success ?? 'N/A'}</strong></p>
-                              <p className="detail match-detail">Scored while climbing: <strong>{row.score_climb  ?? 'N/A'}</strong></p>
+                              <p className={styles.matchDetail}>Climbed successfully: <strong>{row.climb_success ?? 'N/A'}</strong></p>
+                              <p className={styles.matchDetail}>Scored while climbing: <strong>{row.score_climb  ?? 'N/A'}</strong></p>
                             </>
                           )}
                           {(row.hp_throw === 'yes' || row.hp_throw === '') && (
-                              <p className="detail match-detail">HP spotlighted <strong>successfully</strong>: <strong>{row.hp_score}/3</strong> time(s)</p>
+                              <p className={styles.matchDetail}>HP spotlighted <strong>successfully</strong>: <strong>{row.hp_score}/3</strong> time(s)</p>
                           )}
-                          <h4 className="match-section-header">Info</h4>
-                          <p className="detail match-detail">Defense rating: <strong>{row.defense}/5</strong></p>
-                          <p className="detail match-detail">Lost comms or disabled: <strong>{row.lost_comms_disabled === "" ? '??' : row.lost_comms_disabled ?? '??'}</strong></p>
+                          <h4 className={styles.matchDetailHeader}>Info</h4>
+                          <p className={styles.matchDetail}>Defense rating: <strong>{row.defense}/5</strong></p>
+                          <p className={styles.matchDetail}>Lost comms or disabled: <strong>{row.lost_comms_disabled === "" ? '??' : row.lost_comms_disabled ?? '??'}</strong></p>
                           {row.comments && row.comments.length > 0 && <p style={{width:'100%'}}>Post-Match Comments: {row.comments}</p>}
                           <small>Survey by: {row.name}</small>
                         </AccordionDetails>
@@ -171,10 +173,10 @@ export default function ViewMatchResultsPage() {
         <h2>Qualification Results <small>({fetchedQualResults.length})</small></h2>
         {/* check if QUAL results array is empty ? true, render plain <p> : false, show results */}
         {fetchedQualResults.length == 0 ? <p>No qualification matches recorded!</p> : (
-          <div className="pit-results-container">
+          <div className="full-results-container">
             {fetchedQualResults.map((match, index) => (
               <div key={`match-container-${index}`} id={`match-container-${index}`} className="item-container">
-                <h3 key={`header-${index}`} id={`header-${index}`} className='match-number-header'>Match {index+1}</h3>
+                <h3 key={`header-${index}`} id={`header-${index}`} className='item-number'>Match {index+1}</h3>
 
                 <AccordionGroup  sx={{maxWidth:'400px'}}> {/* to group all 6 accordions together in DOM, per match*/}
                 {match.map((row, index2) => {
@@ -189,36 +191,36 @@ export default function ViewMatchResultsPage() {
                       <AccordionDetails variant="soft" color={row.alliance === 'red' ? 'danger' : 'blueAllianceColor'}> {/* note: overriding font color to white in theme-registry file */}
                         <p>Starting Pos: <strong>{row.start_pos}</strong></p>
 
-                        <h4 className="match-section-header">Auto</h4>
-                        <p className="detail match-detail">Crossed Auto Line: <strong>{row.cross_auto_line === "" ? '??' : row.cross_auto_line ?? '??'}</strong></p>
+                        <h4 className={styles.matchDetailHeader}>Auto</h4>
+                        <p className={styles.matchDetail}>Crossed Auto Line: <strong>{row.cross_auto_line === "" ? '??' : row.cross_auto_line ?? '??'}</strong></p>
                         {(row.cross_auto_line === 'yes' || row.cross_auto_line === '') && (
-                          <div className="result-flex match-detail">
+                          <div className={`${styles.resultFlex} match-detail`}>
                             <p style={{marginRight:'0.5rem'}}>Amp Count: <strong>{row.auto_amp}</strong></p>
                             <p>Speaker Count: <strong>{row.auto_speaker}</strong></p>
                           </div>
                         )}
 
-                        <h4 className="match-section-header">Teleop</h4>
-                        <div className="result-flex match-detail">
+                        <h4 className={styles.matchDetailHeader}>Teleop</h4>
+                        <div className={`${styles.resultFlex} match-detail`}>
                           <p style={{marginRight:'0.5rem'}}>Amp Count: <strong>{row.tele_amp}</strong></p>
                           <p>Speaker Count: <strong>{row.tele_speaker}</strong></p>
                         </div>
-                        <p className="detail match-detail">Amplify Pressed: <strong>{row.amplify_count}</strong> time(s)</p>
+                        <p className={styles.matchDetail}>Amplify Pressed: <strong>{row.amplify_count}</strong> time(s)</p>
 
-                        <h4 className="match-section-header">Endgame</h4>
-                        <p className="detail match-detail">Parked or climbed: <strong>{row.park_climb === "" ? '??' : row.park_climb ?? '??'}</strong></p>
+                        <h4 className={styles.matchDetailHeader}>Endgame</h4>
+                        <p className={styles.matchDetail}>Parked or climbed: <strong>{row.park_climb === "" ? '??' : row.park_climb ?? '??'}</strong></p>
                         {(row.park_climb === 'climb' || row.park_climb === '') && (
                           <>
-                            <p className="detail match-detail">Climbed successfully: <strong>{row.climb_success ?? 'N/A'}</strong></p>
-                            <p className="detail match-detail">Scored while climbing: <strong>{row.score_climb  ?? 'N/A'}</strong></p>
+                            <p className={styles.matchDetail}>Climbed successfully: <strong>{row.climb_success ?? 'N/A'}</strong></p>
+                            <p className={styles.matchDetail}>Scored while climbing: <strong>{row.score_climb  ?? 'N/A'}</strong></p>
                           </>
                         )}
                         {(row.hp_throw === 'yes' || row.hp_throw === '') && (
-                            <p className="detail match-detail">HP spotlighted <strong>successfully</strong>: <strong>{row.hp_score}/3</strong> time(s)</p>
+                            <p className={styles.matchDetail}>HP spotlighted <strong>successfully</strong>: <strong>{row.hp_score}/3</strong> time(s)</p>
                         )}
-                        <h4 className="match-section-header">Info</h4>
-                        <p className="detail match-detail">Defense rating: <strong>{row.defense}/5</strong></p>
-                        <p className="detail match-detail">Lost comms or disabled: <strong>{row.lost_comms_disabled === "" ? '??' : row.lost_comms_disabled ?? '??'}</strong></p>
+                        <h4 className={styles.matchDetailHeader}>Info</h4>
+                        <p className={styles.matchDetail}>Defense rating: <strong>{row.defense}/5</strong></p>
+                        <p className={styles.matchDetail}>Lost comms or disabled: <strong>{row.lost_comms_disabled === "" ? '??' : row.lost_comms_disabled ?? '??'}</strong></p>
                         {row.comments && row.comments.length > 0 && <p style={{width:'100%'}}>Post-Match Comments: {row.comments}</p>}
                         <small>Survey by: {row.name}</small>
                       </AccordionDetails>
@@ -237,10 +239,10 @@ export default function ViewMatchResultsPage() {
         <h2>Playoffs Results <small>({fetchedPlayoffResults.length})</small></h2>
         {/* check if QUAL results array is empty ? true, render plain <p> : false, show results */}
         {fetchedPlayoffResults.length == 0 ? <p>No playoffs matches recorded!</p> : (
-          <div className="pit-results-container">
+          <div className="full-results-container">
             {fetchedPlayoffResults.map((match, index) => (
               <div key={`match-container-${index}`} id={`match-container-${index}`} className="item-container">
-                <h3 key={`header-${index}`} id={`header-${index}`} className='match-number-header'>Match {index+1}</h3>
+                <h3 key={`header-${index}`} id={`header-${index}`} className='item-number'>Match {index+1}</h3>
 
                 <AccordionGroup sx={{maxWidth:'400px'}}> {/* to group all 6 accordions together in DOM, per match*/}
                 {match.map((row, index2) => {
@@ -251,36 +253,36 @@ export default function ViewMatchResultsPage() {
                       <AccordionDetails variant="soft" color={row.alliance === 'red' ? 'danger' : 'blueAllianceColor'}> {/* note: overriding font color to white in theme-registry file */}
                         <p>Starting Pos: <strong>{row.start_pos}</strong></p>
 
-                        <h4 className="match-section-header">Auto</h4>
-                        <p className="detail match-detail">Crossed Auto Line: <strong>{row.cross_auto_line === "" ? '??' : row.cross_auto_line ?? '??'}</strong></p>
+                        <h4 className={styles.matchDetailHeader}>Auto</h4>
+                        <p className={styles.matchDetail}>Crossed Auto Line: <strong>{row.cross_auto_line === "" ? '??' : row.cross_auto_line ?? '??'}</strong></p>
                         {(row.cross_auto_line === 'yes' || row.cross_auto_line === '') && (
-                          <div className="result-flex match-detail">
+                          <div className={`${styles.resultFlex} match-detail`}>
                             <p style={{marginRight:'0.5rem'}}>Amp Count: <strong>{row.auto_amp}</strong></p>
                             <p>Speaker Count: <strong>{row.auto_speaker}</strong></p>
                           </div>
                         )}
 
-                        <h4 className="match-section-header">Teleop</h4>
-                        <div className="result-flex match-detail">
+                        <h4 className={styles.matchDetailHeader}>Teleop</h4>
+                        <div className={`${styles.resultFlex} match-detail`}>
                           <p style={{marginRight:'0.5rem'}}>Amp Count: <strong>{row.tele_amp}</strong></p>
                           <p>Speaker Count: <strong>{row.tele_speaker}</strong></p>
                         </div>
-                        <p className="detail match-detail">Amplify Pressed: <strong>{row.amplify_count}</strong> time(s)</p>
+                        <p className={styles.matchDetail}>Amplify Pressed: <strong>{row.amplify_count}</strong> time(s)</p>
 
-                        <h4 className="match-section-header">Endgame</h4>
-                        <p className="detail match-detail">Parked or climbed: <strong>{row.park_climb === "" ? '??' : row.park_climb ?? '??'}</strong></p>
+                        <h4 className={styles.matchDetailHeader}>Endgame</h4>
+                        <p className={styles.matchDetail}>Parked or climbed: <strong>{row.park_climb === "" ? '??' : row.park_climb ?? '??'}</strong></p>
                         {(row.park_climb === 'climb' || row.park_climb === '') && (
                           <>
-                            <p className="detail match-detail">Climbed successfully: <strong>{row.climb_success ?? 'N/A'}</strong></p>
-                            <p className="detail match-detail">Scored while climbing: <strong>{row.score_climb  ?? 'N/A'}</strong></p>
+                            <p className={styles.matchDetail}>Climbed successfully: <strong>{row.climb_success ?? 'N/A'}</strong></p>
+                            <p className={styles.matchDetail}>Scored while climbing: <strong>{row.score_climb  ?? 'N/A'}</strong></p>
                           </>
                         )}
                         {(row.hp_throw === 'yes' || row.hp_throw === '') && (
-                            <p className="detail match-detail">HP spotlighted <strong>successfully</strong>: <strong>{row.hp_score}/3</strong> time(s)</p>
+                            <p className={styles.matchDetail}>HP spotlighted <strong>successfully</strong>: <strong>{row.hp_score}/3</strong> time(s)</p>
                         )}
-                        <h4 className="match-section-header">Info</h4>
-                        <p className="detail match-detail">Defense rating: <strong>{row.defense}/5</strong></p>
-                        <p className="detail match-detail">Lost comms or disabled: <strong>{row.lost_comms_disabled === "" ? '??' : row.lost_comms_disabled ?? '??'}</strong></p>
+                        <h4 className={styles.matchDetailHeader}>Info</h4>
+                        <p className={styles.matchDetail}>Defense rating: <strong>{row.defense}/5</strong></p>
+                        <p className={styles.matchDetail}>Lost comms or disabled: <strong>{row.lost_comms_disabled === "" ? '??' : row.lost_comms_disabled ?? '??'}</strong></p>
                         {row.comments && row.comments.length > 0 && <p style={{width:'100%'}}>Post-Match Comments: {row.comments}</p>}
                         <small>Survey by: {row.name}</small>
                       </AccordionDetails>
@@ -299,10 +301,10 @@ export default function ViewMatchResultsPage() {
         <h2>Finals Results <small>({fetchedFinalResults.length})</small></h2>
         {/* check if QUAL results array is empty ? true, render plain <p> : false, show results */}
         {fetchedFinalResults.length == 0 ? <p>No finals matches recorded!</p> : (
-          <div className="pit-results-container">
+          <div className="full-results-container">
             {fetchedFinalResults.map((match, index) => (
               <div key={`match-container-${index}`} id={`match-container-${index}`} className="item-container">
-                <h3 key={`header-${index}`} id={`header-${index}`} className='match-number-header'>Match {index+1}</h3>
+                <h3 key={`header-${index}`} id={`header-${index}`} className='item-number'>Match {index+1}</h3>
 
                 <AccordionGroup sx={{maxWidth:'400px'}}> {/* to group all 6 accordions together in DOM, per match*/}
                 {match.map((row, index2) => {
@@ -313,36 +315,36 @@ export default function ViewMatchResultsPage() {
                       <AccordionDetails variant="soft" color={row.alliance === 'red' ? 'danger' : 'blueAllianceColor'}> {/* note: overriding font color to white in theme-registry file */}
                         <p>Starting Pos: <strong>{row.start_pos}</strong></p>
 
-                        <h4 className="match-section-header">Auto</h4>
-                        <p className="detail match-detail">Crossed Auto Line: <strong>{row.cross_auto_line === "" ? '??' : row.cross_auto_line ?? '??'}</strong></p>
+                        <h4 className={styles.matchDetailHeader}>Auto</h4>
+                        <p className={styles.matchDetail}>Crossed Auto Line: <strong>{row.cross_auto_line === "" ? '??' : row.cross_auto_line ?? '??'}</strong></p>
                         {(row.cross_auto_line === 'yes' || row.cross_auto_line === '') && (
-                          <div className="result-flex match-detail">
+                          <div className={`${styles.resultFlex} match-detail`}>
                             <p style={{marginRight:'0.5rem'}}>Amp Count: <strong>{row.auto_amp}</strong></p>
                             <p>Speaker Count: <strong>{row.auto_speaker}</strong></p>
                           </div>
                         )}
 
-                        <h4 className="match-section-header">Teleop</h4>
-                        <div className="result-flex match-detail">
+                        <h4 className={styles.matchDetailHeader}>Teleop</h4>
+                        <div className={`${styles.resultFlex} match-detail`}>
                           <p style={{marginRight:'0.5rem'}}>Amp Count: <strong>{row.tele_amp}</strong></p>
                           <p>Speaker Count: <strong>{row.tele_speaker}</strong></p>
                         </div>
-                        <p className="detail match-detail">Amplify Pressed: <strong>{row.amplify_count}</strong> time(s)</p>
+                        <p className={styles.matchDetail}>Amplify Pressed: <strong>{row.amplify_count}</strong> time(s)</p>
 
-                        <h4 className="match-section-header">Endgame</h4>
-                        <p className="detail match-detail">Parked or climbed: <strong>{row.park_climb === "" ? '??' : row.park_climb ?? '??'}</strong></p>
+                        <h4 className={styles.matchDetailHeader}>Endgame</h4>
+                        <p className={styles.matchDetail}>Parked or climbed: <strong>{row.park_climb === "" ? '??' : row.park_climb ?? '??'}</strong></p>
                         {(row.park_climb === 'climb' || row.park_climb === '') && (
                           <>
-                            <p className="detail match-detail">Climbed successfully: <strong>{row.climb_success ?? 'N/A'}</strong></p>
-                            <p className="detail match-detail">Scored while climbing: <strong>{row.score_climb  ?? 'N/A'}</strong></p>
+                            <p className={styles.matchDetail}>Climbed successfully: <strong>{row.climb_success ?? 'N/A'}</strong></p>
+                            <p className={styles.matchDetail}>Scored while climbing: <strong>{row.score_climb  ?? 'N/A'}</strong></p>
                           </>
                         )}
                         {(row.hp_throw === 'yes' || row.hp_throw === '') && (
-                            <p className="detail match-detail">HP spotlighted <strong>successfully</strong>: <strong>{row.hp_score}/3</strong> time(s)</p>
+                            <p className={styles.matchDetail}>HP spotlighted <strong>successfully</strong>: <strong>{row.hp_score}/3</strong> time(s)</p>
                         )}
-                        <h4 className="match-section-header">Info</h4>
-                        <p className="detail match-detail">Defense rating: <strong>{row.defense}/5</strong></p>
-                        <p className="detail match-detail">Lost comms or disabled: <strong>{row.lost_comms_disabled === "" ? '??' : row.lost_comms_disabled ?? '??'}</strong></p>
+                        <h4 className={styles.matchDetailHeader}>Info</h4>
+                        <p className={styles.matchDetail}>Defense rating: <strong>{row.defense}/5</strong></p>
+                        <p className={styles.matchDetail}>Lost comms or disabled: <strong>{row.lost_comms_disabled === "" ? '??' : row.lost_comms_disabled ?? '??'}</strong></p>
                         {row.comments && row.comments.length > 0 && <p style={{width:'100%'}}>Post-Match Comments: {row.comments}</p>}
                         <small>Survey by: {row.name}</small>
                       </AccordionDetails>

@@ -116,3 +116,5 @@
 - added `JoyFormControl` to theme-registry override to reduce inline styling (same marginBottom change is on each element in both forms)
     - using `required` attr to add asterisk instead of doing it manually, lessens upkeep and need for more override flex styling (didn't know it existed)
 - [Match Survey] replace `GroupRadio` with `ButtonToggle` component, cleaner style management and custom coloring flexibility
+- duplicate global css file
+- moved styling into separate files for maintainability
