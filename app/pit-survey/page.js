@@ -4,7 +4,7 @@ import { Button, Autocomplete, FormControl, FormLabel, Input, RadioGroup, Radio,
 import MenuButton from "@/components/menu-button";
 import { orlandoAllTeams } from "../data/orlando-all-teams";
 import { useState, useRef } from "react";
-import styles from '@styles/pit-survey.module.css'
+import styles from '@/styles/pit-survey.module.css'
 
 //images
 import WCD from '@/images/westcoastdrive.png'
