@@ -107,3 +107,12 @@
     - added original blue `joy-primary` pallette back to use for blue alliance items
         - needed dark *and* light palettes defined in order to define customs
 - [Match Results] cleanup margins, added renders for other types
+
+## v4.3.2
+- [Match Results] added counters for each match type (at-a-glance readability)
+- [Match Results] restricted AccordionGroup max width to 400px to account for comment length
+- [Math Results and API] added field asking if alliance won, so an icon will render for winning alliance in results
+- changed required form label text to be red, easier visibility
+- added `JoyFormControl` to theme-registry override to reduce inline styling (same marginBottom change is on each element in both forms)
+    - using `required` attr to add asterisk instead of doing it manually, lessens upkeep and need for more override flex styling (didn't know it existed)
+- [Match Survey] replace `GroupRadio` with `ButtonToggle` component, cleaner style management and custom coloring flexibility

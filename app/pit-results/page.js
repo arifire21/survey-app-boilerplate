@@ -381,7 +381,7 @@ export default function ViewPitResultsPage(){
               {fetchedPitResults.map((item, index) => {
                 return (
                   <div key={index} className="item-container">
-                    <h3 className="pit-results-number">{item.team_number}</h3>
+                    <h3 className="item-number">{item.team_number}</h3>
                     <p className="detail">Drivetrain: <strong>{item.drivetrain}</strong></p>
                     <p className="detail">Preferred Start Position(s): <strong>{item.preferred_pos}</strong></p>
                     <p className="detail">Has Vision Tracking: <strong>{item.vision}</strong></p>
@@ -434,7 +434,7 @@ export default function ViewPitResultsPage(){
                 {fetchedPitResults.filter((item) => item.team_number === teamCriteria).map((item, index) => {
                   return (
                     <div key={index} className="item-container">
-                      <h3 className="pit-results-number">{item.team_number}</h3>
+                      <h3 className="item-number">{item.team_number}</h3>
                       <p className="detail">Drivetrain: <strong>{item.drivetrain}</strong></p>
                       <p className="detail">Preferred Start Position(s): <strong>{item.preferred_pos}</strong></p>
                       <p className="detail">Has Vision Tracking: <strong>{item.vision}</strong></p>
@@ -482,7 +482,7 @@ export default function ViewPitResultsPage(){
                 {filteredTeamsRender && !filteredTeamsRender.length ? <p>No results.</p> : filteredTeamsRender.map((item, index) => {
                   return (
                     <div key={index} className="item-container">
-                      <h3 className="pit-results-number">{item.team_number}</h3>
+                      <h3 className="item-number">{item.team_number}</h3>
                       <p className="detail">Drivetrain: <strong>{item.drivetrain}</strong></p>
                       <p className="detail">Preferred Start Position(s): <strong>{item.preferred_pos}</strong></p>
                       <p className="detail">Has Vision Tracking: <strong>{item.vision}</strong></p>

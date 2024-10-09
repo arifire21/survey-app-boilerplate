@@ -6,8 +6,11 @@ import AccordionDetails from '@mui/joy/AccordionDetails';
 import AccordionSummary from '@mui/joy/AccordionSummary';
 import AccordionGroup from '@mui/joy/AccordionGroup';
 // import { accordionSummaryClasses, accordionDetailsClasses } from '@mui/joy'
+import trophy from '@/images/trophy.png'
+import sharkfin from '../favicon.ico'
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 
 export default function ViewMatchResultsPage() {
   const isDevMode = process.env.NEXT_PUBLIC_DEV_MODE;
@@ -71,13 +74,9 @@ export default function ViewMatchResultsPage() {
       }
       
       setPracticeResults(results.practiceMatchesArray)
-      console.log(results.practiceMatchesArray)
       setQualResults(results.qualMatchesArray)
-      console.log(results.qualMatchesArray)
       setPlayoffResults(results.playoffMatchesArray)
-      console.log(results.playoffMatchesArray)
       setFinalResults(results.finalMatchesArray)
-      console.log(results.finalMatchesArray)
     }
 
     return(
@@ -90,7 +89,7 @@ export default function ViewMatchResultsPage() {
       )}
 
       {dataUndef && dataUndef == true && (
-        <p><strong>API Request Failed</strong>: response data is undefined, contact admin!</p>
+        <p><strong>API Request Failed</strong>: Response data is undefined, contact admin!</p>
       )}
 
       {/* is request loading...? */}
@@ -103,20 +102,24 @@ export default function ViewMatchResultsPage() {
       : (isMatchEmpty && isMatchEmpty == true) ? <p>No results yet!</p> : (
         <> {/* parent elem */}
         <section id='practice-section'>
-          <h2>Practice Results</h2>
+          <h2>Practice Results <small>({fetchedPracticeResults.length})</small></h2>
           {/* check if PRACTICE results array is empty ? true, render plain <p> : false, show results */}
           {fetchedPracticeResults.length == 0 ? <p>No practice matches recorded!</p> : (
             <div className="pit-results-container">
               {fetchedPracticeResults.map((match, index) => (
                 <div key={`match-container-${index}`} id={`match-container-${index}`} className="item-container">
-                  <h3 key={`header-${index}`} id={`header-${index}`} style={{marginTop:'0px'}}>Match {index+1}</h3>
+                  <h3 key={`header-${index}`} id={`header-${index}`} className='match-number-header'>Match {index+1}</h3>
 
-                  <AccordionGroup> {/* to group all 6 accordions together in DOM, per match*/}
+                  <AccordionGroup  sx={{maxWidth:'400px'}}> {/* to group all 6 accordions together in DOM, per match*/}
                   {match.map((row, index2) => {
                     return( //per Object (orig row from table)
                       <Accordion variant="outlined" key={`match-${index}-team-row-${index2}`}>
                         {/* note: custom color in theme-registry file */}
-                        <AccordionSummary variant="solid" color={row.alliance === 'red' ? 'danger' : 'blueAllianceColor'}>{row.team_number}</AccordionSummary>
+                        <AccordionSummary variant="solid" color={row.alliance === 'red' ? 'danger' : 'blueAllianceColor'}>
+                        {row.team_number} 
+                        {row.team_number==='744' && <Image src={sharkfin} alt='fin'/>} 
+                        {row.alliance_win=='yes' && <Image src={trophy} alt='trophy' className='match-result-trophy'/>}
+                        </AccordionSummary>
                         <AccordionDetails variant="soft" color={row.alliance === 'red' ? 'danger' : 'blueAllianceColor'}> {/* note: overriding font color to white in theme-registry file */}
                           <p>Starting Pos: <strong>{row.start_pos}</strong></p>
 
@@ -165,20 +168,24 @@ export default function ViewMatchResultsPage() {
         </section>      {/*end end practice section */ }
 
         <section id='qual-section'>
-        <h2>Qualification Results</h2>
+        <h2>Qualification Results <small>({fetchedQualResults.length})</small></h2>
         {/* check if QUAL results array is empty ? true, render plain <p> : false, show results */}
         {fetchedQualResults.length == 0 ? <p>No qualification matches recorded!</p> : (
           <div className="pit-results-container">
             {fetchedQualResults.map((match, index) => (
               <div key={`match-container-${index}`} id={`match-container-${index}`} className="item-container">
-                <h3 key={`header-${index}`} id={`header-${index}`} style={{marginTop:'0px'}}>Match {index+1}</h3>
+                <h3 key={`header-${index}`} id={`header-${index}`} className='match-number-header'>Match {index+1}</h3>
 
-                <AccordionGroup> {/* to group all 6 accordions together in DOM, per match*/}
+                <AccordionGroup  sx={{maxWidth:'400px'}}> {/* to group all 6 accordions together in DOM, per match*/}
                 {match.map((row, index2) => {
                   return( //per Object (orig row from table)
                     <Accordion variant="outlined" key={`match-${index}-team-row-${index2}`}>
                       {/* note: custom color in theme-registry file */}
-                      <AccordionSummary variant="solid" color={row.alliance === 'red' ? 'danger' : 'blueAllianceColor'}>{row.team_number}</AccordionSummary>
+                      <AccordionSummary variant="solid" color={row.alliance === 'red' ? 'danger' : 'blueAllianceColor'}>
+                        {row.team_number} 
+                        {row.team_number==='744' && <img src={sharkfin} alt='fin'/>} 
+                        {row.allianceWin=='true' && <img src={trophy} alt='trophy'/>}
+                      </AccordionSummary>
                       <AccordionDetails variant="soft" color={row.alliance === 'red' ? 'danger' : 'blueAllianceColor'}> {/* note: overriding font color to white in theme-registry file */}
                         <p>Starting Pos: <strong>{row.start_pos}</strong></p>
 
@@ -227,15 +234,15 @@ export default function ViewMatchResultsPage() {
         </section>    {/* end qual section*/}
 
         <section id='playoff-section'>
-        <h2>Playoffs Results</h2>
+        <h2>Playoffs Results <small>({fetchedPlayoffResults.length})</small></h2>
         {/* check if QUAL results array is empty ? true, render plain <p> : false, show results */}
         {fetchedPlayoffResults.length == 0 ? <p>No playoffs matches recorded!</p> : (
           <div className="pit-results-container">
             {fetchedPlayoffResults.map((match, index) => (
               <div key={`match-container-${index}`} id={`match-container-${index}`} className="item-container">
-                <h3 key={`header-${index}`} id={`header-${index}`} style={{marginTop:'0px'}}>Match {index+1}</h3>
+                <h3 key={`header-${index}`} id={`header-${index}`} className='match-number-header'>Match {index+1}</h3>
 
-                <AccordionGroup> {/* to group all 6 accordions together in DOM, per match*/}
+                <AccordionGroup sx={{maxWidth:'400px'}}> {/* to group all 6 accordions together in DOM, per match*/}
                 {match.map((row, index2) => {
                   return( //per Object (orig row from table)
                     <Accordion variant="outlined" key={`match-${index}-team-row-${index2}`}>
@@ -289,15 +296,15 @@ export default function ViewMatchResultsPage() {
         </section>    {/* end playoff section*/}
 
         <section id='finals-section'>
-        <h2>Finals Results</h2>
+        <h2>Finals Results <small>({fetchedFinalResults.length})</small></h2>
         {/* check if QUAL results array is empty ? true, render plain <p> : false, show results */}
         {fetchedFinalResults.length == 0 ? <p>No finals matches recorded!</p> : (
           <div className="pit-results-container">
             {fetchedFinalResults.map((match, index) => (
               <div key={`match-container-${index}`} id={`match-container-${index}`} className="item-container">
-                <h3 key={`header-${index}`} id={`header-${index}`} style={{marginTop:'0px'}}>Match {index+1}</h3>
+                <h3 key={`header-${index}`} id={`header-${index}`} className='match-number-header'>Match {index+1}</h3>
 
-                <AccordionGroup> {/* to group all 6 accordions together in DOM, per match*/}
+                <AccordionGroup sx={{maxWidth:'400px'}}> {/* to group all 6 accordions together in DOM, per match*/}
                 {match.map((row, index2) => {
                   return( //per Object (orig row from table)
                     <Accordion variant="outlined" key={`match-${index}-team-row-${index2}`}>
@@ -351,6 +358,8 @@ export default function ViewMatchResultsPage() {
         </section>    {/* end playoff section*/}
         </>
       )}  {/*end initial isMatchLoading ternary */ }
+
+      <small><cite><a href="https://www.flaticon.com/free-icons/trophy" title="Flaticon - trophy icons">Trophy icon created by Freepik - Flaticon</a></cite></small>
       </> //pls remember JSX needs a parent element bc of the menubutton :)
     )
 }

@@ -79,19 +79,21 @@ const theme = extendTheme({
     }
   },
   components: {
-    JoyButton: {
-      styleOverrides: {
-        root: {borderRadius: '10px'}
-      }
-    }, //end JoyButton
     JoyFormLabel: {
       styleOverrides: {
         root: {
           fontSize: '16px',
-          flexWrap: 'nowrap'  //stop required stars from shifting to next line
+          display: 'inline-flex',
+          flexWrap: 'nowrap',  //stop required stars from shifting to next line
+          // [`&.${formLabelClasses.root}:required`]: {color: '#ed1c24'} //FRC red, slightly softer than RGB red
         }
       }
     }, //end JoyFormLabel
+    JoyFormControl: {
+      styleOverrides : {
+        root: {marginBottom: '1rem'}
+      }
+    }, //endJoyFormControl
     JoyModalDialog: {
       defaultProps: { layout: 'fullscreen-padded' },
       styleOverrides: {
@@ -108,7 +110,12 @@ const theme = extendTheme({
       styleOverrides: {
         root: {color: '#ffffff'}
       }
-    } //end JoyAccordionDetails
+    }, //end JoyAccordionDetails
+    JoyToggleButtonGroup: {
+      styleOverrides: {
+        root: {color: '#ffffff'}
+      }
+    }
   }
 })
 

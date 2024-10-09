@@ -6,15 +6,6 @@ form {
   color: red;
 }
 
-/* .MuiFormControl-vertical {
-  margin-bottom: 1rem;
-} */
-
-/* .MuiButton-colorPrimary {
-  color: #fff;
-  background-color: #01a0bb;
-} */
-
 .pit-results-container{
   display: flex;
   flex-wrap: wrap;
@@ -29,8 +20,12 @@ form {
   height: fit-content;
 }
 
-.pit-results-number {
+.item-number {
   text-align: center;
+  margin-top: 0;
+}
+
+.match-number-header{
   margin-top: 0;
 }
 
@@ -52,22 +47,6 @@ form {
 
 .blue-alliance {
   color: #0066b3;
-}
-
-.red-backdrop {
-  background-color: #ff000836;
-}
-
-.blue-backdrop {
-  background-color: rgba(68, 95, 116, 0.3);
-}
-
-.red-backdrop-inset {
-  background-color: #ff00083e;
-}
-
-.blue-backdrop-inset {
-  background-color: rgba(62, 100, 130, 0.35);
 }
 
 .result-flex {
