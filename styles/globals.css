@@ -6,16 +6,7 @@ form {
   color: red;
 }
 
-/* .MuiFormControl-vertical {
-  margin-bottom: 1rem;
-} */
-
-/* .MuiButton-colorPrimary {
-  color: #fff;
-  background-color: #01a0bb;
-} */
-
-.pit-results-container{
+.full-results-container{
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
@@ -29,21 +20,9 @@ form {
   height: fit-content;
 }
 
-.pit-results-number {
+.item-number {
   text-align: center;
   margin-top: 0;
-}
-
-.match-section-header{
-  margin: 0.5rem 0;
-}
-
-.detail {
-  margin: 0.25rem 0;
-}
-
-.match-detail {
-  margin-left: 1rem;
 }
 
 .red-alliance {
@@ -54,57 +33,20 @@ form {
   color: #0066b3;
 }
 
-.red-backdrop {
-  background-color: #ff000836;
-}
-
-.blue-backdrop {
-  background-color: rgba(68, 95, 116, 0.3);
-}
-
-.red-backdrop-inset {
-  background-color: #ff00083e;
-}
-
-.blue-backdrop-inset {
-  background-color: rgba(62, 100, 130, 0.35);
-}
-
-.result-flex {
-  display: flex;
-}
-
-.filter-container {
-  padding: 1rem;
-  border: 1px solid var(--joy-palette-neutral-300, #CDD7E1);
-  border-radius: 10px;
-  margin-bottom: 2rem;
-}
-
-.filter-label {
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-}
-
-.extended-radio-option {
-  display: flex;
-  align-items: center;
-}
-
-.blue {
-  color: #01a0bb;
-}
-
-.both {
-  color: darkred
-}
-
 /* cannot add module style to created element so */
+/* this is for pit survey and must stay here */
 .preview-img {
   /* width: fit-content !important; */
   height: 100%;
   width: 100%;
   border-radius: 5px;
+}
+
+/* for pit-results */
+#modal-desc {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .dev-mode-container {
@@ -124,25 +66,4 @@ form {
   border-radius: 15px;
   padding: 0.5rem;
   width: fit-content;
-}
-
-.img-preview-container {
-  text-align: center;
-}
-
-/* wrapper for RESULTS image */
-.img-preview {
-  width: fit-content !important;
-  /* scale: 0.6; */
-  max-height: 300px;
-  max-width: 300px;
-  object-fit: contain;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-#modal-desc {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
 }
