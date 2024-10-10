@@ -9,6 +9,33 @@ import React from 'react';
 
 const theme = extendTheme({
   colorSchemes: {
+    light: {
+      palette:{
+        //needs both to make custom one so
+        blueAllianceColor: { //this is original 'primary' color
+          // 50: "#EDF5FD",
+          // 100: "#E3EFFB",
+          200: "#C7DFF7",
+          300: "#97C3F0",
+          400: "#4393E4",
+          500: "#0B6BCB",
+          600: "#185EA5",
+          700: "#12467B",
+          800: "#0A2744",
+          900: "#051423",
+          solidBg: 'var(--joy-palette-blueAllianceColor-500)',
+          solidHoverBg: 'var(--joy-palette-blueAllianceColor-600)',
+          solidActiveBg: 'var(--joy-palette-blueAllianceColor-700)',
+          outlinedBorder: 'var(--joy-palette-blueAllianceColor-700)',
+          outlinedColor: 'var(--joy-palette-blueAllianceColor-200)',
+          outlinedHoverBg: 'var(--joy-palette-blueAllianceColor-800)',
+          outlinedActiveBg: 'var(--joy-palette-blueAllianceColor-700)',
+          softColor: 'var(--joy-palette-blueAllianceColor-200)', //testing text color
+          softBg: 'var(--joy-palette-blueAllianceColor-800)',
+          softActiveBg: 'var(--joy-palette-blueAllianceColor-600)',
+        }
+      }
+    },
     dark: {
       palette: {
         background: {
@@ -25,26 +52,48 @@ const theme = extendTheme({
           700: "#008ba1",
           800: "#007789",
           900: "#00555e"
+        },
+        blueAllianceColor: { //this is original 'primary' color
+          // 50: "#EDF5FD",
+          // 100: "#E3EFFB",
+          200: "#C7DFF7",
+          300: "#97C3F0",
+          400: "#4393E4",
+          500: "#0B6BCB",
+          600: "#185EA5",
+          700: "#12467B",
+          800: "#0A2744",
+          900: "#051423",
+          solidBg: 'var(--joy-palette-blueAllianceColor-500)',
+          solidHoverBg: 'var(--joy-palette-blueAllianceColor-600)',
+          solidActiveBg: 'var(--joy-palette-blueAllianceColor-700)',
+          outlinedBorder: 'var(--joy-palette-blueAllianceColor-700)',
+          outlinedColor: 'var(--joy-palette-blueAllianceColor-200)',
+          outlinedHoverBg: 'var(--joy-palette-blueAllianceColor-800)',
+          outlinedActiveBg: 'var(--joy-palette-blueAllianceColor-700)',
+          softColor: 'var(--joy-palette-blueAllianceColor-200)', //testing text color
+          softBg: 'var(--joy-palette-blueAllianceColor-800)',
+          softActiveBg: 'var(--joy-palette-blueAllianceColor-600)',
         }
       }
     }
   },
   components: {
-    JoyButton: {
-      styleOverrides: {
-        root: {
-          borderRadius: '10px'
-        }
-      }
-    }, //end JoyButton
     JoyFormLabel: {
       styleOverrides: {
         root: {
           fontSize: '16px',
-          flexWrap: 'nowrap'  //stop required stars from shifting to next line
+          display: 'inline-flex',
+          flexWrap: 'nowrap',  //stop required stars from shifting to next line
+          // [`&.${formLabelClasses.root}:required`]: {color: '#ed1c24'} //FRC red, slightly softer than RGB red
         }
       }
     }, //end JoyFormLabel
+    JoyFormControl: {
+      styleOverrides : {
+        root: {marginBottom: '1rem'}
+      }
+    }, //endJoyFormControl
     JoyModalDialog: {
       defaultProps: { layout: 'fullscreen-padded' },
       styleOverrides: {
@@ -56,7 +105,17 @@ const theme = extendTheme({
           }),
         }),
       }
-    } //end JoyModalDialog
+    }, //end JoyModalDialog
+    JoyAccordionDetails: {
+      styleOverrides: {
+        root: {color: '#ffffff'}
+      }
+    }, //end JoyAccordionDetails
+    JoyToggleButtonGroup: {
+      styleOverrides: {
+        root: {color: '#ffffff'}
+      }
+    }
   }
 })
 

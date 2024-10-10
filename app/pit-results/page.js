@@ -4,6 +4,8 @@ import { CircularProgress, RadioGroup, Radio, Select, Option, Autocomplete, Moda
 import { useState, useEffect } from "react";
 // import { orlandoAllTeams } from "../data/orlando-all-teams";
 
+import styles from '@/styles/pit-results.module.css'
+
 export default function ViewPitResultsPage(){
   const isDevMode = process.env.NEXT_PUBLIC_DEV_MODE;
 
@@ -33,7 +35,6 @@ export default function ViewPitResultsPage(){
     }
 
     function handleSelectChange(event, value){
-
       setTraitCriteria(value)
       console.log(value)
 
@@ -230,10 +231,16 @@ export default function ViewPitResultsPage(){
       setPitResults(sortedResults)
       // console.log(sortedResults)
 
+      let tempLast = 0; //to start
       sortedResults.forEach(team => {
-        availTeams.push(team.team_number)
+        //garbage quick way to check for dupes -- filters
+        //error if there are unique "keys" (more than one dupe team number)
+        if(tempLast != team.team_number){
+          availTeams.push(team.team_number)
+        }
+        tempLast = team.team_number;
       });
-      // console.log(availTeams)
+      console.log(availTeams)
 
       setAvailTeamsRender(availTeams)
 
@@ -296,119 +303,116 @@ export default function ViewPitResultsPage(){
           <p><strong>API Request Failed</strong>: response data is undefined, contact admin!</p>
         )}
 
-        {pitLoading && pitLoading == true   //is request loading...
+        {pitLoading && pitLoading == true
         ? <div style={{display:'flex', textAlign:'center'}}>
           {/* ? yes, render circular */}
             <p>Loading...</p><br/><CircularProgress variant="soft" size="sm"/>
           </div>
-          // : no, check if empty
-        : (isPitEmpty && isPitEmpty == true)
-        ? <p>No results yet!</p>
-          // ? if not empty...
-        : (
-          // : filtering options
+          // : no, check if empty ? true, IS empty, render plain <p> : false, is NOT empty, move on to mapping arrays
+        : (isPitEmpty && isPitEmpty == true) ? <p>No results yet!</p> : (
+          // filtering options
           <section id="main-section">
-          <header className="filter-container">
-          <label className="filter-label">Filter Mode:</label>
-          <RadioGroup name="radio-buttons-pit-filter"
-              value={filterType}
-              onClick={(e) => {setFilterType(e.target.value), console.log(e.target.value)}}
-              sx={{display:'flex', flexDirection:'row', flexWrap:'wrap', alignItems:'center'}}
-              >
-            <Radio value="all" label="All" sx={{marginBlockStart: '1rem', marginRight:'1rem'}}/>
-            <div className="extended-radio-option">
-            <Radio value="team" label="By team" sx={{marginRight:'1rem'}} />
-            <Autocomplete
-              disabled={filterType === 'team' ? false : true}
-              type="number"
-              placeholder="start typing..."
-              options={availTeamsRender}
-              value={teamCriteria}
-              onChange={handleInputChange}
-              clearOnBlur
-              // isOptionEqualToValue={(option, value) =>{
-              //   if(option === '' || value === '') return true;
-              //   else return true;
-              // }}
-              sx={{ width: 200, marginRight:'1rem' }}
-              slotProps={{input: { inputMode:'decimal' }}}
-            />
+          <header className={styles.filterContainer}>
+          <label className={styles.filterLabel}>Filter Mode:</label>
+          <RadioGroup
+            name="radio-buttons-pit-filter"
+            value={filterType}
+            onChange={(e) => {setFilterType(e.target.value)}}
+            sx={{display:'flex', flexDirection:'row', flexWrap:'wrap', alignItems:'center'}}
+          >
+            <Radio value="all" label="All" className={styles.radioLabel}/>
+            <div className={styles.radioOptionContainer}>
+              <Radio value="team" label="By team" className={styles.radioLabel}/>
+              <Autocomplete
+                disabled={filterType === 'team' ? false : true}
+                placeholder="start typing..."
+                options={availTeamsRender}
+                value={teamCriteria}
+                onChange={handleInputChange}
+                clearOnBlur
+                // isOptionEqualToValue={(option, value) =>{
+                //   if(option === '' || value === '') return true;
+                //   else return true;
+                // }}
+                sx={{ width: 200, marginRight:'1rem' }}
+                slotProps={{input: { inputMode:'decimal' }}}
+              />
             </div>
-            <div className="extended-radio-option">
-            <Radio value="trait" label="By trait" sx={{marginRight:'1rem'}} /> {/* requested default */}
-            <Select
-              placeholder='select...'
-              onChange={handleSelectChange}
-              disabled={filterType === 'trait' ? false : true}
-              sx={{ width: 200 }}
-            >
-              <Option value="drivetrain is WCD">Drivetrain is <span className="blue">WCD</span></Option>
-              <Option value="drivetrain is mecanum">Drivetrain is <span className="blue">Mecanum</span></Option>
-              <Option value="drivetrain is tank">Drivetrain is <span className="blue">Tank</span></Option>
-              <Option value="drivetrain is swerve">Drivetrain is <span className="blue">Swerve</span></Option>
-              <Option value="drivetrain is other">Drivetrain is <span className="blue">Other Type</span></Option>
+            <div className={styles.radioOptionContainer}>
+              <Radio value="trait" label="By trait" className={styles.radioLabel}/> {/* requested default */}
+              <Select
+                placeholder='select...'
+                onChange={handleSelectChange}
+                disabled={filterType === 'trait' ? false : true}
+                sx={{ width: 200 }}
+              >
+                <Option value="drivetrain is WCD">Drivetrain is <span className={styles.blue}>WCD</span></Option>
+                <Option value="drivetrain is mecanum">Drivetrain is <span className={styles.blue}>Mecanum</span></Option>
+                <Option value="drivetrain is tank">Drivetrain is <span className={styles.blue}>Tank</span></Option>
+                <Option value="drivetrain is swerve">Drivetrain is <span className={styles.blue}>Swerve</span></Option>
+                <Option value="drivetrain is other">Drivetrain is <span className={styles.blue}>Other Type</span></Option>
 
-              <Option value="pref. pos is left">Pref. Pos is <span className="blue">Left</span></Option>
-              <Option value="pref. pos is center">Pref. Pos is <span className="blue">Center</span></Option>
-              <Option value="pref. pos is right">Pref. Pos is <span className="blue">Right</span></Option>
+                <Option value="pref. pos is left">Pref. Pos is <span className={styles.blue}>Left</span></Option>
+                <Option value="pref. pos is center">Pref. Pos is <span className={styles.blue}>Center</span></Option>
+                <Option value="pref. pos is right">Pref. Pos is <span className={styles.blue}>Right</span></Option>
 
-              <Option value="has vision">Has <span className="blue">Vision Tracking</span></Option>
+                <Option value="has vision">Has <span className={styles.blue}>Vision Tracking</span></Option>
 
-              <Option value="scores in both">Scores in <span className="both">Both</span> <span className="blue">Amp & Speaker</span></Option>
-              <Option value="scores in amp">Scores in <span className="blue">Amp</span></Option>
-              <Option value="scores in speaker">Scores in <span className="blue">Speaker</span></Option>
+                <Option value="scores in both">Scores in <span className="both">Both</span> <span className={styles.blue}>Amp & Speaker</span></Option>
+                <Option value="scores in amp">Scores in <span className={styles.blue}>Amp</span></Option>
+                <Option value="scores in speaker">Scores in <span className={styles.blue}>Speaker</span></Option>
 
-              <Option value="pickup at both">Pickup at <span className="both">Both</span> <span className="blue">Floor & HPS</span></Option>
-              <Option value="pickup at floor">Pickup at <span className="blue">Floor</span></Option>
-              <Option value="pickup at HPS">Pickup at <span className="blue">HPS</span></Option>
+                <Option value="pickup at both">Pickup at <span className="both">Both</span> <span className={styles.blue}>Floor & HPS</span></Option>
+                <Option value="pickup at floor">Pickup at <span className={styles.blue}>Floor</span></Option>
+                <Option value="pickup at HPS">Pickup at <span className={styles.blue}>HPS</span></Option>
 
-              <Option value="can climb">Can <span className="blue">Climb</span></Option>
-              <Option value="can help climb">Can <span className="blue">Help Climb</span></Option>
-              <Option value="can score climb">Can <span className="blue">Score & Climb</span></Option>
+                <Option value="can climb">Can <span className={styles.blue}>Climb</span></Option>
+                <Option value="can help climb">Can <span className={styles.blue}>Help Climb</span></Option>
+                <Option value="can score climb">Can <span className={styles.blue}>Score & Climb</span></Option>
 
-              <Option value="has feedback">has <span className="blue">Feedback</span></Option>
-            </Select>
+                <Option value="has feedback">Has <span className={styles.blue}>Feedback</span></Option>
+              </Select>
             </div>
           </RadioGroup>
           </header>
 
           {/* more conditionals yayyyy */}
-          {/* filter type all */}
+          {/* filter type all results*/}
           {filterType && filterType === 'all' && (
-            <div className="pit-results-container">
+            <div className="full-results-container">
               {fetchedPitResults.map((item, index) => {
                 return (
                   <div key={index} className="item-container">
-                    <h3 className="pit-results-number">{item.team_number}</h3>
-                    <p className="detail">Drivetrain: <strong>{item.drivetrain}</strong></p>
-                    <p className="detail">Preferred Start Position(s): <strong>{item.preferred_pos}</strong></p>
-                    <p className="detail">Has Vision Tracking: <strong>{item.vision}</strong></p>
-                    <p className="detail">Scores in Amp or Speaker: <strong>{item.score_height}</strong></p>
-                    <p className="detail">Pickup at floor or HPS: <strong>{item.pickup_pos}</strong></p>
-                    <p className="detail">Can climb: <strong>{item.can_climb}</strong></p>
+                    <h3 className="item-number">{item.team_number}</h3>
+                    <p className={styles.pitDetail}>Drivetrain: <strong>{item.drivetrain}</strong></p>
+                    <p className={styles.pitDetail}>Preferred Start Position(s): <strong>{item.preferred_pos}</strong></p>
+                    <p className={styles.pitDetail}>Has Vision Tracking: <strong>{item.vision}</strong></p>
+                    <p className={styles.pitDetail}>Scores in Amp or Speaker: <strong>{item.score_height}</strong></p>
+                    <p className={styles.pitDetail}>Pickup at floor or HPS: <strong>{item.pickup_pos}</strong></p>
+                    <p className={styles.pitDetail}>Can climb: <strong>{item.can_climb}</strong></p>
                     {item.can_climb && item.can_climb === 'yes' && (
                       <>
-                        <p className="detail">Can help others climb: <strong>{item.help_climb}</strong></p>
-                        <p className="detail">Can score while climbing: <strong>{item.score_climb}</strong></p>
+                        <p className={styles.pitDetail}>Can help others climb: <strong>{item.help_climb}</strong></p>
+                        <p className={styles.pitDetail}>Can score while climbing: <strong>{item.score_climb}</strong></p>
                       </>
                     )}
                     {item.front_img_url && (
-                      <div className='img-preview-container'>
+                      <div className={styles.imagePreviewContainer}>
                       <p>Front Image</p>
-                      <img src={item.front_img_url} alt='front pit img' className='img-preview'
+                      <img src={item.front_img_url} alt='[cannot load image!]' className={styles.imagePreviewItem}
                         onClick={()=>{modalContentHelper('Front', item.front_img_url)}}
                       />
                       </div>
                     )}
                     {item.side_img_url && (
-                      <div className='img-preview-container'>
+                      <div className={styles.imagePreviewContainer}>
                       <p>Side Image</p>
-                      <img src={item.side_img_url} alt='side pit img' className='img-preview'
+                      <img src={item.side_img_url} alt='[cannot load image!]' className={styles.imagePreviewItem}
                         onClick={()=>{modalContentHelper('Side', item.side_img_url)}}
                         />
                       </div>
                     )}
-                    {item.feedback && item.feedback.length > 0 && <p className="detail">Thoughts: {item.feedback}</p>}
+                    {item.feedback && item.feedback.length > 0 && <p className={styles.pitDetail}>Thoughts: {item.feedback}</p>}
                     <small>Survey by: <strong>{item.name}</strong></small>
                   </div>
                 )
@@ -427,35 +431,41 @@ export default function ViewPitResultsPage(){
           {(filterType && filterType === 'team') && (teamCriteria === '' ?
             <p style={{ textAlign: 'center' }}>Select a team number!</p>
             : (
-              <div className="pit-results-container">
+              <div className="full-results-container">
                 {/* ((value, or index, or another array) => what to compare against) */}
                 {fetchedPitResults.filter((item) => item.team_number === teamCriteria).map((item, index) => {
                   return (
                     <div key={index} className="item-container">
-                      <h3 className="pit-results-number">{item.team_number}</h3>
-                      <p className="detail">Drivetrain: <strong>{item.drivetrain}</strong></p>
-                      <p className="detail">Preferred Start Position(s): <strong>{item.preferred_pos}</strong></p>
-                      <p className="detail">Has Vision Tracking: <strong>{item.vision}</strong></p>
-                      <p className="detail">Scores in Amp or Speaker: <strong>{item.score_height}</strong></p>
-                      <p className="detail">Pickup at floor or HPS: <strong>{item.pickup_pos}</strong></p>
-                      <p className="detail">Can climb: <strong>{item.can_climb}</strong></p>
+                      <h3 className="item-number">{item.team_number}</h3>
+                      <p className={styles.pitDetail}>Drivetrain: <strong>{item.drivetrain}</strong></p>
+                      <p className={styles.pitDetail}>Preferred Start Position(s): <strong>{item.preferred_pos}</strong></p>
+                      <p className={styles.pitDetail}>Has Vision Tracking: <strong>{item.vision}</strong></p>
+                      <p className={styles.pitDetail}>Scores in Amp or Speaker: <strong>{item.score_height}</strong></p>
+                      <p className={styles.pitDetail}>Pickup at floor or HPS: <strong>{item.pickup_pos}</strong></p>
+                      <p className={styles.pitDetail}>Can climb: <strong>{item.can_climb}</strong></p>
                       {item.can_climb && item.can_climb === 'yes' && (
                         <>
-                          <p className="detail">Can help others climb: <strong>{item.help_climb}</strong></p>
-                          <p className="detail">Can score while climbing: <strong>{item.score_climb}</strong></p>
+                          <p className={styles.pitDetail}>Can help others climb: <strong>{item.help_climb}</strong></p>
+                          <p className={styles.pitDetail}>Can score while climbing: <strong>{item.score_climb}</strong></p>
                         </>
                       )}
                       {item.front_img_url && (
-                        <img src={item.front_img_url} alt='front pit img' className='img-preview'
+                        <div className={styles.imagePreviewContainer}>
+                        <p>Front Image</p>
+                        <img src={item.front_img_url} alt='[cannot load image!]' className={styles.imagePreviewItem}
                           onClick={()=>{modalContentHelper('Front', item.front_img_url)}}
                         />
+                        </div>
                       )}
                       {item.side_img_url && (
-                        <img src={item.side_img_url} alt='side pit img' className='img-preview'
+                        <div className={styles.imagePreviewContainer}>
+                        <p>Side Image</p>
+                        <img src={item.side_img_url} alt='[cannot load image!]' className={styles.imagePreviewItem}
                           onClick={()=>{modalContentHelper('Side', item.side_img_url)}}
-                        />
+                          />
+                        </div>
                       )}
-                      {item.feedback && item.feedback.length > 0 && <p className="detail">Thoughts: {item.feedback}</p>}
+                      {item.feedback && item.feedback.length > 0 && <p className={styles.pitDetail}>Thoughts: {item.feedback}</p>}
                       <small>Survey by: <strong>{item.name}</strong></small>
                     </div>
                   )
@@ -469,35 +479,41 @@ export default function ViewPitResultsPage(){
           {(filterType && filterType === 'trait') && (traitCriteria === '' ?
             <p style={{ textAlign: 'center' }}>Select a trait!</p>
             : (
-              <div className="pit-results-container" id="filtered-container">
+              <div className="full-results-container" id="filtered-container">
                 {/* ((value, or index, or another array) => what to compare against) */}
                 {filteredTeamsRender && !filteredTeamsRender.length ? <p>No results.</p> : filteredTeamsRender.map((item, index) => {
                   return (
                     <div key={index} className="item-container">
-                      <h3 className="pit-results-number">{item.team_number}</h3>
-                      <p className="detail">Drivetrain: <strong>{item.drivetrain}</strong></p>
-                      <p className="detail">Preferred Start Position(s): <strong>{item.preferred_pos}</strong></p>
-                      <p className="detail">Has Vision Tracking: <strong>{item.vision}</strong></p>
-                      <p className="detail">Scores in Amp or Speaker: <strong>{item.score_height}</strong></p>
-                      <p className="detail">Pickup at floor or HPS: <strong>{item.pickup_pos}</strong></p>
-                      <p className="detail">Can climb: <strong>{item.can_climb}</strong></p>
+                      <h3 className="item-number">{item.team_number}</h3>
+                      <p className={styles.pitDetail}>Drivetrain: <strong>{item.drivetrain}</strong></p>
+                      <p className={styles.pitDetail}>Preferred Start Position(s): <strong>{item.preferred_pos}</strong></p>
+                      <p className={styles.pitDetail}>Has Vision Tracking: <strong>{item.vision}</strong></p>
+                      <p className={styles.pitDetail}>Scores in Amp or Speaker: <strong>{item.score_height}</strong></p>
+                      <p className={styles.pitDetail}>Pickup at floor or HPS: <strong>{item.pickup_pos}</strong></p>
+                      <p className={styles.pitDetail}>Can climb: <strong>{item.can_climb}</strong></p>
                       {item.can_climb && item.can_climb === 'yes' && (
                         <>
-                          <p className="detail">Can help others climb: <strong>{item.help_climb}</strong></p>
-                          <p className="detail">Can score while climbing: <strong>{item.score_climb}</strong></p>
+                          <p className={styles.pitDetail}>Can help others climb: <strong>{item.help_climb}</strong></p>
+                          <p className={styles.pitDetail}>Can score while climbing: <strong>{item.score_climb}</strong></p>
                         </>
                       )}
                       {item.front_img_url && (
-                        <img src={item.front_img_url} alt='front pit img' className='img-preview'
+                        <div className={styles.imagePreviewContainer}>
+                        <p>Front Image</p>
+                        <img src={item.front_img_url} alt='[cannot load image!]' className={styles.imagePreviewItem}
                           onClick={()=>{modalContentHelper('Front', item.front_img_url)}}
                         />
+                        </div>
                       )}
                       {item.side_img_url && (
-                        <img src={item.side_img_url} alt='side pit img' className='img-preview'
+                        <div className={styles.imagePreviewContainer}>
+                        <p>Side Image</p>
+                        <img src={item.side_img_url} alt='[cannot load image!]' className={styles.imagePreviewItem}
                           onClick={()=>{modalContentHelper('Side', item.side_img_url)}}
-                        />
+                          />
+                        </div>
                       )}
-                      {item.feedback && item.feedback.length > 0 && <p className="detail">Thoughts: {item.feedback}</p>}
+                      {item.feedback && item.feedback.length > 0 && <p className={styles.pitDetail}>Thoughts: {item.feedback}</p>}
                       <small>Survey by: <strong>{item.name}</strong></small>
                     </div>
                   )
@@ -506,7 +522,7 @@ export default function ViewPitResultsPage(){
             ))}
           {/* end filter type trait */}
           </section>
-        )}
+        )} {/*end initial isPitLoading ternary */ }
 
       <Modal
         aria-labelledby="modal-title"
@@ -517,7 +533,7 @@ export default function ViewPitResultsPage(){
       >
         <ModalDialog layout="center">
           <ModalClose variant="plain" size="lg" sx={{ m: 1 }} />
-          <DialogTitle><h2 id="modal-title">{modalTitleSpan} Image</h2></DialogTitle>
+          <DialogTitle id="modal-title">{modalTitleSpan} Image</DialogTitle>
           <DialogContent><img id="modal-desc" src={modalImage}/></DialogContent>
         </ModalDialog>
       </Modal>

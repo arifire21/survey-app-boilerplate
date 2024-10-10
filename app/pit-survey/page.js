@@ -4,13 +4,13 @@ import { Button, Autocomplete, FormControl, FormLabel, Input, RadioGroup, Radio,
 import MenuButton from "@/components/menu-button";
 import { orlandoAllTeams } from "../data/orlando-all-teams";
 import { useState, useRef } from "react";
-import styles from './pit.module.css'
+import styles from '@/styles/pit-survey.module.css'
 
 //images
-import WCD from '../../public/images/westcoastdrive.png'
-import Mec from '../../public/images/mecanumdrive.png'
-import Tank from '../../public/images/tankdrive.jpg'
-import Swerve from '../../public/images/swervedrive.jpg'
+import WCD from '@/images/westcoastdrive.png'
+import Mec from '@/images/mecanumdrive.png'
+import Tank from '@/images/tankdrive.jpg'
+import Swerve from '@/images/swervedrive.jpg'
 
 // import type { PutBlobResult } from '@vercel/blob'; //js quickstart does not have typing but has defined w `as`
 
@@ -51,11 +51,11 @@ export default function PitSurveyPage() {
 
   // const [frontImage, setFrontImage] = useState()
   // const [sideImage, setSideImage] = useState()
-  const frontImageRef = useRef()
-  const sideImageRef = useRef()
-  const [frontImageSize, setFrontImageSize] = useState(0.0)
-  const [sideImageSize, setSideImageSize] = useState(0.0)
-  const [unit, setUnit] = useState('MB')
+  const frontImageRef = useRef(null)
+  const sideImageRef = useRef(null)
+  // const [frontImageSize, setFrontImageSize] = useState(0.0)
+  // const [sideImageSize, setSideImageSize] = useState(0.0)
+  // const [unit, setUnit] = useState('MB')
 
   //snackbar state
   const [open, setOpen] = useState(false)
@@ -231,6 +231,21 @@ export default function PitSurveyPage() {
           setColor('success')
           formRef.current.reset();
 
+          // console.log(`frontImageSize: ${frontImageSize}`)
+          // if(frontImageSize != 0.0){
+          //   setFrontImageSize(0.0)
+          //   console.log('front to 0')
+          //   setUnit("MB")
+          // }
+          // console.log(`frontImageSize: ${frontImageSize}`)
+
+          // console.log(`sideImageSize: ${sideImageSize}`)
+          // if(sideImageSize != 0.0){
+          //   setSideImageSize(0.0)
+          //   console.log('side to 0')
+          // }
+          // console.log(`sideImageSize: ${sideImageSize}`)
+
           setTeamNumber('')
 
           setLeft(false)    //setting bc customs
@@ -255,18 +270,13 @@ export default function PitSurveyPage() {
           setFeedback('')
           setName('')
 
+          //! set back to null here so File object does not remain
+          frontImageRef.current = null;
+          sideImageRef.current = null;
+
           document.querySelectorAll('.preview-img').forEach((img) => {
               img.remove();
           });
-
-          if(frontImageSize != 0.0){
-            setFrontImageSize(0.0)
-            console.log('front to 0')
-          }
-          if(sideImageSize != 0.0){
-            setSideImageSize(0.0)
-            console.log('side to 0')
-          }
       }
       setOpen(true)
       setLoading(false)
@@ -286,22 +296,22 @@ export default function PitSurveyPage() {
     const sidePreview = document.getElementById('preview-2')
 
     //show file size bc Vercel Blob only allows a Server Upload of 4.5 MB
-    const bytes = file.size
-    // console.log(bytes)
-    var convertedSize = 0.0;
-    if(bytes < 1000000){
-      setUnit('KB')
-      convertedSize = Math.floor(bytes/1000).toFixed(2);
-    } else{ //use case: if user reuploads an img and it happens to be MB
-        setUnit('MB')
-        convertedSize = Math.floor(bytes/1000000).toFixed(2); 
-    }
+    // const bytes = file.size
+    // // console.log(bytes)
+    // var convertedSize = 0.0;
+    // if(bytes < 1000000){
+    //   setUnit('KB')
+    //   convertedSize = Math.floor(bytes/1000).toFixed(2);
+    // } else{ //use case: if user reuploads an img and it happens to be MB
+    //     setUnit('MB')
+    //     convertedSize = Math.floor(bytes/1000000).toFixed(2); 
+    // }
 
     if(eventTarget.id === 'front-picture'){
       try {
         frontImageRef.current = file
         // console.log(frontImageRef.current)
-        setFrontImageSize(convertedSize)
+        // setFrontImageSize(convertedSize)
         setColor('primary')
         setErrorString('Attached front image!')
 
@@ -332,7 +342,7 @@ export default function PitSurveyPage() {
       try {
         sideImageRef.current = file
         console.log(sideImageRef.current)
-        setSideImageSize(convertedSize)
+        // setSideImageSize(convertedSize)
         setColor('primary')
         setErrorString('Attached side image!')  //custom string aside from vanilla "submitted!"
 
@@ -366,8 +376,10 @@ export default function PitSurveyPage() {
     // if(instantlyKnowIfSubmit == true){ // await only allowed at upper level so wrap in conditional
       console.log('reached img upload')
       const img = ref.current;
-      console.log(img)
-      if(img.files.length == 0){  //if nothing was ever attached or was an error
+      //if nothing was ever attached or was an error,
+      //ref will not change and have ALL properties/attributes associated w an Element.
+      //Ref with an upload will have File Object properties only.
+      if(img == null || img.hasOwnProperty('files')){
         setColor('neutral')
         setErrorString("No image to upload.")
         setSuccess(false) //use longer time duration
@@ -401,20 +413,6 @@ export default function PitSurveyPage() {
         setErrorString("Uploaded image!")
         return blob.url;
       }
-      // .then((response => {
-      //   if(!response.ok){
-      //     setSuccess(false)
-      //     setColor('danger')
-      //     setErrorString("Error uploading image!")
-      //     console.error(response)
-      //     return null
-      //   } else {
-      //     return response.json() // as PutBlobResult;
-      //   }
-      // }))
-      //   .then(data => {console.log(`data: ${data}`); return data.url})
-      //   .catch(err => console.log(err) )
-    // }
   }
 
   function submitHelper(isHiatus, e){
@@ -436,6 +434,14 @@ export default function PitSurveyPage() {
     setOpen(true)
   }
 
+  // useEffect(() => {
+  //   console.log(`frontSize: ${frontImageSize}`);
+  // }, [frontImageSize]);
+
+  // useEffect(() => {
+  //   console.log(`sideSize: ${sideImageSize}`);
+  // }, [sideImageSize]);
+
   return (
     <>
         <MenuButton/>
@@ -443,8 +449,8 @@ export default function PitSurveyPage() {
         <h1>Pit Survey</h1>
         <form ref={formRef}>
         <h2>General</h2>
-        <FormControl sx={{ marginBottom: '1rem'}}>
-          <FormLabel>Team Number <sup className='req'>*</sup></FormLabel>
+        <FormControl>
+          <FormLabel required={true} sx={{color: '#ed1c24'}}>Team Number</FormLabel>
           <Autocomplete
             required
             type="number"
@@ -462,31 +468,31 @@ export default function PitSurveyPage() {
           />
         </FormControl>
 
-        <FormControl sx={{ marginBottom: '1rem'}}>
-          <FormLabel>Drivetrain Type <sup className='req'>*</sup></FormLabel>
+        <FormControl>
+          <FormLabel required={true} sx={{color: '#ed1c24'}}>Drivetrain Type</FormLabel>
           <RadioGroup name="radio-buttons-drivetrain" value={drivetrain}>
             <div className={styles.radioContainer}>
             <Radio value="west coast drive" checked={westSelected} sx={{display: 'none'}}/>
             <div className={`${styles.customRadio} ${westSelected ? styles.dtSelected : ''}`} onClick={() => drivetrainHelper('west coast drive')}>
-              <Image className={styles.customRadioImage} src={WCD} alt='west-coast-example'/>
+              <Image className={styles.customRadioImage} src={WCD} alt='west-coast-example' unoptimized={true}/>
               West Coast Drive
             </div>
             
             <Radio value="mecanum" checked={mecanumSelected} sx={{display: 'none'}}/>
             <div className={`${styles.customRadio} ${mecanumSelected ? styles.dtSelected : ''}`} onClick={() => drivetrainHelper('mecanum')}>
-              <Image className={styles.customRadioImage} src={Mec} alt='mecanum-example'/>
+              <Image className={styles.customRadioImage} src={Mec} alt='mecanum-example' unoptimized={true}/>
               Mecanum Drive
             </div>
             
             <Radio value="tank" checked={tankSelected} sx={{display: 'none'}}/>
             <div className={`${styles.customRadio} ${tankSelected ? styles.dtSelected : ''}`} onClick={() => drivetrainHelper('tank')}>
-              <Image className={styles.customRadioImage} src={Tank} alt='tank-example'/>
+              <Image className={styles.customRadioImage} src={Tank} alt='tank-example' unoptimized={true}/>
               Tank Drive (treads)
             </div>
             
             <Radio value="swerve" checked={swerveSelected} sx={{display: 'none'}}/>
             <div className={`${styles.customRadio} ${swerveSelected ? styles.dtSelected : ''}`} onClick={() => drivetrainHelper('swerve')}>
-              <Image className={styles.customRadioImage} src={Swerve} alt='swerve-example'/>
+              <Image className={styles.customRadioImage} src={Swerve} alt='swerve-example' unoptimized={true}/>
               Swerve Drive
             </div>
             
@@ -506,8 +512,8 @@ export default function PitSurveyPage() {
           </RadioGroup>
         </FormControl>
 
-        <FormControl  sx={{ marginBottom: '1rem'}}>
-          <FormLabel>Preferred Starting Position <sup className='req'>*</sup></FormLabel>
+        <FormControl>
+          <FormLabel required={true} sx={{color: '#ed1c24'}}>Preferred Starting Position</FormLabel>
           <FormHelperText>Drive team can have multiple preferences</FormHelperText>
           <div role="group" aria-labelledby="preferred-pos-group">
             <List size="sm">
@@ -524,8 +530,8 @@ export default function PitSurveyPage() {
           </div>
         </FormControl>
 
-        <FormControl  sx={{ marginBottom: '1rem'}}>
-          <FormLabel>Does the robot have vision tracking? <sup className='req'>*</sup></FormLabel>
+        <FormControl>
+          <FormLabel required={true} sx={{color: '#ed1c24'}}>Does the robot have vision tracking?</FormLabel>
           <RadioGroup name="radio-buttons-vision"
               value={vision}
               onChange={(e) => setVision(e.target.value)}>
@@ -534,8 +540,8 @@ export default function PitSurveyPage() {
           </RadioGroup>
         </FormControl>
 
-        <FormControl  sx={{ marginBottom: '1rem'}}>
-          <FormLabel>Which heights can the robot score from? <sup className='req'>*</sup></FormLabel>
+        <FormControl>
+          <FormLabel required={true} sx={{color: '#ed1c24'}}>Which heights can the robot score from?</FormLabel>
           <RadioGroup name="radio-buttons-score-height"
           value={scoreHeight}
           onChange={(e) => setScoreHeight(e.target.value)}>
@@ -545,8 +551,8 @@ export default function PitSurveyPage() {
           </RadioGroup>
         </FormControl>
 
-        <FormControl  sx={{ marginBottom: '1rem'}}>
-          <FormLabel>Where can the robot pick up game pieces from? <sup className='req'>*</sup></FormLabel>
+        <FormControl>
+          <FormLabel required={true} sx={{color: '#ed1c24'}}>Where can the robot pick up game pieces from?</FormLabel>
           <RadioGroup name="radio-buttons-pickup"
           value={pickup}
           onChange={(e) => setPickup(e.target.value)}>
@@ -557,8 +563,8 @@ export default function PitSurveyPage() {
         </FormControl>
 
         <h2>Endgame</h2>
-        <FormControl  sx={{ marginBottom: '1rem'}}>
-          <FormLabel>Can the robot climb? <sup className='req'>*</sup></FormLabel>
+        <FormControl>
+          <FormLabel required={true} sx={{color: '#ed1c24'}}>Can the robot climb?</FormLabel>
           <RadioGroup name="radio-buttons-climb"
           value={climb}
           onChange={(e) => setClimb(e.target.value)}>
@@ -569,8 +575,8 @@ export default function PitSurveyPage() {
 
         { climb === 'yes' && (
           <>
-          <FormControl  sx={{ marginBottom: '1rem'}}>
-            <FormLabel>Can the robot help another robot to climb?</FormLabel>
+          <FormControl>
+            <FormLabel required={true} sx={{color: '#ed1c24'}}>Can the robot help another robot to climb?</FormLabel>
             <RadioGroup name="radio-buttons-climb-help"
             value={helpClimb}
             onChange={(e) => setHelpClimb(e.target.value)}>
@@ -579,8 +585,8 @@ export default function PitSurveyPage() {
             </RadioGroup>
           </FormControl>
 
-          <FormControl  sx={{ marginBottom: '1rem'}}>
-            <FormLabel>Can the robot score while climbing?</FormLabel>
+          <FormControl>
+            <FormLabel required={true} sx={{color: '#ed1c24'}}>Can the robot score while climbing?</FormLabel>
             <RadioGroup name="radio-buttons-climb-score"
             value={scoreClimb}
             onChange={(e) => setScoreClimb(e.target.value)}>
@@ -593,7 +599,7 @@ export default function PitSurveyPage() {
 
         <h2 style={{marginBottom:0}}>Pictures</h2>
         <small>Max size of each image: 4.5 MB</small>
-        <FormControl  sx={{ marginBottom: '1rem', height:'fit-content !important'}}>
+        <FormControl sx={{height:'fit-content !important'}}>
           <label htmlFor="front-picture"><strong>Front</strong> View:</label>
           <input
             type="file"
@@ -604,11 +610,11 @@ export default function PitSurveyPage() {
             capture="environment" //! this is what allows for camera functionality on mobile. desktop triggers file browser
             onChange={handleImageAssignmentPreview}
           />
-          <output id='filesize-front'><small>{frontImageSize} {unit}</small></output>
+          {/* <output id='filesize-front'><small>{frontImageSize} {unit}</small></output> */}
           <div id="preview-1" className={styles.imgPreview}></div>
         </FormControl>
         
-        <FormControl  sx={{ marginBottom: '1rem', height:'fit-content !important'}}>
+        <FormControl sx={{height:'fit-content !important'}}>
           <label htmlFor="side-picture"><strong>Side</strong> View:</label>
           <input
             type="file"
@@ -618,13 +624,13 @@ export default function PitSurveyPage() {
             accept="image/*"
             capture="environment"  //! this is what allows for camera functionality on mobile. desktop triggers file browser
             onChange={handleImageAssignmentPreview}/>
-          <output id='filesize-side'><small>{sideImageSize} {unit}</small></output>
+          {/* <output id='filesize-side'><small>{sideImageSize} {unit}</small></output> */}
           <div id="preview-2" className={styles.imgPreview}></div>
         </FormControl>
 
         <h2>Information</h2>
-        <FormControl  sx={{ marginBottom: '1rem'}}>
-          <FormLabel>Do you think this robot is worth investigating? <sup className='req'>*</sup></FormLabel>
+        <FormControl>
+          <FormLabel required={true} sx={{color: '#ed1c24'}}>Do you think this robot is worth investigating?</FormLabel>
           <RadioGroup name="radio-buttons-investigate"
           value={investigate}
           onChange={(e) => setInvestigate(e.target.value)}>
@@ -646,10 +652,11 @@ export default function PitSurveyPage() {
           }
         </FormControl>
 
-        <FormControl  sx={{ marginBottom: '1rem'}}>
-          <FormLabel>First Name <sup className='req'>*</sup></FormLabel>
+        <FormControl>
+          <FormLabel required={true} sx={{color: '#ed1c24'}}>First Name</FormLabel>
           <Input
           required
+          autoComplete='off'
           onChange={(e) => setName(e.target.value)}
           sx={{ width: 300 }}
           />
@@ -664,7 +671,6 @@ export default function PitSurveyPage() {
         autoHideDuration={errorString === 'Uploading images...' ? null : (submitSuccess ? 3500 : 5000 ?? 3500)}
         open={open}
         onClose={() => setOpen(false)}
-        // onUnmount={handleReset}
         >
         {submitSuccess ?
         `Submitted!`

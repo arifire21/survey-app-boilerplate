@@ -1,0 +1,13 @@
+.resultFlex {
+    display: flex;
+}
+
+.matchDetailHeader{
+    margin: 0.5rem 0;
+}
+
+.matchDetail {
+    margin-left: 1rem;
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+}

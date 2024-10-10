@@ -82,13 +82,39 @@
 - moved `match.module.css`
 
 ## v4.2.1
-- Match Survey Production Bug fixed [#26](https://github.com/arifire21/744-survey/issues/26)
+- [Match Survey] Production Bug fixed [#26](https://github.com/arifire21/744-survey/issues/26)
     - was not explicitly returning `return res.json()` in `getData()`. This lead to it being consumed without being passed to `pitDataHelper()` (which is what helps sets the state variables)
 - App mode clarification:
     - changed "postseason" to "offseason" to stay in consistent with verbiage
     - "offseason mode" will now be set up to link to the past years' databases
     - "hiatus mode" will now now do what "postseason mode" did - not allow users to submit new records, only view ones from past matches/competitions
-- added correct `submitHelper()` method to Pit Survey file
-- changed `handleImages()` to `handleImageAssignmentPreview()` for clearer naming
-- if no images are uploaded (`[ref].current.files` has a length of 0), uploadImage() will return `null` prematurely (`frontImgBlobURL` or `sideImgBlobURL` set to `null`) and not attempt to run its API call
-- TODO: RESEARCH JOINS FOR COMBINING TABLES FOR THE ACCORDION
+- [Pit Survey] added correct `submitHelper()` method to file
+- [Pit Survey] changed `handleImages()` to `handleImageAssignmentPreview()` for clearer naming
+- if no images are uploaded (~~`[ref].current.files` has a length of 0~~ if `img.hasOwnProperty('files')`, because it becomes a `File` Object, and loses the `files` array property), `uploadImage()` will return `null` prematurely (`frontImgBlobURL` or `sideImgBlobURL` set to `null`) and not attempt to run its API call
+    - caught hidden oversight of not resetting refs after submitting (images could be resubmitted accidentally even without uploading any new ones, the ref would still exist)
+- [Pit Results] added check for duplicate team numbers avoid any possible "duplicate key" warnings
+- [Pit Results] caught overlooked bug of RadioGroup suddenly having an `<empty string>` value. Switched `onClick` event to `onChange` as per MUI docs, and it is now a proper "controlled component."
+- API: updated returned error object to display proper error text
+- FIXME: fixing image size state render is on hold, is QOL fix and not pressing bug
+- FIXME: found occasional API error where a value goes over SQL field 20 char limit?
+
+## v4.3.1
+- Improve Match Survey presentation [#30](https://github.com/arifire21/744-survey/issues/30)
+    - refactored match results API to return rows in an easier-to-use format
+    - overhaul of results rendering, now grouped by match number and alliance in AccordionGroups
+        - replaced clunky `sx` overrides with `soft` and `solid` built-in styles that achieved the same effect
+    - added ternaries to render to catch possible missed fields
+    - added original blue `joy-primary` pallette back to use for blue alliance items
+        - needed dark *and* light palettes defined in order to define customs
+- [Match Results] cleanup margins, added renders for other types
+
+## v4.3.2
+- [Match Results] added counters for each match type (at-a-glance readability)
+- [Match Results] restricted AccordionGroup max width to 400px to account for comment length
+- [Math Results and API] added field asking if alliance won, so an icon will render for winning alliance in results
+- changed required form label text to be red, easier visibility
+- added `JoyFormControl` to theme-registry override to reduce inline styling (same marginBottom change is on each element in both forms)
+    - using `required` attr to add asterisk instead of doing it manually, lessens upkeep and need for more override flex styling (didn't know it existed)
+- [Match Survey] replace `GroupRadio` with `ButtonToggle` component, cleaner style management and custom coloring flexibility
+- duplicate global css file
+- moved styling into separate files for maintainability

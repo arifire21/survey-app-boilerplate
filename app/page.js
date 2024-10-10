@@ -22,7 +22,7 @@ export default function Home() {
   return (
     <>
     <header className={styles.flexHeader}>
-      <p>Version: <span id="version-number" style={{color: '#01a0bb'}}>2024-4.1.1</span></p>
+      <p>Version: <span id="version-number" style={{color: '#01a0bb'}}>2024-4.3.2</span></p>
       <nav style={{display:'flex', flexDirection: 'column'}}>
         <Button component="a" href="/pit-results" sx={{mb:'0.5rem'}}>
           View Pit Results &#8594;

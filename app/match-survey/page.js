@@ -1,13 +1,13 @@
 'use client'
 // import StartPosSelector from '@/components/start-pos-selector'
-import { Box, Button, Autocomplete, FormControl, FormLabel, Input, RadioGroup, Radio, radioClasses, FormHelperText, Snackbar, Textarea, Slider, Modal, ModalDialog, ModalClose } from '@mui/joy'
+import { Button, Autocomplete, FormControl, FormLabel, Input, RadioGroup, Radio, FormHelperText, Snackbar, Textarea, Slider, Modal, ModalDialog, ModalClose, ToggleButtonGroup } from '@mui/joy'
 import Image from 'next/image'
 import { useState, useRef } from 'react'
 import MenuButton from '@/components/menu-button'
 // import CounterButton from '@/components/counter-button'
-import styles from './match.module.css'
+import styles from '@/styles/match-survey.module.css'
 
-import Guide from '../../public/images/driver-station-wall.png'
+import Guide from '@/images/driver-station-wall.png'
 
 import { orlandoAllTeams } from "../data/orlando-all-teams";
 
@@ -49,55 +49,26 @@ export default function MatchSurveyPage(){
     const [endThrow, setEndThrow] = useState('')
     const [endHumanCount, setEndHumanCount] = useState(0)
 
-    const [attemptDefense, setAttemptDefense] = useState('')
+    const [allianceWin, setAllianceWin] = useState('')
+    // const [attemptDefense, setAttemptDefense] = useState('')
     const [defense, setDefense] = useState(0)
     const [robotDisabled, setRobotDisabled] = useState('')
     const [comments, setComments] = useState('')
 
     const humanPlayerMarks = [
-        {
-          value: 0,
-          label: '0',
-        },
-        {
-          value: 1,
-          label: '1',
-        },
-        {
-          value: 2,
-          label: '2',
-        },
-        {
-          value: 3,
-          label: '3',
-        },
+        { value: 0, label: '0'},
+        { value: 1, label: '1'},
+        { value: 2, label: '2'},
+        { value: 3, label: '3'}
     ];
 
     const defenseMarks = [
-        {
-          value: 0,
-          label: '0',
-        },
-        {
-          value: 1,
-          label: '1',
-        },
-        {
-          value: 2,
-          label: '2',
-        },
-        {
-          value: 3,
-          label: '3',
-        },
-        {
-         value: 4,
-         label: '4',
-        },
-        {
-         value: 5,
-         label: '5',
-        },
+        { value: 0, label: '0'},
+        { value: 1, label: '1'},
+        { value: 2, label: '2'},
+        { value: 3, label: '3'},
+        { value: 4, label: '4'},
+        { value: 5, label: '5'},
     ];
 
     function handleInputChange(event, value) {
@@ -121,7 +92,7 @@ export default function MatchSurveyPage(){
     }
 
     function handleValidate(passedEvent){
-        if (teamNumber==='' || !name || !color || !matchType || !startPos){
+        if (teamNumber==='' || !name || !color || !matchType || !startPos || !allianceWin){
         setErrorString('Check required fields!')
         setSuccess(false)
         setOpen(true)
@@ -136,7 +107,7 @@ export default function MatchSurveyPage(){
         }
     
         else if(comments && comments.length > 500){
-          setErrorString('Comments must be at most 500 chars.')
+          setErrorString('Comments must be AT MOST 500 chars.')
           setSuccess(false)
           setOpen(true)
           return false;
@@ -171,7 +142,8 @@ export default function MatchSurveyPage(){
           endHumanCount: endHumanCount,
           defense: defense,
           robotDisabled: robotDisabled,
-          comments: comments
+          comments: comments,
+          allianceWin: allianceWin
          }
 
          let fetchString = '/api/match-result' //default
@@ -224,6 +196,7 @@ export default function MatchSurveyPage(){
               setDefense(0)
               setRobotDisabled('')
               setComments('')
+              setAllianceWin('')
           }
           setOpen(true)
           setLoading(false)
@@ -256,17 +229,18 @@ export default function MatchSurveyPage(){
             <h1>Match Survey</h1>
             <form ref={formRef}>
                 {/* <h2>Pre-Start</h2> */}
-                <FormControl  sx={{ marginBottom: '1rem'}}>
-                <FormLabel>First Name <sup className='req'>*</sup></FormLabel>
+                <FormControl>
+                <FormLabel required={true} sx={{color: '#ed1c24'}}>First Name</FormLabel>
                 <Input
                 required
+                autoComplete='off'
                 onChange={(e) => setName(e.target.value)}
                 sx={{ width: 300 }}
                 />
                 </FormControl>
 
-                <FormControl  sx={{ marginBottom: '1rem'}}>
-                <FormLabel>Match Number <sup className='req'>*</sup></FormLabel>
+                <FormControl>
+                <FormLabel required={true} sx={{color: '#ed1c24'}}>Match Number</FormLabel>
                 <Input
                 type='number'
                 inputMode='tel'
@@ -277,68 +251,46 @@ export default function MatchSurveyPage(){
                 />
                 </FormControl>
 
-                <FormLabel>Match Type <sup className='req'>*</sup></FormLabel>
                 {/* fancy buttons */}
-                <RadioGroup
-                    orientation="horizontal"
-                    aria-label="match type"
+                <FormControl>
+                <FormLabel required={true} sx={{color: '#ed1c24'}}>Match Type</FormLabel>
+                <ToggleButtonGroup
+                    aria-label="match-type"
                     name="match-type"
-                    variant="outlined"
                     value={matchType}
+                    color={color==='' ? 'neutral' : (color==='red' ? 'danger' : 'blueAllianceColor')}
+                    size='lg'
                     onChange={(event) => setMatchType(event.target.value)}
-                    sx={{width: 'fit-content', marginBottom: '1rem'}}
-                    >
-                    {['Practice', 'Qual', 'Playoff', 'Final'].map((item) => (
-                        <Box
-                        key={item}
-                        sx={(theme) => ({
-                            position: 'relative',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            width: 'fit-content',
-                            height: 48,
-                            padding: '0.5rem',
-                            '&:not([data-first-child])': {
-                            borderLeft: '1px solid',
-                            borderColor: 'divider',
-                            },
-                            [`&[data-first-child] .${radioClasses.action}`]: {
-                            borderTopLeftRadius: `calc(${theme.vars.radius.sm} - 1px)`,
-                            borderBottomLeftRadius: `calc(${theme.vars.radius.sm} - 1px)`,
-                            },
-                            [`&[data-last-child] .${radioClasses.action}`]: {
-                            borderTopRightRadius: `calc(${theme.vars.radius.sm} - 1px)`,
-                            borderBottomRightRadius: `calc(${theme.vars.radius.sm} - 1px)`,
-                            },
-                        })}
-                        >
-                        <Radio
-                            value={item}
-                            disableIcon
-                            overlay
-                            label={     //values capitalizd for data display 
-                            {
-                                Practice: 'Practice',
-                                Qual: 'Qualification',
-                                Playoff: 'Playoff',
-                                Final: 'Final'
-                            }[item]
-                            }
-                            variant={matchType === item ? 'solid' : 'plain'}
-                            slotProps={{
-                            input: { 'aria-label': item,
-                            },
-                            action: {sx: { borderRadius: 0, transition: 'none' }},
-                            label: { sx: { lineHeight: 0 } },
-                            }}
-                        />
-                        </Box>
-                    ))}
-                </RadioGroup>
+                >
+                    <Button
+                        value="Practice"
+                        aria-label='practice match'
+                        aria-labelledby='match-type'
+                        aria-pressed={matchType==='Practice' ? 'true' : 'false'}
+                    >Practice</Button>
+                    <Button
+                        value="Qual"
+                        aria-label='qualification match'
+                        aria-labelledby='match-type'
+                        aria-pressed={matchType==='Qual' ? 'true' : 'false'}
+                    >Qualification</Button>
+                    <Button
+                        value="Playoff"
+                        aria-label='playoff match'
+                        aria-labelledby='match-type'
+                        aria-pressed={matchType==='Playoff' ? 'true' : 'false'}
+                    >Playoff</Button>
+                    <Button
+                        value="Final"
+                        aria-label='final match'
+                        aria-labelledby='match-type'
+                        aria-pressed={matchType==='Final' ? 'true' : 'false'}  
+                        >Final</Button>
+                </ToggleButtonGroup>
+                </FormControl>
 
-                <FormControl sx={{ marginBottom: '1rem'}}>
-                <FormLabel>Team Number <sup className='req'>*</sup></FormLabel>
+                <FormControl>
+                <FormLabel required={true} sx={{color: '#ed1c24'}}>Team Number</FormLabel>
                 <Autocomplete
                     required
                     type="number"
@@ -357,68 +309,33 @@ export default function MatchSurveyPage(){
                 />
                 </FormControl>
 
-                <FormLabel>Alliance <sup className='req'>*</sup></FormLabel>
-                {/* fancy buttons */}
-                <RadioGroup
-                    orientation="horizontal"
-                    aria-label="alliance color"
+                <FormLabel required={true} sx={{color: '#ed1c24'}}>Alliance</FormLabel>
+                <ToggleButtonGroup
+                    aria-label="alliance-color"
                     name="alliance-color"
-                    variant="outlined"
                     value={color}
+                    size='lg'
                     onChange={(event) => setColor(event.target.value)}
-                    sx={{width: 'fit-content', marginBottom: '1rem'}}
-                    >
-                    {['red', 'blue'].map((item) => (
-                        <Box
-                        key={item}
-                        sx={(theme) => ({
-                            position: 'relative',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            width: 'fit-content',
-                            height: 48,
-                            padding: '1rem !important',
-                            '&:not([data-first-child])': {
-                            borderLeft: '1px solid',
-                            borderColor: 'divider',
-                            },
-                            [`&[data-first-child] .${radioClasses.action}`]: {
-                            borderTopLeftRadius: `calc(${theme.vars.radius.sm} - 1px)`,
-                            borderBottomLeftRadius: `calc(${theme.vars.radius.sm} - 1px)`,
-                            },
-                            [`&[data-last-child] .${radioClasses.action}`]: {
-                            borderTopRightRadius: `calc(${theme.vars.radius.sm} - 1px)`,
-                            borderBottomRightRadius: `calc(${theme.vars.radius.sm} - 1px)`,
-                            },
-                        })}
-                        >
-                        <Radio
-                            value={item}
-                            disableIcon
-                            overlay
-                            label={
-                            {
-                                red: 'Red',
-                                blue: 'Blue'
-                            }[item]
-                            }
-                            variant={color === item ? 'solid' : 'plain'}
-                            slotProps={{
-                            input: { 'aria-label': item,
-                            sx: { backgroundColor: `${color} === 'red' : '#000' ? 'transparent'`}
-                            },
-                            action: {sx: { borderRadius: 0, transition: 'none' }},
-                            label: { sx: { lineHeight: 0 } },
-                            radio: { sx: { backgroundColor: `${color} === 'red' : '#000' ? 'transparent'`} }
-                            }}
-                        />
-                        </Box>
-                    ))}
-                </RadioGroup>
+                    sx={{marginBottom:'1rem'}}
+                >
+                    <Button
+                        value="red"
+                        aria-label={'red alliance'}
+                        aria-labelledby='alliance-color'
+                        aria-pressed={color==='red' ? 'true' : 'false'}
+                        color={'danger'}
+                    >Red</Button>
+                    <Button
+                        value="blue"
+                        aria-label='blue alliance'
+                        aria-labelledby='alliance-color'
+                        aria-pressed={color==='blue' ? 'true' : 'false'}
+                        color={'blueAllianceColor'}
+                    >Blue</Button>              
+                </ToggleButtonGroup>
 
                 <div className={styles.startPosLabel}>
-                    <FormLabel>Starting Position <sup className='req'>*</sup></FormLabel>
+                    <FormLabel required={true} sx={{color: '#ed1c24'}}>Starting Position</FormLabel>
                     <Button
                         variant='outlined'
                         size='sm'
@@ -426,12 +343,12 @@ export default function MatchSurveyPage(){
                         sx={{ml:1}}
                     >View Guide</Button>
                 </div>
-                <FormControl sx={{marginBottom: '1rem'}}>
+                <FormControl>
                 { color === 'blue' && (
                     <RadioGroup
                     name='blue-pos'
                     value={startPos}
-                    onChange={(e) => {setStartPos(e.target.value), console.log(startPos)}}
+                    onChange={(e) => setStartPos(e.target.value)}
                     >
                         <Radio value='Against B1 Wall' label='Against B1 Wall'/>
                         <Radio value='Against B2 Wall' label='Against B2 Wall'/>
@@ -445,7 +362,7 @@ export default function MatchSurveyPage(){
                     <RadioGroup
                     name='red-pos'
                     value={startPos}
-                    onChange={(e) => {setStartPos(e.target.value), console.log(startPos)}}
+                    onChange={(e) => setStartPos(e.target.value)}
                     >
                         <Radio value='Against R1 Wall' label='Against R1 Wall'/>
                         <Radio value='Against R2 Wall' label='Against R2 Wall'/>
@@ -455,17 +372,17 @@ export default function MatchSurveyPage(){
                         <Radio value='Against R3 Wall' label='Against R3 Wall'/>
                     </RadioGroup>
                 )}
-                { color === '' && (<p>Select an alliance!</p>)}
+                { color === '' && (<p>Select an alliance first!</p>)}
                 </FormControl>
 
                 <h2>Auto</h2>
                 {/* cross auto line */}
-                <FormControl sx={{ marginBottom: '1rem'}}>
+                <FormControl>
                     <FormLabel>Did robot cross the Auto Line?</FormLabel>
                     <RadioGroup
                     name='match-auto-line'
                     value={autoLine}
-                    onChange={(e) => {setLine(e.target.value), console.log(autoLine)}}
+                    onChange={(e) => setLine(e.target.value)}
                     >
                         <Radio value='yes' label='Yes'/>
                         <Radio value='no' label='No'/>
@@ -473,7 +390,7 @@ export default function MatchSurveyPage(){
                 </FormControl>
 
                 {/* Note scored in amp */}
-                <FormControl sx={{ marginBottom: '1rem'}}>
+                <FormControl>
                 <FormLabel>Notes Scored in Amp</FormLabel>
                 <div className={styles.container}>
                 <button
@@ -497,7 +414,7 @@ export default function MatchSurveyPage(){
                 </FormControl>
 
                 {/* Notes Scored in Speaker */}
-                <FormControl sx={{ marginBottom: '1rem'}}> 
+                <FormControl> 
                 <FormLabel>Notes Scored in Speaker</FormLabel>
                 <div className={styles.container}>
                 <button
@@ -522,7 +439,7 @@ export default function MatchSurveyPage(){
                 
                 <h2>Teleop</h2>
                 {/* Note scored in amp */}
-                <FormControl sx={{ marginBottom: '1rem'}}>
+                <FormControl>
                 <FormLabel>Notes Scored in Amp</FormLabel>
                 <div className={styles.container}>
                 <button
@@ -546,7 +463,7 @@ export default function MatchSurveyPage(){
                 </FormControl>
 
                 {/* Notes Scored in Speaker */}
-                <FormControl sx={{ marginBottom: '1rem'}}> 
+                <FormControl> 
                 <FormLabel>Notes Scored in Speaker</FormLabel>
                 <div className={styles.container}>
                 <button
@@ -570,7 +487,7 @@ export default function MatchSurveyPage(){
                 </FormControl>
 
                 {/* human player amplification */}
-                <FormControl sx={{ marginBottom: '1rem'}}> 
+                <FormControl> 
                 <FormLabel>Times Human Player <strong>pressed</strong> Amplify</FormLabel>
                 <div className={styles.container}>
                 <button
@@ -594,7 +511,7 @@ export default function MatchSurveyPage(){
                 </FormControl>
 
                 <h2>Endgame</h2>
-                <FormControl sx={{ marginBottom: '1rem'}}>
+                <FormControl>
                     <FormLabel>Did robot park at the stage or attempt to climb?</FormLabel>
                     <RadioGroup
                     name='match-climb-park'
@@ -609,7 +526,7 @@ export default function MatchSurveyPage(){
 
                 {parkOrClimb === 'climb' && (
                     <>
-                    <FormControl sx={{ marginBottom: '1rem'}}>
+                    <FormControl>
                         <FormLabel>Did robot <strong>successfully climb</strong>?</FormLabel>
                         <RadioGroup
                         name='match-climb'
@@ -621,7 +538,7 @@ export default function MatchSurveyPage(){
                         </RadioGroup>
                     </FormControl>
 
-                    <FormControl sx={{ marginBottom: '1rem'}}>
+                    <FormControl>
                         <FormLabel>Did robot score in Stage Trap?</FormLabel>
                         <RadioGroup
                         name='match-climb-score'
@@ -635,7 +552,7 @@ export default function MatchSurveyPage(){
                     </>
                 )}
 
-                <FormControl sx={{ marginBottom: '1rem'}}>
+                <FormControl>
                     <FormLabel>Did human player throw any notes?</FormLabel>
                     <RadioGroup
                     name='match-HP-throw'
@@ -664,10 +581,22 @@ export default function MatchSurveyPage(){
                 )}
 
                 <h2>Information</h2>
-                <FormControl sx={{ marginBottom: '1rem'}}>
+                <FormControl>
+                    <FormLabel required sx={{color: '#ed1c24'}}>Did <span className={color==='red'? 'red-alliance' : 'blue-alliance'}>{color}</span> alliance win?</FormLabel>
+                    <RadioGroup
+                    name='match-win'
+                    value={allianceWin}
+                    onChange={(e) => {setAllianceWin(e.target.value)}}
+                    >
+                        <Radio value='yes' label='Yes'/>
+                        <Radio value='no' label='No'/>
+                    </RadioGroup>
+                </FormControl>
+
+                <FormControl>
                     <FormLabel>Did robot lose comms at any point (or get disabled)?</FormLabel>
                     <RadioGroup
-                    name='attempt-defense'
+                    name='match-disabled'
                     value={robotDisabled}
                     onChange={(e) => {setRobotDisabled(e.target.value)}}
                     >
@@ -676,20 +605,19 @@ export default function MatchSurveyPage(){
                     </RadioGroup>
                 </FormControl>
 
-                {attemptDefense === 'yes' && (
-                    <FormControl sx={{ marginBottom: '1rem'}}>
-                        <FormLabel>Did robot attempt to play defense?</FormLabel>
-                        <RadioGroup
-                        name='match-disabled'
-                        value={attemptDefense}
-                        onChange={(e) => {setDefenseAttempt(e.target.value)}}
-                        >
-                            <Radio value='yes' label='Yes'/>
-                            <Radio value='no' label='No'/>
-                        </RadioGroup>
-                    </FormControl>
-                )}
-
+                {/* <FormControl>
+                    <FormLabel>Did robot attempt to play defense?</FormLabel>
+                    <RadioGroup
+                    name='match-disabled'
+                    value={attemptDefense}
+                    onChange={(e) => {setDefenseAttempt(e.target.value)}}
+                    >
+                        <Radio value='yes' label='Yes'/>
+                        <Radio value='no' label='No'/>
+                    </RadioGroup>
+                </FormControl> */}
+                
+                {/* {attemptDefense === 'yes' && ( */}
                 <FormControl sx={{ marginBottom: '3rem'}}>
                 <FormLabel>Rate effective defense:</FormLabel>
                 <Slider
@@ -703,10 +631,11 @@ export default function MatchSurveyPage(){
                     sx={{ maxWidth: 500, minWidth: 300 }}
                 />
                 </FormControl>
+                {/* )} */}
 
                 <FormControl  sx={{ marginBottom: '2rem'}}>
                     <FormLabel>Post-Match Comments</FormLabel>
-                    <FormHelperText>Why disabled, any fouls, defense strategy, etc.</FormHelperText>
+                    <FormHelperText>Describe defense strategy, any fouls, any slow performance, etc.</FormHelperText>
                     <Textarea
                     minRows={2}
                     onChange={(e) => handleTextareaLimit(e.target.value)}

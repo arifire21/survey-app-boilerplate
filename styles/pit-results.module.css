@@ -1,0 +1,48 @@
+.blue {
+    color: #01a0bb;
+}
+
+.both {
+    color: orange;
+}
+
+.filterContainer {
+    padding: 1rem;
+    border: 1px solid var(--joy-palette-neutral-300, #CDD7E1);
+    border-radius: 10px;
+    margin-bottom: 2rem;
+}
+  
+.filterModeLabel {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.radioLabel {
+    margin-block-start: 0 !important;
+    margin-right: 1rem;
+}
+  
+.radioOptionContainer {
+    display: flex;
+    align-items: center;
+}
+
+.pitDetail {
+    margin: 0.25rem 0;
+}
+
+.imagePreviewContainer {
+    text-align: center;
+  }
+  
+/* wrapper for RESULTS image */
+.imagePreviewItem {
+    width: fit-content !important;
+    /* scale: 0.6; */
+    max-height: 300px;
+    max-width: 300px;
+    object-fit: contain;
+    border-radius: 6px;
+    cursor: pointer;
+}
