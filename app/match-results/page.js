@@ -5,7 +5,7 @@ import Accordion, { accordionClasses } from '@mui/joy/Accordion';
 import AccordionDetails from '@mui/joy/AccordionDetails';
 import AccordionSummary from '@mui/joy/AccordionSummary';
 import AccordionGroup from '@mui/joy/AccordionGroup';
-// import { accordionSummaryClasses, accordionDetailsClasses } from '@mui/joy'
+import { accordionSummaryClasses } from '@mui/joy'
 import trophy from '@/images/trophy.png'
 import sharkfin from '../favicon.ico'
 
@@ -115,12 +115,16 @@ export default function ViewMatchResultsPage() {
                   <AccordionGroup  sx={{maxWidth:'400px'}}> {/* to group all 6 accordions together in DOM, per match*/}
                   {match.map((row, index2) => {
                     return( //per Object (orig row from table)
-                      <Accordion variant="outlined" key={`match-${index}-team-row-${index2}`}>
-                        {/* note: custom color in theme-registry file */}
-                        <AccordionSummary variant="solid" color={row.alliance === 'red' ? 'danger' : 'blueAllianceColor'}>
+                      <Accordion variant="outlined" key={`match-${index}-team-row-${index2}`}
+                        sx={{[`& .${accordionSummaryClasses.button}`]: { color: row.team_number==='744' ? '#04269b' : '#ffffff'}}}
+                      > {/* change text color only for 744 by targeting the MUI class that renders the button */}
+                        {/* note: custom blue alliance color in theme-registry file */}
+                        <AccordionSummary   //header with team num (and trophy if alliance won)
+                          variant="solid"
+                          color={row.alliance === 'red' ? 'danger' : 'blueAllianceColor'}
+                        >
                         {row.team_number} 
-                        {row.team_number==='744' && <Image src={sharkfin} alt='fin'/>} 
-                        {row.alliance_win=='yes' && <Image src={trophy} alt='trophy' className='match-result-trophy'/>}
+                        {row.alliance_win=='yes' && <Image src={trophy} alt='trophy' unoptimized={true}/>}
                         </AccordionSummary>
                         <AccordionDetails variant="soft" color={row.alliance === 'red' ? 'danger' : 'blueAllianceColor'}> {/* note: overriding font color to white in theme-registry file */}
                           <p>Starting Pos: <strong>{row.start_pos}</strong></p>
@@ -181,12 +185,16 @@ export default function ViewMatchResultsPage() {
                 <AccordionGroup  sx={{maxWidth:'400px'}}> {/* to group all 6 accordions together in DOM, per match*/}
                 {match.map((row, index2) => {
                   return( //per Object (orig row from table)
-                    <Accordion variant="outlined" key={`match-${index}-team-row-${index2}`}>
-                      {/* note: custom color in theme-registry file */}
-                      <AccordionSummary variant="solid" color={row.alliance === 'red' ? 'danger' : 'blueAllianceColor'}>
-                        {row.team_number} 
-                        {row.team_number==='744' && <img src={sharkfin} alt='fin'/>} 
-                        {row.allianceWin=='true' && <img src={trophy} alt='trophy'/>}
+                    <Accordion variant="outlined" key={`match-${index}-team-row-${index2}`}
+                      sx={{[`& .${accordionSummaryClasses.button}`]: { color: row.team_number==='744' ? '#04269b' : '#ffffff'}}}
+                    > {/* change text color only for 744 by targeting the MUI class that renders the button */}
+                      {/* note: custom blue alliance color in theme-registry file */}
+                      <AccordionSummary   //header with team num (and trophy if alliance won)
+                        variant="solid"
+                        color={row.alliance === 'red' ? 'danger' : 'blueAllianceColor'}
+                      >
+                      {row.team_number} 
+                      {row.alliance_win=='yes' && <Image src={trophy} alt='trophy' unoptimized={true}/>}
                       </AccordionSummary>
                       <AccordionDetails variant="soft" color={row.alliance === 'red' ? 'danger' : 'blueAllianceColor'}> {/* note: overriding font color to white in theme-registry file */}
                         <p>Starting Pos: <strong>{row.start_pos}</strong></p>
@@ -247,9 +255,17 @@ export default function ViewMatchResultsPage() {
                 <AccordionGroup sx={{maxWidth:'400px'}}> {/* to group all 6 accordions together in DOM, per match*/}
                 {match.map((row, index2) => {
                   return( //per Object (orig row from table)
-                    <Accordion variant="outlined" key={`match-${index}-team-row-${index2}`}>
-                      {/* note: custom color in theme-registry file */}
-                      <AccordionSummary variant="solid" color={row.alliance === 'red' ? 'danger' : 'blueAllianceColor'}>{row.team_number}</AccordionSummary>
+                    <Accordion variant="outlined" key={`match-${index}-team-row-${index2}`}
+                      sx={{[`& .${accordionSummaryClasses.button}`]: { color: row.team_number==='744' ? '#04269b' : '#ffffff'}}}
+                    > {/* change text color only for 744 by targeting the MUI class that renders the button */}
+                      {/* note: custom blue alliance color in theme-registry file */}
+                      <AccordionSummary   //header with team num (and trophy if alliance won)
+                        variant="solid"
+                        color={row.alliance === 'red' ? 'danger' : 'blueAllianceColor'}
+                      >
+                      {row.team_number} 
+                      {row.alliance_win=='yes' && <Image src={trophy} alt='trophy' unoptimized={true}/>}
+                      </AccordionSummary>
                       <AccordionDetails variant="soft" color={row.alliance === 'red' ? 'danger' : 'blueAllianceColor'}> {/* note: overriding font color to white in theme-registry file */}
                         <p>Starting Pos: <strong>{row.start_pos}</strong></p>
 
@@ -309,9 +325,17 @@ export default function ViewMatchResultsPage() {
                 <AccordionGroup sx={{maxWidth:'400px'}}> {/* to group all 6 accordions together in DOM, per match*/}
                 {match.map((row, index2) => {
                   return( //per Object (orig row from table)
-                    <Accordion variant="outlined" key={`match-${index}-team-row-${index2}`}>
-                      {/* note: custom color in theme-registry file */}
-                      <AccordionSummary variant="solid" color={row.alliance === 'red' ? 'danger' : 'blueAllianceColor'}>{row.team_number}</AccordionSummary>
+                    <Accordion variant="outlined" key={`match-${index}-team-row-${index2}`}
+                      sx={{[`& .${accordionSummaryClasses.button}`]: { color: row.team_number==='744' ? '#04269b' : '#ffffff'}}}
+                    > {/* change text color only for 744 by targeting the MUI class that renders the button */}
+                      {/* note: custom blue alliance color in theme-registry file */}
+                      <AccordionSummary   //header with team num (and trophy if alliance won)
+                        variant="solid"
+                        color={row.alliance === 'red' ? 'danger' : 'blueAllianceColor'}
+                      >
+                      {row.team_number} 
+                      {row.alliance_win=='yes' && <Image src={trophy} alt='trophy' unoptimized={true}/>}
+                      </AccordionSummary>
                       <AccordionDetails variant="soft" color={row.alliance === 'red' ? 'danger' : 'blueAllianceColor'}> {/* note: overriding font color to white in theme-registry file */}
                         <p>Starting Pos: <strong>{row.start_pos}</strong></p>
 
