@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { Button, Autocomplete, FormControl, FormLabel, Input, RadioGroup, Radio, List, ListItem, Checkbox, FormHelperText, Snackbar, Textarea } from '@mui/joy'
 import MenuButton from "@/components/menu-button";
-import { orlandoAllTeams } from "../data/orlando-all-teams";
+// import { orlandoAllTeams } from "../data/orlando-all-teams";
 import { useState, useRef } from "react";
 import styles from '@/styles/pit-survey.module.css'
 
@@ -83,7 +83,7 @@ export default function PitSurveyPage() {
   }
 
   function handleInputChange(event, value) {
-    setTeamNumber(value);
+    setTeamNumber(value.toString());
   }
 
   function drivetrainHelper(radioValue){
@@ -375,44 +375,46 @@ export default function PitSurveyPage() {
   async function uploadImage(ref){
     // if(instantlyKnowIfSubmit == true){ // await only allowed at upper level so wrap in conditional
       console.log('reached img upload')
+      console.log(`$ref: ${ref.current}`)
+      console.log(`$ref: ${ref.name}`)
       const img = ref.current;
       //if nothing was ever attached or was an error,
       //ref will not change and have ALL properties/attributes associated w an Element.
       //Ref with an upload will have File Object properties only.
-      if(img == null || img.hasOwnProperty('files')){
+      if(img == null || img.hasOwnProperty('files') || img.name == 'picture'){
         setColor('neutral')
         setErrorString("No image to upload.")
         setSuccess(false) //use longer time duration
         setOpen(true)
         return null;
-      }
-
-      setLoading(true)
-      setColor('neutral')
-      setErrorString("Uploading images...")
-      setSuccess(false)
-      setOpen(true)
-
-      const response = await fetch(
-        `/api/upload-pit-images?filename=${img.name}`,
-        {
-          method: 'POST',
-          body: img,
-        },
-      ).catch(err => console.log(err))
-
-      const blob = (await response.json());
-      // console.log(blob)
-      if(blob == null || blob === undefined){
-        setColor('danger')
-        setErrorString("Error uploading image!")
-        console.error(blob)
-        return null;
       } else {
-        setColor('success')
-        setErrorString("Uploaded image!")
-        return blob.url;
-      }
+        setLoading(true)
+        setColor('neutral')
+        setErrorString("Uploading images...")
+        setSuccess(false)
+        setOpen(true)
+
+        const response = await fetch(
+          `/api/upload-pit-images?filename=${img.name}`,
+          {
+            method: 'POST',
+            body: img,
+          },
+        ).catch(err => console.log(err))
+
+        const blob = (await response.json());
+        // console.log(blob)
+        if(blob == null || blob === undefined){
+          setColor('danger')
+          setErrorString("Error uploading image!")
+          console.error(blob)
+          return null;
+        } else {
+          setColor('success')
+          setErrorString("Uploaded image!")
+          return blob.url;
+        }
+    }
   }
 
   function submitHelper(isHiatus, e){
@@ -449,7 +451,7 @@ export default function PitSurveyPage() {
         <h1>Pit Survey</h1>
         <form ref={formRef}>
         <h2>General</h2>
-        <FormControl>
+        {/* <FormControl>
           <FormLabel required={true} sx={{color: '#ed1c24'}}>Team Number</FormLabel>
           <Autocomplete
             required
@@ -463,6 +465,18 @@ export default function PitSurveyPage() {
               if(option === '' || value === '') return true;
               else return true;
             }} 
+            sx={{ width: 300 }}
+            slotProps={{input: { inputMode:'decimal' }}}
+          />
+        </FormControl> */}
+
+        <FormControl>
+          <FormLabel required={true} sx={{color: '#ed1c24'}}>Team Number</FormLabel>
+          <Input
+            required
+            type="number"
+            placeholder="start typing..."
+            onChange={(e) => setTeamNumber(e.target.value.toString())}
             sx={{ width: 300 }}
             slotProps={{input: { inputMode:'decimal' }}}
           />

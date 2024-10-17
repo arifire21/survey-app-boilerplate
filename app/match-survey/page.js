@@ -9,7 +9,7 @@ import styles from '@/styles/match-survey.module.css'
 
 import Guide from '@/images/driver-station-wall.png'
 
-import { orlandoAllTeams } from "../data/orlando-all-teams";
+// import { orlandoAllTeams } from "../data/orlando-all-teams";
 
 export default function MatchSurveyPage(){
     const isDevMode = process.env.NEXT_PUBLIC_DEV_MODE;
@@ -289,7 +289,7 @@ export default function MatchSurveyPage(){
                 </ToggleButtonGroup>
                 </FormControl>
 
-                <FormControl>
+                {/* <FormControl>
                 <FormLabel required={true} sx={{color: '#ed1c24'}}>Team Number</FormLabel>
                 <Autocomplete
                     required
@@ -304,6 +304,18 @@ export default function MatchSurveyPage(){
                     if(option === '' || value === '') return true;
                     else return true;
                     }}
+                    sx={{ width: 300 }}
+                    slotProps={{input: { inputMode:'decimal' }}}
+                />
+                </FormControl> */}
+
+                <FormControl>
+                <FormLabel required={true} sx={{color: '#ed1c24'}}>Team Number</FormLabel>
+                <Input
+                    required
+                    type="number"
+                    placeholder="start typing..."
+                    onChange={(e) => setTeamNumber(e.target.value.toString())}
                     sx={{ width: 300 }}
                     slotProps={{input: { inputMode:'decimal' }}}
                 />

@@ -112,7 +112,7 @@ export default function ViewMatchResultsPage() {
                 <div key={`match-container-${index}`} id={`match-container-${index}`} className="item-container">
                   <h3 key={`header-${index}`} id={`header-${index}`} className='item-number'>Match {index+1}</h3>
 
-                  <AccordionGroup  sx={{maxWidth:'400px'}}> {/* to group all 6 accordions together in DOM, per match*/}
+                  <AccordionGroup > {/* to group all 6 accordions together in DOM, per match*/}
                   {match.map((row, index2) => {
                     return( //per Object (orig row from table)
                       <Accordion variant="outlined" key={`match-${index}-team-row-${index2}`}
@@ -182,7 +182,7 @@ export default function ViewMatchResultsPage() {
               <div key={`match-container-${index}`} id={`match-container-${index}`} className="item-container">
                 <h3 key={`header-${index}`} id={`header-${index}`} className='item-number'>Match {index+1}</h3>
 
-                <AccordionGroup  sx={{maxWidth:'400px'}}> {/* to group all 6 accordions together in DOM, per match*/}
+                <AccordionGroup > {/* to group all 6 accordions together in DOM, per match*/}
                 {match.map((row, index2) => {
                   return( //per Object (orig row from table)
                     <Accordion variant="outlined" key={`match-${index}-team-row-${index2}`}
@@ -252,7 +252,7 @@ export default function ViewMatchResultsPage() {
               <div key={`match-container-${index}`} id={`match-container-${index}`} className="item-container">
                 <h3 key={`header-${index}`} id={`header-${index}`} className='item-number'>Match {index+1}</h3>
 
-                <AccordionGroup sx={{maxWidth:'400px'}}> {/* to group all 6 accordions together in DOM, per match*/}
+                <AccordionGroup> {/* to group all 6 accordions together in DOM, per match*/}
                 {match.map((row, index2) => {
                   return( //per Object (orig row from table)
                     <Accordion variant="outlined" key={`match-${index}-team-row-${index2}`}
@@ -322,7 +322,7 @@ export default function ViewMatchResultsPage() {
               <div key={`match-container-${index}`} id={`match-container-${index}`} className="item-container">
                 <h3 key={`header-${index}`} id={`header-${index}`} className='item-number'>Match {index+1}</h3>
 
-                <AccordionGroup sx={{maxWidth:'400px'}}> {/* to group all 6 accordions together in DOM, per match*/}
+                <AccordionGroup> {/* to group all 6 accordions together in DOM, per match*/}
                 {match.map((row, index2) => {
                   return( //per Object (orig row from table)
                     <Accordion variant="outlined" key={`match-${index}-team-row-${index2}`}

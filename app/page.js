@@ -1,28 +1,30 @@
 'use client'
 import Image from "next/image";
 import { Button } from '@mui/joy'
-import Alert from "@/components/alert";
+// import Alert from "@/components/alert";
 import styles from "@/styles/page.module.css";
 import Logo from "../public/images/FIS_CRESCENDO_Logo_Horizontal_RGB.png";
-import { useEffect } from "react";
+// import { useEffect } from "react";
+
+const { version } = require('../package.json');
 
 export default function Home() {
-  const isDevMode = process.env.NEXT_PUBLIC_DEV_MODE;
-  const isOffseason = process.env.NEXT_PUBLIC_OFFSEASON;
+  // const isDevMode = process.env.NEXT_PUBLIC_DEV_MODE;
+  // const isOffseason = process.env.NEXT_PUBLIC_OFFSEASON;
 
-  useEffect(() => {
-    // if(isDevMode){ 
-      {isDevMode && isDevMode && <Alert mode='dev'/>}
-    // }
-    // if(isOffseason){
-      {isOffseason && isOffseason && <Alert mode='postseason'/>}
-    // }
-  }, []);
+  // useEffect(() => {
+  //   // if(isDevMode){ 
+  //     {isDevMode && isDevMode && <Alert mode='dev'/>}
+  //   // }
+  //   // if(isOffseason){
+  //     {isOffseason && isOffseason && <Alert mode='postseason'/>}
+  //   // }
+  // }, []);
 
   return (
     <>
     <header className={styles.flexHeader}>
-      <p>Version: <span id="version-number" style={{color: '#01a0bb'}}>2024-4.3.2</span></p>
+      <p>Version: <span id="version-number" style={{color: '#01a0bb'}}>{version ?? 'null'}</span></p>
       <nav style={{display:'flex', flexDirection: 'column'}}>
         <Button component="a" href="/pit-results" sx={{mb:'0.5rem'}}>
           View Pit Results &#8594;

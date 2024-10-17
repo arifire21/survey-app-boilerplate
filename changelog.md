@@ -62,7 +62,7 @@
     - MUI Accordion (collapsible) per mapped item, to help with visual busyness
 - [Saturday Hotfix] Pit and Match Surveys: change feedback max length to 500 chars
 
-# Post-Orlando
+# Post-Season
 ## v4.0.0
 - dev and postseason modes added, toggled via ENVs
     - for serving as a portfolio example
@@ -118,3 +118,10 @@
 - [Match Survey] replace `GroupRadio` with `ButtonToggle` component, cleaner style management and custom coloring flexibility
 - duplicate global css file
 - moved styling into separate files for maintainability
+
+# Off-Season (Pirate's Piliage)
+## v4.3.3
+- changed team number autocomplete to select
+- fix to image upload patch still uploading empty pictures
+    - returning null still let method continue on, settled for wrapping with if-else
+- minor styling, AccordionGroup max width
