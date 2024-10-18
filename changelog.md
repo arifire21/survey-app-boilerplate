@@ -124,4 +124,8 @@
 - changed team number autocomplete to select
 - fix to image upload patch still uploading empty pictures
     - returning null still let method continue on, settled for wrapping with if-else
-- minor styling, AccordionGroup max width
+
+## v4.3.4
+- minor styling:
+    - AccordionGroup and resultcontainer max width set to 400px to avoid feedback text making them super long
+    - comments/feedback css now have `overflow-wrap: break-word;` so the text breaks does not form in one long line

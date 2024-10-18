@@ -18,11 +18,16 @@ form {
   padding: 1.5rem;
   margin: 0.5rem;
   height: fit-content;
+  max-width: 400px;
 }
 
 .item-number {
   text-align: center;
   margin-top: 0;
+}
+
+.result-comments{
+  overflow-wrap: break-word;
 }
 
 .red-alliance {
