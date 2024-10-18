@@ -130,3 +130,4 @@
     - AccordionGroup and resultcontainer max width set to 400px to avoid feedback text making them super long
     - comments/feedback css now have `overflow-wrap: break-word;` so the text breaks does not form in one long line
 - fix [#28](https://github.com/arifire21/744-survey/issues/28) (Mobile image preview clips into other form elements)
+- clarified error message about character limits

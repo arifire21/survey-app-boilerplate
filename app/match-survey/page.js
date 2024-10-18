@@ -92,25 +92,54 @@ export default function MatchSurveyPage(){
     }
 
     function handleValidate(passedEvent){
+        //will return out at first error seen
+        //then as error are fixed, it will move past each statement
         if (teamNumber==='' || !name || !color || !matchType || !startPos || !allianceWin){
-        setErrorString('Check required fields!')
-        setSuccess(false)
-        setOpen(true)
-        return false;
+            setErrorString('Check required fields!')
+            setSuccess(false)
+            setOpen(true)
+            return false;
         }
 
         else if(matchNumber == 0){
-        setErrorString('Match number cannot be 0!')
-        setSuccess(false)
-        setOpen(true)
-        return false;
+            setErrorString('Match number cannot be 0!')
+            setSuccess(false)
+            setOpen(true)
+            return false;
         }
     
-        else if(comments && comments.length > 500){
-          setErrorString('Comments must be AT MOST 500 chars.')
-          setSuccess(false)
-          setOpen(true)
-          return false;
+        else if(comments.length > 500){
+            setErrorString('Comments must be <= 500 chars.')
+            setColor('danger')
+            setSuccess(false)
+            setOpen(true)
+            return false;
+        }
+    
+        else if(teamNumber.length > 5){
+            setErrorString('Team number must be <= 5 digits.')
+            setColor('danger')
+            setSuccess(false)
+            setOpen(true)
+            return false;
+        }
+
+        else if(matchNumber.toString().length > 3){
+            setErrorString('Match number must be <= 3 digits.')
+            setColor('danger')
+            setSuccess(false)
+            setOpen(true)
+            return false;
+        }
+
+        //dont know why failing a check would cause the color to be set to DANGER
+        //but here we are
+        else if(color==='danger' || color===undefined || color===''){
+            setErrorString('Error, reselect alliance color.')
+            setColor('danger')
+            setSuccess(false)
+            setOpen(true)
+            return false;
         }
     
         handleSubmit(passedEvent)
@@ -258,7 +287,7 @@ export default function MatchSurveyPage(){
                     aria-label="match-type"
                     name="match-type"
                     value={matchType}
-                    color={color==='' ? 'neutral' : (color==='red' ? 'danger' : 'blueAllianceColor')}
+                    color={color==='' ? 'primary' : (color==='red' ? 'danger' : 'blueAllianceColor')}
                     size='lg'
                     onChange={(event) => setMatchType(event.target.value)}
                 >
@@ -543,7 +572,7 @@ export default function MatchSurveyPage(){
                         <RadioGroup
                         name='match-climb'
                         value={endClimbSuccess}
-                        onChange={(e) => {setClimbSuccess(e.target.value), console.log(endClimbSuccess)}}
+                        onChange={(e) => {setClimbSuccess(e.target.value), console.log(e.target.value)}}
                         >
                             <Radio value='yes' label='Yes'/>
                             <Radio value='no' label='No'/>
@@ -555,7 +584,7 @@ export default function MatchSurveyPage(){
                         <RadioGroup
                         name='match-climb-score'
                         value={endScoreClimb}
-                        onChange={(e) => {setScoreClimb(e.target.value), console.log(endScoreClimb)}}
+                        onChange={(e) => {setScoreClimb(e.target.value), console.log(e.target.value)}}
                         >
                             <Radio value='yes' label='Yes'/>
                             <Radio value='no' label='No'/>
