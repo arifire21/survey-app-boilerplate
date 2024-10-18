@@ -151,8 +151,16 @@ export default function PitSurveyPage() {
     return false;
     }
 
-    else if(feedback && feedback.length > 500){
-      setErrorString('Feedback must be at most 500 chars.')
+    else if(feedback.length > 500){
+      setErrorString('Feedback must be <= 500 chars.')
+      setColor('danger')
+      setSuccess(false)
+      setOpen(true)
+      return false;
+    }
+
+    else if(teamNumber.length > 5){
+      setErrorString('Team number must be <= 5 digits.')
       setColor('danger')
       setSuccess(false)
       setOpen(true)
@@ -165,10 +173,10 @@ export default function PitSurveyPage() {
 
   async function uploadAndSubmit(passedEvent){
     console.log('starting...')
-    let frontImgBlobURL = await uploadImage(frontImageRef);
-    console.log(frontImgBlobURL)
-    let sideImgBlobURL = await uploadImage(sideImageRef)
-    console.log(sideImgBlobURL)
+    let frontImgBlobURL = await uploadImage(frontImageRef, 'front');
+    // console.log(frontImgBlobURL)
+    let sideImgBlobURL = await uploadImage(sideImageRef, 'side')
+    // console.log(sideImgBlobURL)
     await handleSubmit(passedEvent, frontImgBlobURL, sideImgBlobURL)
     console.log('done!')
   }
@@ -372,15 +380,17 @@ export default function PitSurveyPage() {
     setOpen(true) //show snackbar after color/string has been set
   }
 
-  async function uploadImage(ref){
+  async function uploadImage(ref, tag){
     // if(instantlyKnowIfSubmit == true){ // await only allowed at upper level so wrap in conditional
-      console.log('reached img upload')
+      console.log('reached img upload: ' + tag)
       console.log(`$ref: ${ref.current}`)
-      console.log(`$ref: ${ref.name}`)
       const img = ref.current;
       //if nothing was ever attached or was an error,
       //ref will not change and have ALL properties/attributes associated w an Element.
       //Ref with an upload will have File Object properties only.
+      // if(img instanceof HTMLInputElement){
+      //   console.log(true)
+      // }
       if(img == null || img.hasOwnProperty('files') || img.name == 'picture'){
         setColor('neutral')
         setErrorString("No image to upload.")
@@ -411,7 +421,7 @@ export default function PitSurveyPage() {
           return null;
         } else {
           setColor('success')
-          setErrorString("Uploaded image!")
+          setErrorString(`Uploaded ${tag} image!`)
           return blob.url;
         }
     }
