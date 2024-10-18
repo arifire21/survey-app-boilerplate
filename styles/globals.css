@@ -84,7 +84,11 @@ form {
 /* mobile devices */
 @media (max-width:425px) {
   /* use whatever fits onscreen, text class is set to wrap */
-  .MuiAccordionGroup-root, .item-container{
+  .MuiAccordionGroup-root{
     max-width: unset;
+  }
+
+  .item-container {
+    max-width: 100%;
   }
 }
