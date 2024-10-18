@@ -152,7 +152,7 @@ export default function PitSurveyPage() {
     }
 
     else if(feedback && feedback.length > 500){
-      setErrorString('Feedback must be at most 255 chars.')
+      setErrorString('Feedback must be at most 500 chars.')
       setColor('danger')
       setSuccess(false)
       setOpen(true)
