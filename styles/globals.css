@@ -42,7 +42,9 @@ form {
 /* this is for pit survey and must stay here */
 .preview-img {
   /* width: fit-content !important; */
-  height: 100%;
+  /* height: 100%; */
+  /* needs to be here to fix clipping on mobile */
+  max-height: 220px;
   width: 100%;
   border-radius: 5px;
 }

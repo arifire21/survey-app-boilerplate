@@ -625,7 +625,7 @@ export default function PitSurveyPage() {
             onChange={handleImageAssignmentPreview}
           />
           {/* <output id='filesize-front'><small>{frontImageSize} {unit}</small></output> */}
-          <div id="preview-1" className={styles.imgPreview}></div>
+          <div id="preview-1" className={styles.imgPreviewWrapper}></div>
         </FormControl>
         
         <FormControl sx={{height:'fit-content !important'}}>
@@ -639,7 +639,7 @@ export default function PitSurveyPage() {
             capture="environment"  //! this is what allows for camera functionality on mobile. desktop triggers file browser
             onChange={handleImageAssignmentPreview}/>
           {/* <output id='filesize-side'><small>{sideImageSize} {unit}</small></output> */}
-          <div id="preview-2" className={styles.imgPreview}></div>
+          <div id="preview-2" className={styles.imgPreviewWrapper}></div>
         </FormControl>
 
         <h2>Information</h2>
