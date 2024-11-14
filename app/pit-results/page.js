@@ -20,7 +20,7 @@ export default function ViewPitResultsPage(){
     const [teamCriteria, setTeamCriteria] = useState('')
     const [traitCriteria, setTraitCriteria] = useState('')
     const [filteredTeamsRender, setFilteredTeamsRender] = useState([])
-    const [availTeamsRender, setAvailTeamsRender] = useState([])
+    const [availTeamsOptions, SetAvailTeamsOptions] = useState([])
 
     const [open, setOpen] = useState(false);
     const [modalImage, setModalImage] = useState(null);
@@ -43,176 +43,74 @@ export default function ViewPitResultsPage(){
 
       switch (value) {
         case 'drivetrain is WCD':
-          filterByWCD();
+          filteredTeams = fetchedPitResults.filter((item) => item.drivetrain === 'west coast drive')
           break;
         case 'drivetrain is mecanum':
-          filterByMecanum();
+          filteredTeams = fetchedPitResults.filter((item) => item.drivetrain === 'mecanum')
           break;
         case 'drivetrain is tank':
-          filterByTank();
+          filteredTeams = fetchedPitResults.filter((item) => item.drivetrain === 'tank')
           break;
         case 'drivetrain is swerve':
-          filterBySwerve();
+          filteredTeams = fetchedPitResults.filter((item) => item.drivetrain === 'swerve')
           break;
         case 'drivetrain is other':
-          filterByOther();
+          filteredTeams = fetchedPitResults.filter((item) => item.drivetrain != 'west coast drive' &&
+                                                              item.drivetrain != 'mecanum'          && 
+                                                              item.drivetrain != 'tank'             &&
+                                                              item.drivetrain != 'swerve'              )
           break;
         case 'pref. pos is left':
-          filterByStartLeft();
+          filteredTeams = fetchedPitResults.filter((item) => item.preferred_pos.includes('left'))
           break;
         case 'pref. pos is center':
-          filterByStartCenter();
+          filteredTeams = fetchedPitResults.filter((item) => item.preferred_pos.includes('center/subwoofer area'))
           break;
         case 'pref. pos is right':
-          filterByStartRight();
+          filteredTeams = fetchedPitResults.filter((item) => item.preferred_pos.includes('right'))
           break;
         case 'has vision':
-          filterByVision();
+          filteredTeams = fetchedPitResults.filter((item) => item.vision === 'yes')
           break;
         case 'scores in both':
-          filterByBothHeight();
+          filteredTeams = fetchedPitResults.filter((item) => item.score_height === 'both')
           break;
         case 'scores in amp':
-          filterByAmp();
+          filteredTeams = fetchedPitResults.filter((item) => item.score_height === 'amp' || item.score_height === 'both')
           break;
         case 'scores in speaker':
-          filterBySpeaker();
+          filteredTeams = fetchedPitResults.filter((item) => item.score_height === 'speaker' || item.score_height === 'both')
           break;
         case 'pickup at both':
-          filterByBothPickup();
+          filteredTeams = fetchedPitResults.filter((item) => item.pickup_pos === 'both')
           break;
         case 'pickup at floor':
-          filterByFloor();
+          filteredTeams = fetchedPitResults.filter((item) => item.pickup_pos === 'floor' || item.pickup_pos === 'both')
           break;
         case 'pickup at HPS':
-          filterByHPS();
+          filteredTeams = fetchedPitResults.filter((item) => item.pickup_pos === 'human player station' || item.pickup_pos === 'both')
           break;
         case 'can climb':
-          filterByClimb();
+          filteredTeams = fetchedPitResults.filter((item) => item.can_climb === 'yes')
           break;
         case 'can help climb':
-          filterByHelpClimb();
+          filteredTeams = fetchedPitResults.filter((item) => item.help_climb === 'yes')
           break;
         case 'can score climb':
-          filterByScoreClimb();
+          filteredTeams = fetchedPitResults.filter((item) => item.score_climb === 'yes')
           break;
         case 'has feedback':
-          filterByFeedback();
+          filteredTeams = fetchedPitResults.filter((item) => (item.feedback && item.feedback.length > 0))
           break;
-      }
-    }
+      } //end switch
 
-    //filter helper methods
-    function filterByWCD() {
-      filteredTeams = fetchedPitResults.filter((item) => item.drivetrain === 'west coast drive')
-      updateFilteredState()
-    }
-
-    function filterByMecanum() {
-      filteredTeams = fetchedPitResults.filter((item) => item.drivetrain === 'mecanum')
-      updateFilteredState()
-    }
-
-    function filterByTank() {
-      filteredTeams = fetchedPitResults.filter((item) => item.drivetrain === 'tank')
-      updateFilteredState()
-    }
-
-    function filterBySwerve() {
-      filteredTeams = fetchedPitResults.filter((item) => item.drivetrain === 'swerve')
-      updateFilteredState()
-    }
-
-    function filterByOther() {
-      filteredTeams = fetchedPitResults.filter((item) => item.drivetrain != 'west coast drive' &&
-                                                         item.drivetrain != 'mecanum'          && 
-                                                         item.drivetrain != 'tank'             &&
-                                                         item.drivetrain != 'swerve'              )
-      updateFilteredState()
-    }
-
-    function filterByStartLeft() {
-      filteredTeams = fetchedPitResults.filter((item) => item.preferred_pos.includes('left'))
-      updateFilteredState()
-    }
-
-    function filterByStartCenter() {
-      filteredTeams = fetchedPitResults.filter((item) => item.preferred_pos.includes('center/subwoofer area'))
-      updateFilteredState()
-    }
-
-    function filterByStartRight() {
-      filteredTeams = fetchedPitResults.filter((item) => item.preferred_pos.includes('right'))
-      updateFilteredState()
-    }
-
-    function filterByVision() {
-      filteredTeams = fetchedPitResults.filter((item) => item.vision === 'yes')
-      updateFilteredState()
-    }
-
-    function filterByAmp() {
-      filteredTeams = fetchedPitResults.filter((item) => item.score_height === 'amp' || item.score_height === 'both')
-      updateFilteredState()
-    }
-
-    function filterBySpeaker() {
-      filteredTeams = fetchedPitResults.filter((item) => item.score_height === 'speaker' || item.score_height === 'both')
-      updateFilteredState()
-    }
-
-    function filterByBothHeight() {
-      filteredTeams = fetchedPitResults.filter((item) => item.score_height === 'both')
-      updateFilteredState()
-    }
-
-    function filterByFloor() {
-      filteredTeams = fetchedPitResults.filter((item) => item.pickup_pos === 'floor' || item.pickup_pos === 'both')
-      updateFilteredState()
-    }
-
-    function filterByHPS() {
-      filteredTeams = fetchedPitResults.filter((item) => item.pickup_pos === 'human player station' || item.pickup_pos === 'both')
-      updateFilteredState()
-    }
-
-    function filterByBothPickup() {
-      filteredTeams = fetchedPitResults.filter((item) => item.pickup_pos === 'both')
-      updateFilteredState()
-    }
-
-    function filterByClimb() {
-      filteredTeams = fetchedPitResults.filter((item) => item.can_climb === 'yes')
-      updateFilteredState()
-    }
-
-    function filterByHelpClimb() {
-      filteredTeams = fetchedPitResults.filter((item) => item.help_climb === 'yes')
-      updateFilteredState()
-    }
-
-    function filterByScoreClimb() {
-      filteredTeams = fetchedPitResults.filter((item) => item.score_climb === 'yes')
-      updateFilteredState()
-    }
-
-    function filterByClimb() {
-      filteredTeams = fetchedPitResults.filter((item) => item.can_climb === 'yes')
-      updateFilteredState()
-    }
-
-    function filterByFeedback() {
-      filteredTeams = fetchedPitResults.filter((item) => (item.feedback && item.feedback.length > 0))
-      updateFilteredState()
-    }
-
-    //last helper, to be called in each method
-    function updateFilteredState(){
-      //update the state so it re-renders, pushing to the array variable does nothing
+      //update the state variable so it re-renders, pushing to the array variable does nothing
       setFilteredTeamsRender(filteredTeams)
     }
 
-    function pitDataHelper(results){ //relying on state in getData does not work because of state's delayed updating
+    //relying on state in getData does not work because of state's delayed updating,
+    //so pass results to this to be manipulated/set state for re-render
+    function pitDataHelper(results){
       if(results.length == 0){
         setPitEmpty(true)
         return null;
@@ -228,8 +126,8 @@ export default function ViewPitResultsPage(){
 
       //use .sort method here to just make this easier when using .filter
       let sortedResults = results.sort((a, b) => a.team_number - b.team_number) //ascending order
+      //set pit results to be rendered...
       setPitResults(sortedResults)
-      // console.log(sortedResults)
 
       let tempLast = 0; //to start
       sortedResults.forEach(team => {
@@ -240,9 +138,8 @@ export default function ViewPitResultsPage(){
         }
         tempLast = team.team_number;
       });
-      console.log(availTeams)
-
-      setAvailTeamsRender(availTeams)
+      //for the "filter by team" autocomplete
+      SetAvailTeamsOptions(availTeams)
 
       return true;
     }
@@ -282,7 +179,7 @@ export default function ViewPitResultsPage(){
         .then((data) => {console.log(`data: ${data}`);pitDataHelper(data.results)})
         .catch( err => console.log(err) );
 
-        // console.log(availTeamsRender)
+        // console.log(availTeamsOptions)
         isPitLoading(false) //should stay here regardless if empty or not
       }
   
@@ -326,7 +223,7 @@ export default function ViewPitResultsPage(){
               <Autocomplete
                 disabled={filterType === 'team' ? false : true}
                 placeholder="start typing..."
-                options={availTeamsRender}
+                options={availTeamsOptions}
                 value={teamCriteria}
                 onChange={handleInputChange}
                 clearOnBlur
