@@ -2,6 +2,7 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 A  web application made to streamline both survey types used during competitions.
+# This template is STILL A WORK IN PROGRESS
 
 *Now featuring* image uploads for pit survey, and filtering options for pit / match data entries
 
@@ -18,12 +19,6 @@ A  web application made to streamline both survey types used during competitions
 3. Leave app name as written
 4. Click "Add"
 
-## More to Come!
-- notification of Team 744's match results
-
-## Changelog
-For changelog, click [here](https://github.com/arifire21/744-survey/blob/trunk/changelog.md).
-
 ## Recordkeeping
 ### Branches
 1. Trunk
@@ -35,5 +30,4 @@ For changelog, click [here](https://github.com/arifire21/744-survey/blob/trunk/c
   - log issues for bugs or suggestions/enhancements, tag appropriately
   - close by attaching to PR's or mentioning #[X] in commit message
 ### Documentation
-  - TBD
-  - will include variables, functions, components, and APIs
+  - includes variables, components, and APIs
