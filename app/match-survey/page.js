@@ -9,7 +9,7 @@ import styles from '@/styles/match-survey.module.css'
 
 import Guide from '@/images/driver-station-wall.png'
 
-// import { orlandoAllTeams } from "../data/orlando-all-teams";
+import { orlandoAllTeams } from "../data/orlando-all-teams";
 
 export default function MatchSurveyPage(){
     const isDevMode = process.env.NEXT_PUBLIC_DEV_MODE;
@@ -71,7 +71,7 @@ export default function MatchSurveyPage(){
         { value: 5, label: '5'},
     ];
 
-    function handleInputChange(event, value) {
+    function handleTeamNumChange(event, value) {
         setTeamNumber(value);
     }
 
@@ -318,7 +318,7 @@ export default function MatchSurveyPage(){
                 </ToggleButtonGroup>
                 </FormControl>
 
-                {/* <FormControl>
+                <FormControl>
                 <FormLabel required={true} sx={{color: '#ed1c24'}}>Team Number</FormLabel>
                 <Autocomplete
                     required
@@ -327,7 +327,7 @@ export default function MatchSurveyPage(){
                     placeholder="start typing..."
                     options={orlandoAllTeams}
                     value={teamNumber}
-                    onChange={handleInputChange}
+                    onChange={handleTeamNumChange}
                     clearOnBlur
                     isOptionEqualToValue={(option, value) =>{
                     if(option === '' || value === '') return true;
@@ -336,9 +336,10 @@ export default function MatchSurveyPage(){
                     sx={{ width: 300 }}
                     slotProps={{input: { inputMode:'decimal' }}}
                 />
-                </FormControl> */}
+                </FormControl>
 
-                <FormControl>
+        {       /* alternate form if autocomplete is not wanted */}
+                {/* <FormControl>
                 <FormLabel required={true} sx={{color: '#ed1c24'}}>Team Number</FormLabel>
                 <Input
                     required
@@ -348,7 +349,7 @@ export default function MatchSurveyPage(){
                     sx={{ width: 300 }}
                     slotProps={{input: { inputMode:'decimal' }}}
                 />
-                </FormControl>
+                </FormControl> */}
 
                 <FormLabel required={true} sx={{color: '#ed1c24'}}>Alliance</FormLabel>
                 <ToggleButtonGroup

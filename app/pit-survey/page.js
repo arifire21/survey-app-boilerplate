@@ -2,7 +2,6 @@
 import Image from "next/image";
 import { Button, Autocomplete, FormControl, FormLabel, Input, RadioGroup, Radio, List, ListItem, Checkbox, FormHelperText, Snackbar, Textarea } from '@mui/joy'
 import MenuButton from "@/components/menu-button";
-// import { orlandoAllTeams } from "../data/orlando-all-teams";
 import { useState, useRef } from "react";
 import styles from '@/styles/pit-survey.module.css'
 
@@ -12,7 +11,9 @@ import Mec from '@/images/mecanumdrive.png'
 import Tank from '@/images/tankdrive.jpg'
 import Swerve from '@/images/swervedrive.jpg'
 
-// import type { PutBlobResult } from '@vercel/blob'; //js quickstart does not have typing but has defined w `as`
+//replace this with file of team numbers corresponding to the competition attendees
+//orlando is used as an example
+// import { orlandoAllTeams } from "../data/orlando-all-teams";
 
 export default function PitSurveyPage() {
   const isDevMode = process.env.NEXT_PUBLIC_DEV_MODE;
@@ -82,7 +83,7 @@ export default function PitSurveyPage() {
     }
   }
 
-  function handleInputChange(event, value) {
+  function handleTeamNumChange(event, value) {
     setTeamNumber(value.toString());
   }
 
@@ -461,7 +462,8 @@ export default function PitSurveyPage() {
         <h1>Pit Survey</h1>
         <form ref={formRef}>
         <h2>General</h2>
-        {/* <FormControl>
+        
+        <FormControl>
           <FormLabel required={true} sx={{color: '#ed1c24'}}>Team Number</FormLabel>
           <Autocomplete
             required
@@ -469,7 +471,7 @@ export default function PitSurveyPage() {
             placeholder="start typing..."
             options={orlandoAllTeams}
             value={teamNumber}
-            onChange={handleInputChange}
+            onChange={handleTeamNumChange}
             clearOnBlur
             isOptionEqualToValue={(option, value) =>{
               if(option === '' || value === '') return true;
@@ -478,9 +480,10 @@ export default function PitSurveyPage() {
             sx={{ width: 300 }}
             slotProps={{input: { inputMode:'decimal' }}}
           />
-        </FormControl> */}
+        </FormControl>
 
-        <FormControl>
+        {/* alternate form if autocomplete is not wanted */}
+        {/* <FormControl>
           <FormLabel required={true} sx={{color: '#ed1c24'}}>Team Number</FormLabel>
           <Input
             required
@@ -490,7 +493,7 @@ export default function PitSurveyPage() {
             sx={{ width: 300 }}
             slotProps={{input: { inputMode:'decimal' }}}
           />
-        </FormControl>
+        </FormControl> */}
 
         <FormControl>
           <FormLabel required={true} sx={{color: '#ed1c24'}}>Drivetrain Type</FormLabel>

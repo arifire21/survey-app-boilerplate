@@ -1,4 +1,4 @@
-# 744 Survey App
+# Survey App Boilerplate App
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 A  web application made to streamline both survey types used during competitions.

@@ -12,8 +12,8 @@ const isHiatus = process.env.NEXT_PUBLIC_SEASON_HIATUS;
 const offSeasonYear = 2024;
 
 export const metadata = {
-  title: "744 Survey",
-  description: "[FIRST FRC Team 744] Match and Pit Survey App",
+  title: "Survey App Boilerplate",
+  description: "[FIRST FRC Team XXX] Match and Pit Survey App",
   icons: {
     icon: '/icon.png',
     apple: '/apple-icon.png',

@@ -116,8 +116,8 @@ export default function ViewMatchResultsPage() {
                   {match.map((row, index2) => {
                     return( //per Object (orig row from table)
                       <Accordion variant="outlined" key={`match-${index}-team-row-${index2}`}
-                        sx={{[`& .${accordionSummaryClasses.button}`]: { color: row.team_number==='744' ? '#04269b' : '#ffffff'}}}
-                      > {/* change text color only for 744 by targeting the MUI class that renders the button */}
+                        sx={{[`& .${accordionSummaryClasses.button}`]: { color: row.team_number==='XXX' ? '#04269b' : '#ffffff'}}}
+                      > {/* change text color only for XXX by targeting the MUI class that renders the button */}
                         {/* note: custom blue alliance color in theme-registry file */}
                         <AccordionSummary   //header with team num (and trophy if alliance won)
                           variant="solid"
@@ -160,7 +160,8 @@ export default function ViewMatchResultsPage() {
                           <p className={styles.matchDetail}>Defense rating: <strong>{row.defense}/5</strong></p>
                           <p className={styles.matchDetail}>Lost comms or disabled: <strong>{row.lost_comms_disabled === "" ? '??' : row.lost_comms_disabled ?? '??'}</strong></p>
                           {row.comments && row.comments.length > 0 && <p className="result-comments">Post-Match Comments: {row.comments}</p>}
-                          <small>Survey by: {row.name}</small>
+                          {/* use or ignore name if desired */}
+                      {/* <small>Survey by: <strong>{item.name}</strong></small> */}
                         </AccordionDetails>
                       </Accordion>
                     )
@@ -186,8 +187,8 @@ export default function ViewMatchResultsPage() {
                 {match.map((row, index2) => {
                   return( //per Object (orig row from table)
                     <Accordion variant="outlined" key={`match-${index}-team-row-${index2}`}
-                      sx={{[`& .${accordionSummaryClasses.button}`]: { color: row.team_number==='744' ? '#04269b' : '#ffffff'}}}
-                    > {/* change text color only for 744 by targeting the MUI class that renders the button */}
+                      sx={{[`& .${accordionSummaryClasses.button}`]: { color: row.team_number==='XXX' ? '#04269b' : '#ffffff'}}}
+                    > {/* change text color only for XXX by targeting the MUI class that renders the button */}
                       {/* note: custom blue alliance color in theme-registry file */}
                       <AccordionSummary   //header with team num (and trophy if alliance won)
                         variant="solid"
@@ -230,7 +231,8 @@ export default function ViewMatchResultsPage() {
                         <p className={styles.matchDetail}>Defense rating: <strong>{row.defense}/5</strong></p>
                         <p className={styles.matchDetail}>Lost comms or disabled: <strong>{row.lost_comms_disabled === "" ? '??' : row.lost_comms_disabled ?? '??'}</strong></p>
                         {row.comments && row.comments.length > 0 && <p className="result-comments">Post-Match Comments: {row.comments}</p>}
-                        <small>Survey by: {row.name}</small>
+                        {/* use or ignore name if desired */}
+                      {/* <small>Survey by: <strong>{item.name}</strong></small> */}
                       </AccordionDetails>
                     </Accordion>
                   )
@@ -256,8 +258,8 @@ export default function ViewMatchResultsPage() {
                 {match.map((row, index2) => {
                   return( //per Object (orig row from table)
                     <Accordion variant="outlined" key={`match-${index}-team-row-${index2}`}
-                      sx={{[`& .${accordionSummaryClasses.button}`]: { color: row.team_number==='744' ? '#04269b' : '#ffffff'}}}
-                    > {/* change text color only for 744 by targeting the MUI class that renders the button */}
+                      sx={{[`& .${accordionSummaryClasses.button}`]: { color: row.team_number==='XXX' ? '#04269b' : '#ffffff'}}}
+                    > {/* change text color only for XXX by targeting the MUI class that renders the button */}
                       {/* note: custom blue alliance color in theme-registry file */}
                       <AccordionSummary   //header with team num (and trophy if alliance won)
                         variant="solid"
@@ -300,7 +302,8 @@ export default function ViewMatchResultsPage() {
                         <p className={styles.matchDetail}>Defense rating: <strong>{row.defense}/5</strong></p>
                         <p className={styles.matchDetail}>Lost comms or disabled: <strong>{row.lost_comms_disabled === "" ? '??' : row.lost_comms_disabled ?? '??'}</strong></p>
                         {row.comments && row.comments.length > 0 && <p className="result-comments">Post-Match Comments: {row.comments}</p>}
-                        <small>Survey by: {row.name}</small>
+                        {/* use or ignore name if desired */}
+                      {/* <small>Survey by: <strong>{item.name}</strong></small> */}
                       </AccordionDetails>
                     </Accordion>
                   )
@@ -326,8 +329,8 @@ export default function ViewMatchResultsPage() {
                 {match.map((row, index2) => {
                   return( //per Object (orig row from table)
                     <Accordion variant="outlined" key={`match-${index}-team-row-${index2}`}
-                      sx={{[`& .${accordionSummaryClasses.button}`]: { color: row.team_number==='744' ? '#04269b' : '#ffffff'}}}
-                    > {/* change text color only for 744 by targeting the MUI class that renders the button */}
+                      sx={{[`& .${accordionSummaryClasses.button}`]: { color: row.team_number==='XXX' ? '#04269b' : '#ffffff'}}}
+                    > {/* change text color only for XXX by targeting the MUI class that renders the button */}
                       {/* note: custom blue alliance color in theme-registry file */}
                       <AccordionSummary   //header with team num (and trophy if alliance won)
                         variant="solid"
@@ -370,7 +373,8 @@ export default function ViewMatchResultsPage() {
                         <p className={styles.matchDetail}>Defense rating: <strong>{row.defense}/5</strong></p>
                         <p className={styles.matchDetail}>Lost comms or disabled: <strong>{row.lost_comms_disabled === "" ? '??' : row.lost_comms_disabled ?? '??'}</strong></p>
                         {row.comments && row.comments.length > 0 && <p className="result-comments">Post-Match Comments: {row.comments}</p>}
-                        <small>Survey by: {row.name}</small>
+                        {/* use or ignore name if desired */}
+                      {/* <small>Survey by: <strong>{item.name}</strong></small> */}
                       </AccordionDetails>
                     </Accordion>
                   )

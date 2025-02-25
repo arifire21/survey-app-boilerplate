@@ -29,7 +29,7 @@ export default function ViewPitResultsPage(){
     let availTeams = []
     let filteredTeams = []
 
-    function handleInputChange(event, value) {
+    function handleTeamNumChange(event, value) {
       setTeamCriteria(value);
       console.log(value)
     }
@@ -225,7 +225,7 @@ export default function ViewPitResultsPage(){
                 placeholder="start typing..."
                 options={availTeamsOptions}
                 value={teamCriteria}
-                onChange={handleInputChange}
+                onChange={handleTeamNumChange}
                 clearOnBlur
                 // isOptionEqualToValue={(option, value) =>{
                 //   if(option === '' || value === '') return true;
@@ -411,7 +411,8 @@ export default function ViewPitResultsPage(){
                         </div>
                       )}
                       {item.feedback && item.feedback.length > 0 && <p className={styles.pitDetail}>Thoughts: {item.feedback}</p>}
-                      <small>Survey by: <strong>{item.name}</strong></small>
+                      {/* use or ignore name if desired */}
+                      {/* <small>Survey by: <strong>{item.name}</strong></small> */}
                     </div>
                   )
                 })}
