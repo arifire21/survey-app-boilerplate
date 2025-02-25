@@ -79,21 +79,27 @@ const theme = extendTheme({
     }
   },
   components: {
+    //Label text for the form element
+    //can change if desired, though not recommended
     JoyFormLabel: {
       styleOverrides: {
         root: {
           fontSize: '16px',
           display: 'inline-flex',
-          flexWrap: 'nowrap',  //stop required stars from shifting to next line
+          flexWrap: 'nowrap',  //stop "required" stars from shifting to next line
           // [`&.${formLabelClasses.root}:required`]: {color: '#ed1c24'} //FRC red, slightly softer than RGB red
         }
       }
     }, //end JoyFormLabel
+    //used to group form elements together, requested different spacing between them
+    //can change if desired
     JoyFormControl: {
       styleOverrides : {
         root: {marginBottom: '1rem'}
       }
     }, //endJoyFormControl
+    //used to handle sizing of modal for pit survey images and field position guide
+    //do not change unless needing advanced styling
     JoyModalDialog: {
       defaultProps: { layout: 'fullscreen-padded' },
       styleOverrides: {
@@ -106,11 +112,15 @@ const theme = extendTheme({
         }),
       }
     }, //end JoyModalDialog
+    //helps legibility of text, as default 'soft' variant makes text light red/light blue
+    //can change if desired, though not recommended
     JoyAccordionDetails: {
       styleOverrides: {
         root: {color: '#ffffff'}
       }
     }, //end JoyAccordionDetails
+    //helps legibility of text, as default 'soft' variant makes text light red/light blue
+    //can change if desired, though not recommended
     JoyToggleButtonGroup: {
       styleOverrides: {
         root: {color: '#ffffff'}
